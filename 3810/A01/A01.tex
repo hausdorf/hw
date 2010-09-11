@@ -1,0 +1,193 @@
+%Author Alex Clemmer
+%CS 3810 Computer Organization
+%Assignment1:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+
+\begin{document}
+
+\section*{Assignment 1 }
+Alex Clemmer\\
+Student number: u0458675
+
+\subsection*{Problem 1:}
+\paragraph*{1.3.1:} The clear winner is P2. The rightmost column is the result of the performance function (which is the middle column):
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Processor & \multicolumn{2}{|c|}{Performance Function} & \multicolumn{2}{|c|}{Performance}\\
+\hline
+P1 & \multicolumn{2}{|c|}{$\frac{\mbox{I} \times \mbox{1.5 CPI}}{2\times10^{9}}$ = I $\cdot$ 500 ps $\cdot$ 1.5 CPI} & \multicolumn{2}{|c|}{750 $\cdot$ I ps}\\
+\hline
+P2 & \multicolumn{2}{|c|}{$\frac{\mbox{I} \times \mbox{1.0 CPI}}{1.5\times10^{9}}$ $\approx$ I $\cdot$ 666.666... ps $\cdot$ 1.0 CPI} & \multicolumn{2}{|c|}{666.666... $\cdot$ I ps}\\
+\hline
+P3 & \multicolumn{2}{|c|}{$\frac{\mbox{I} \times \mbox{2.5 CPI}}{3\times10^{9}}$ $\approx$ I $\cdot$ 833.333... ps $\cdot$ 1.0 CPI} & \multicolumn{2}{|c|}{833.333... $\cdot$ I ps}\\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph*{1.3.2:} Total cycles is equal to the number of instructions executed in a second times the number of seconds. For P1, $2\times10^9 \times \mbox{10 seconds} =  2\times10^{10}$ cycles. Similarly, for P2, $1.5\times10^9 \times \mbox{10 seconds} = 1.5\times10^{10}$ cycles, and for P3, $3\times10^9 \times \mbox{10 seconds} = 3\times10^{10}$ cycles.
+
+Given the total cycles for the process, we can also calculate the total instructions using the formula $\frac{\mbox{total cycles}}{\mbox{cycles per instruction}} = \mbox{instructions}$. That means P1$_{instr}$ = $\frac{2\times10^{10} cycles}{\mbox{1.5 CPI}}$, P2$_{instr}$ = $\frac{1.5\times10^{10} cycles}{\mbox{1.0 CPI}}$, and P3$_{instr}$ = $\frac{3\times10^{10} cycles}{\mbox{2.5 CPI}}$, which is all summarized by the third column of this chart:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\multicolumn{5}{|c|}{Clock Cycles and total instructions given 10-second execution time}\\
+\hline
+\hline
+Processor & \multicolumn{2}{|c|}{Cycles} & \multicolumn{2}{|c|}{Total Instructions Executed}\\
+\hline
+P1 & \multicolumn{2}{|c|}{$2\times10^{10}$ cycles} & \multicolumn{2}{|c|}{$1.333...\times10^{10}$ instructions}\\
+\hline
+P2 & \multicolumn{2}{|c|}{$1.5\times10^{10}$ cycles} & \multicolumn{2}{|c|}{$1.5\times10^{10}$ instructions}\\
+\hline
+P3 & \multicolumn{2}{|c|}{$3\times10^{10}$ cycles} & \multicolumn{2}{|c|}{$1.2\times10^{10}$ instructions}\\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph*{1.3.3:} So CPU time = $\frac{\mbox{Instruction Count} \cdot \mbox{CPI}}{\mbox{Clock rate}}$. Since time is going down by 30\%, CPU time will always be 7 seconds. Of course, since we're using picoseconds, we have to convert that 7 seconds into picoseconds. CPI is going up 20\%, and will be reflected as follows:
+
+\begin{equation}
+P1: \mbox{7}\times 10^{12} \mbox{picoseconds =} \frac{\mbox{I} \cdot \mbox{1.8 CPI}}{\mbox{Clock rate}} \approx 2.5714 GHz
+\end{equation}
+
+\begin{equation}
+P2: \mbox{7}\times 10^{12} \mbox{picoseconds =} \frac{\mbox{I} \cdot \mbox{1.2 CPI}}{\mbox{Clock rate}} \approx 1.7143 GHz
+\end{equation}
+
+\begin{equation}
+P3: \mbox{7}\times 10^{12} \mbox{picoseconds =} \frac{\mbox{I} \cdot \mbox{2.5 CPI}}{\mbox{Clock rate}} \approx 3.5714 GHz
+\end{equation}
+
+\paragraph*{Follow-up:} Any number of features could affect this performance. One processor might be an FPU, for example, and optimized for floating-point calculations, while the others might be CPUs. Or one processor might have a lot more (or a lot fewer) registers, or registers placed poorly on the chip. Different instruction sets make a difference, as some are more efficient than others.
+
+\subsection*{Problem 2:}
+
+\paragraph*{1.11.1:} To calculate yield, we must first find the die area. For (a): 90 $\mbox{dies per wafer} = \frac{\mbox{wafer area}}{\mbox{die area}} = \frac{(\frac{15}{2})^2\pi}{\mbox{die area}_{(a)}}; \therefore \mbox{die area}_{(a)} = \frac{5\pi}{8}$. For (b): $140\mbox{ dies per wafer} = \frac{(\frac{25}{2})^2\pi}{\mbox{die area}_{(b)}}; \therefore \mbox{ die area}_{(b)} = \frac{125\pi}{112}$.
+
+So the yield will be as follows:
+
+\begin{equation}
+\mbox{Yield}_{(a)} = \frac{1}{(1+.018 \frac{\frac{5\pi}{8}}{2})^2} \approx{.965572}
+\end{equation}
+
+\begin{equation}
+\mbox{Yield}_{(b)} = \frac{1}{(1+.024 \frac{\frac{125\pi}{112}}{2})^2} \approx{.92087}
+\end{equation}
+
+\paragraph*{1.11.2:} Cost per die = $\frac{\mbox{cost per wafer}}{\mbox{dies per wafer} \times \mbox{yield}}$, so the operations are pretty straightforward:
+
+\begin{equation}
+\mbox{Cost per die}_{(a)} = \frac{10}{90 \cdot .96557} \approx{.115073}
+\end{equation}
+
+\begin{equation}
+\mbox{Cost per die}_{(b)} = \frac{20}{140 \cdot .92087} \approx{.155131}
+\end{equation}
+
+\paragraph*{1.11.3:} Given a 10\% increase in dies per wafer, (a) now has 99 DPW and (b) now has 154 DPW. So our die area (using the formula from 1.11.1) will look like so:
+
+\begin{equation}
+99\mbox{ dies per wafer} = \frac{(\frac{15}{2})^2 \pi}{\mbox{die area}_{(a)}}; \therefore \mbox{die area}_{(a)} = \frac{25 \pi}{44}
+\end{equation}
+
+\begin{equation}
+154\mbox{ dies per wafer} = \frac{(\frac{25}{2})^2 \pi}{\mbox{die area}_{(b)}}; \therefore \mbox{die area}_{(a)} = \frac{625 \pi}{616}
+\end{equation}
+
+Given a 15\% increase in defects per area, (a) is now at .0207 DPA, while (b) is now at .0276 DPA. 
+
+\begin{equation}
+\mbox{New Yield}_{(a)} = \frac{1}{(1+.018 \frac{\frac{5\pi}{8}}{2})^2} \approx{.96405}
+\end{equation}
+
+\begin{equation}
+\mbox{New Yield}_{(b)} = \frac{1}{(1+.024 \frac{\frac{125\pi}{112}}{2})^2} \approx{.917507}
+\end{equation}
+
+\paragraph*{Follow-up:} There are lots of reasons that chip that takes up 80\% of a wafer would be very hard to make. The first (and most severe) of which is, the chances of defects appearing somewhere on the chip are enormous.
+
+Consider, a chip that takes up 80\% of wafer with area $\pi\cdot6^2$cm would take approximately $81 cm^2$. Assuming a modest defect per area rate of .0187, yield = $\frac{1}{(1+(.0187\frac{81}{2})^2} \approx .323805$. So around 32\% of chips would survive the process.
+
+It may be an amazing bit of hardware, but it's really hard to believe any firm would consider making a chip with rates like those, especially since they would have to reflect the losses in the consumer price. It just wouldn't be worth it.
+
+\subsection*{Problem 3:}
+\paragraph*{1.10.1:} We can calculate the number of instructions required for a job by adding up the number of instructions from each sub-set of the work (e.g., instructions = arithmetic + branch + load/store).
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+& Total Processors & \multicolumn{2}{|c|}{Total Instruction Count} & \multicolumn{2}{|c|}{Aggregated Instruction Count}\\
+\hline
+\hline
+\multirow{4}{*}{a} & 1 & \multicolumn{2}{|c|}{2560 + 1280 + 256 = {\bf4096}} & \multicolumn{2}{|c|}{$4096 \cdot 1 = {\bf4096}$}\\
+& 2 & \multicolumn{2}{|c|}{1280 + 640 + 128 = {\bf2048}} & \multicolumn{2}{|c|}{$2048 \cdot 2 = {\bf4096}$}\\
+& 4 & \multicolumn{2}{|c|}{640 + 320 + 64 = {\bf1024}} & \multicolumn{2}{|c|}{$1024 \cdot 4 = {\bf4096}$}\\
+& 8 & \multicolumn{2}{|c|}{320 + 160 + 32 = {\bf512}} & \multicolumn{2}{|c|}{$512 \cdot 4 = {\bf4096}$}\\
+\hline
+\hline
+\multirow{4}{*}{b} & 1 & \multicolumn{2}{|c|}{2560 + 1280 + 256 = {\bf4096}} & \multicolumn{2}{|c|}{$4096 \cdot 1 = {\bf4096}$}\\
+& 2 & \multicolumn{2}{|c|}{1350 + 8000 + 128 = {\bf2278}} & \multicolumn{2}{|c|}{$2278 \cdot 2 = {\bf4556}$}\\
+& 4 & \multicolumn{2}{|c|}{800 + 600 + 64 = {\bf1464}} & \multicolumn{2}{|c|}{$1464 \cdot 4 = {\bf5856}$}\\
+& 8 & \multicolumn{2}{|c|}{600 + 500 + 32 = {\bf1132}} & \multicolumn{2}{|c|}{$1132 \cdot 4 = {\bf9056}$}\\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph*{1.10.2:} We can obtain the execution time by multiplying the cycles per instruction by the time it takes to execute one clock cycle: $\frac{1}{\mbox{length of cycle}} \cdot \mbox{CPI}$, where $\textit{length of cycle}$ = 2 $\cdot 10^9$ seconds. Thus, 
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+& Total Processors & \multicolumn{2}{|c|}{Total Execution Time}\\
+\hline
+\hline
+\multirow{4}{*}{a} & 1 & \multicolumn{2}{|c|}{$\frac{1}{781250} + \frac{1}{390625} + \frac{1}{3906250} \approx .000004$}\\
+& 2 & \multicolumn{2}{|c|}{$\frac{1}{1562500} + \frac{1}{781250} + \frac{1}{7812500} \approx .000002$}\\
+& 4 & \multicolumn{2}{|c|}{$\frac{1}{3125000} + \frac{1}{1562500} + \frac{1}{15625000} \approx .000001$}\\
+& 8 & \multicolumn{2}{|c|}{$\frac{1}{6250000} + \frac{1}{3125000} + \frac{1}{31250000} \approx 3.2\times10^{-8}$}\\
+\hline
+\hline
+\multirow{4}{*}{b} & 1 & \multicolumn{2}{|c|}{$\frac{1}{781250} + \frac{429}{50000000} + \frac{1}{3906250} \approx .000004$}\\
+& 2 & \multicolumn{2}{|c|}{$\frac{27}{40000000} + \frac{3}{1250000} + \frac{1}{7812500} \approx .000003203$}\\
+& 4 & \multicolumn{2}{|c|}{$\frac{1}{2500000} + \frac{27}{10000000} + \frac{1}{15625000} \approx .000003164$}\\
+& 8 & \multicolumn{2}{|c|}{$\frac{3}{10000000} + \frac{13}{4000000} + \frac{1}{31250000} \approx .000003582$}\\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph*{1.10.3:} What happens when we double the arithmetic instructions? Let's find out:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\multicolumn{4}{|c|}{Execution Time with Doubled Arithmetic Instructions}\\
+\hline
+\hline
+& Total Processors & \multicolumn{2}{|c|}{Total Execution Time}\\
+\hline
+\multirow{4}{*}{b} & 1 & \multicolumn{2}{|c|}{$\frac{1}{390625} + \frac{429}{50000000} + \frac{1}{3906250} \approx .000005396$}\\
+& 2 & \multicolumn{2}{|c|}{$\frac{27}{20000000} + \frac{3}{1250000} + \frac{1}{7812500} \approx .000003878$}\\
+& 4 & \multicolumn{2}{|c|}{$\frac{1}{1250000} + \frac{27}{10000000} + \frac{1}{15625000} \approx .000003564$}\\
+& 8 & \multicolumn{2}{|c|}{$\frac{3}{10000000} + \frac{13}{4000000} + \frac{1}{31250000} \approx .000003582$}\\
+\hline
+\end{tabular}
+\end{center}
+
+So when we compare the total execution time of this chart and the one from 1.10.2, we see that doubling the instruction count actually does cause a spike in execution time, at least in single-processor settings. But this disadvantage drops off precipitously as the number of processors goes up, which is what we would expect.
+
+\paragraph*{Follow-up:} The additional instructions probably represents the synchronization overhead. I don't know of any program that is so parallel that there is literally no synchronization overhead. This is an unfortunate but necessary tradeoff, and it really highlights something important about parallelism/concurrency, which is that you need to be sure that this synchronization is not so prohibitive that it makes the program slower. That is to say, not every program should be parallel.
+
+\subsection*{Problem 4:}
+\begin{itemize}
+	\item I don't know whether I should have converted 'u' to its int ascii value, but I interpreted my uID as $\mathbf{00458675}$.
+	\item The output is $\mathbf{91735}$, which is the integer representation of my uID divided by 5.
+	\item Since this program divides the input by 5, to output my uID, the program should receive my input  multiplied by 5, or $\mathbf{2293375}$.
+\end{itemize}
+
+\end{document}
