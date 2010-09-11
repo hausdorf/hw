@@ -6,7 +6,11 @@ Prompt:
 SuccessOutput:
 	.asciiz "\nResult: "
 ErrorOutput:
-	.asciiz "That's a negative number. Try again.
+	.asciiz "That's a negative number. Try again."
+ErrorOverflow:
+	.asciiz "Overflow! Waa! "
+ErrorOverflow2:
+	.asciiz " iteration(s)!"
 Space:
 	.asciiz " "
 
@@ -30,6 +34,7 @@ Loop:
 	andi $t1, $v0, 1  # 1 if N even, 0 else
 	move $a0, $v0  # put in params
 	bne $t1, 1, Even  # goto Even if even
+	bgt $v0, 1431655764, PrintErrorOverflow
 	jal IfOdd  # N is odd, so goto odd
 	j Loop
 Even:
@@ -82,6 +87,20 @@ PrintSuccessMessage:
 # ERROR - Negative integer
 PrintErrorOutput:
 	la $a0, ErrorOutput # load ErrorOutput
+	li $v0, 4  # print error output
+	syscall
+	li $v0, 10
+	syscall
+
+# ERROR - Overflow
+PrintErrorOverflow:
+	la $a0, ErrorOverflow # load ErrorOutput
+	li $v0, 4  # print error output
+	syscall
+	move $a0, $s0
+	li $v0, 1
+	syscall
+	la $a0, ErrorOverflow2 # load ErrorOutput
 	li $v0, 4  # print error output
 	syscall
 	li $v0, 10
