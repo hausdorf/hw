@@ -6,7 +6,7 @@
 	ProcessMessage1: .asciiz "In recursion depth "
 	ProcessMessage2: .asciiz ":"
 	PrintNewline: .asciiz "\n"
-	PrintColon: .asciiz ": "
+	PrintColon: .asciiz ":"
 	PrintX: .asciiz "x"
 
 .text
@@ -96,7 +96,24 @@ SkipFirstLoop:
 	li $v0, 4
 	syscall  # print colon
 
-
+	li $s0, 0
+	la $a0, PrintX  # prepare to print x
+BeginSecondLoop:
+	beq $s0, $t1, SkipSecondLoop
+	li $v0, 4
+	syscall  # print x
+	addi $s0, $s0, 1
+	j BeginSecondLoop
+SkipSecondLoop:
+	la $a0, PrintColon  # prepare to print colon
+	li $v0, 4
+	syscall  # print colon
+	move $a0, $s1  # prepare to print param int N
+	li $v0, 1
+	syscall  # print param int N
+	la $a0, PrintNewline # prepare to print newline
+	li $v0, 4
+	syscall  # print newline
 
 	move $v0, $s1  # return j
 	lw $ra, 20($sp)  # replace return address
