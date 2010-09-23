@@ -37,6 +37,7 @@ Recursion:
 	sw $a0, ($sp)  # add parameter (int N) to stack
 	addi $sp, $sp, -12
 	sw $t0, ($sp)  # add k to stack
+	sw $t1, 4($sp) # add tmp to stack
 
 # Base case
 	bne $a0, 10, SkipBaseCase  # skip base case if N != 10
@@ -82,6 +83,11 @@ SkipFirstLoop:
 	
 	move $a0, $s1  # put j in params
 	jal Recursion  # recursion(j)
+
+	# Restore tmp vars
+	lw $t0, ($sp)
+	lw $t1, 12($sp)
+
 	add $s1, $v0, $v0  # j = j + j
 	add $s1, $s1, $s0  # j = j + i
 	add $s1, $s1, $t0  # j = j + k
@@ -89,7 +95,8 @@ SkipFirstLoop:
 	la $a0,  ProcessMessage1  # prepare to print message1
 	li $v0, 4
 	syscall  # print message 1
-	lw $a0, ($sp)  # prepare param int N to be printed
+	#lw $a0, ($sp)  # prepare param int N to be printed
+	move $a0, $t1
 	li $v0, 1
 	syscall  # print param int nN
 	la $a0, PrintColon  # prepare to print colon
