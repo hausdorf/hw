@@ -1,0 +1,90 @@
+Probability models
+	- Some things around us seem random and unpredictable. We model these phenomena as OUTCOMES of EXPERIMENTS.
+		a. Outcomes exist inside of a SAMPLE SPACE.
+			i. A sample space holds ALL possible outcomes.
+		b. Subsets of sample space are called EVENTS.
+			i. In other words, an event holds some of the outcomes.
+		c. Events are assigned a PROBABILITY, which is a number between 0 and 1.
+
+2.1 SAMPLE SPACES
+Sample spaces are sets whose elements represent, or describe outcomes of some experiment.
+	- Example: tossing a coin
+		a. Sample space is {H,T}
+	- Example: which month is someone's birthday?
+		a. Sample space is {Jan,Feb, ... , Dec}
+	- Example: bridge collapsing
+		a. The outcome is the load at which this occurs
+			i. We can only measure this with finite accuracy. This is adequate for measuring the limits of a bridge, but in theory we could have any load from (0,INF), which is a huge sample space.
+			ii. It may not be practical (or necessary!) to try these loads.
+	- Example: we find 3 envelopes, from 3 different persons, each on top of another.
+		a. Sample space is {123, 132, 213, 231, 312, 321}
+		b. What would the sample space be with four envelopes? You could place the 4th envelope in any of the 4 positions for each particular outcome in the original sample space, so the new sample space would be 4*6=24.
+			i. Similarly, with 1 envelope, you can order it only one way: {1}, but if you have two, you can insert that envelope in any of the 2 spaces: {21, 12}, and then finally with 3, you can insert it in any of those three places, giveing you the same 6 possibilities as noted before.
+			ii. The formula for this, thus, is n!. It breaks down as so: n(n-1)* ... * 3*2*1 = n!
+				A. 0! = 1 for convenience's sake.
+		c. The order in which n different objects can be placed is called a PERMUTATION of the n objects.
+
+2.2 EVENTS
+An event is a SUBSET OF THE SAMPLE SPACE. We can say that an event A occurs if the outcome is an element of A.
+	- Example: birthday problem from last section
+		a. A={Jan, Mar, May, Jul, Aug, Oct, Dec}
+			i. 7/12 months are long, so the probability is 7/12.
+
+2.3 PROBABILITY
+We express how likely an event is with probability. We do this, first, by assigning a probability to every event, which is not an easy task. Because each event needs a probability, we refer to probability as a FUNCTION.
+	- The function P on a finite sample space \omega assigns to each event A in \omega a number P(A) in [0,1] such that
+		i. P(\omega) = 1
+		ii. P(A \union B) = P(A) + P(B) if A and B are disjoint. This is not the case if A and B are NOT disjoint.
+		
+		a. An outcome of the experiment is always an element of the sample space. This is illustrated by property (i).
+		b. Probability functions are additive in the same way as sets. This is illustrated by (ii).
+			ii. ie, P(A \union B \union C) = P(A \union B) + P(C) = P(A) + P(B) + P(C)
+	- Example: tossing a coin
+		a. P({H}) = P({T}) = 1/2
+	- Example: birthday month
+		a. P(Jan) = P(Feb) = ... = 1/12
+			i. But this is not quite accurate, is it? P(Jan) = 31/365
+			ii. Ah, but what about leap years? P(Jan) = 124/1461
+	- Example: buckling bridge
+		a. When the outcomes are infinite, you can't assign a probability to individual events, because in relationship to an infinite set of alternatives, the limit of that probability is 0.
+		b. This will reappear in Ch5, which deals with finite and countably infinite probabilities (continuous probabilities, too?)
+	- Example: The envelopes
+		a. Each ordering is equally likely: P(123) = ... = P(321) = 1/6
+		b. We can assign probabilities to whole events (which are subsets of \omega) by the additive property: P(T) = P(123) + P(321) = 1/3
+	- What about probabilities that are not disjoint?
+		a. P(A \union B) = P(A) + P(B) - P(A \and B)
+		b. A \union A^c = \omega, or P(A^c) = 1 - P(A)
+
+2.4 PRODUCTS OF SAMPLE SPACES
+Most of the time, the situation will call for the same experiment to happen multiple times, rather than only once.
+	- Example: throw a coin twice
+		a. What is the sample space? \omega = {H,T} x {H,T} = {(H,H),(H,T),(T,H),(T,T)}
+		b. All of these will be equal probability: P((H,H)) = ... = P((T,T)) = 1/4
+Combining sample spaces
+	- Use a cartesian product: \omega = \omega_{1} x \omega_{2}
+		a. If there are r elements in \omega_{1} and s in \omega_{2}, then there are rs in \omega.
+		b. If we suppose that all outcomes are equally likely, then we have P(\omega_{1}) = 1/r, P(\omega_{2}) = 1/s, and P(\omega) = 1/rs
+		c. Thus the probability of (w_{i}w_{j}) is then p_{i}p_{j}.
+		d. This is definitely not the only way to assign probabilities to the outcomes of a combined experiment.
+	- In the case of the coin flip, we assign probability of multiple throws as so:
+		a. Suppose that we perform an experiment with outcomes 1 and 0 five times, and event A represents that "exactly one experiment was a success", then there are 5 possibilities.
+			i. A = {(0 0 0 0 1), (0 0 0 1 0), (0 0 1 0 0), (0 1 0 0 0), (1 0 0 0 0)}
+			ii. There are 5 outcomes (eg, "(0 0 0 0 1)"), and each experiment has a p probability of success and a 1-p probability of failure. So our equation is P(A) = 5(1-p)^4*p
+			iii. A set of outcomes where exactly 2 experiments were successful would have a probability of P(A) = 10(1-p)^3p^2.
+			iv. In general when you perform an experiment multiple times, the sample space is the cartesian product of the sample space n times. The probability of some tuple (a, b) is P(a) * P(b).
+
+2.5 INFINITE SAMPLE SPACES
+Consider an example where you toss a coin repeatedly until its heads up.
+	- The outcome: how many tosses it takes before it's heads.
+	- \omega = {1, 2, ...}
+	- So what is the probability function P of this experiment?
+		a. Assume we have a probabilty of p for heads and p-1 for tails.
+		b. P(1) = p
+		c. P(2) = (1-p)p
+		d. P(n) = (1-p)^(n-1)p
+	- Ahhh! We broke math! Let's fix the definition of the probability function!
+		a. P(\omega) = 1
+		b. P(A_{1} \union A_{2} \union ...) = P(A_{1}) + P(A_{2}) + P(A_{3}) + ...
+			i. Assuming they are all disjoint.
+		c. Actually, just kidding, this is an extension of the previous property, in that there can theoretically be an infinite number of null sets after (eg, everything after P(A_{3}) is null).
+		d. Computing the limit for an infinite number of these is P(\omega) = p * 1/p = 1

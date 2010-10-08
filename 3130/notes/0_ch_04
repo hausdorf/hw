@@ -1,0 +1,54 @@
+4 DISCRETE RANDOM VARIABLES
+A complete probabilistic discription of an event is the sample space together with the probability function of all its events. A lot of times we're not interested in the whole thing -- we just want part of it. We can focus on those features with random variables. In this chapter we discuss discrete random variables, although there are also continuous random variables. There are Bernoulli, binomial, and geometric random variables.
+
+4.1 RANDOM VARIABLES
+Suppose we are playing snakes and ladders.
+	- Moves are determined by two independent die throws. Sample space is what?
+	- But we're really only interested in the sum of the throws.
+	- We express an event that is sum k with {S=k}
+		a. The probability of this event is P(S=k)
+Discrete random variables
+	- A DRV is a function X : \omega -> \real that takes on either a finite number of variables a1, ..., an, or an infinite number of variables a1, a2, ...
+	- The point, in a way, is to transform a given sample space into a modified sample space more befitting of your needs.
+		a. For instance, S turns \omega from a set of tuples {(1,2)...} is now {1, 2, ...}
+		b. The price to pay is that you have to calculate the probabilities of X. Which in other words is calls a...
+
+4.2 PROBABILITY DISTRIBUTION
+When you introduce a random variable, the sample space becomes MUCH less important. Almost all computations from there out are easier determined by a list of possible values of X and their corresponding probabilities. This information is contained in the probability mass function.
+	- The probability mass function p of some discrete random variable X is a function p : \real -> [0,1], defined by p(a) = P(X=a)
+	- If p(a) takes some values {a1, a2, ...}, then p(ai) > 0 and p(a1) + p(a2) + ... = 1, and p(a) = 0 for all other a.
+PROBABILITY DISTRIBUTION
+You can't calculate probabilities for continuous functions using the probability mass function. You can, however, use the distribution function of some random variable X (which is also known as the cumulative distribution function). This allows us to treat continuous variables in roughly the same way.
+	- The distribution function F of a random variable X is the function F : \real -> [0,1], defined by F(a) = P(x <= a)
+	- For discrete random variables, both the probability mass function and the distribution function contain all the probabilistic information of X. That is to say, you can derive the pribability distribution from either of them.
+		a. In fact, the distribution function F of some discrete random variable X can actually be expressed in terms of the probability mass function p pf X and vice-versa:
+			i. If X recieves some variables a1, a2, ... such that p(ai) > 0, p(a1) + ... = 1, then F(a) is the sum of all p(ai). Neat, huh?
+			ii. In fact, if you look at the graph for F(a) (pg 44), you can see that it exponentially increases, and the height of each of the jumps is p(ai), or the total probability of that step added to all the others before it.
+	- Some important properties follow:
+		a. If a <= b, then F(a) <= F(b)
+			i. This actually follows from the fact that {X <= a} is contained in {X <= b}
+		b. F(a) is a probability, so its value is always 0 < F(a) < 1.
+		c. F(a) is right-continuous.
+	- HOLDS THE OTHER WAY: is an iff
+		a. If any function F satisfying 1, 2, and 3, it is the distribution function of some random variable.
+
+4.3 BERNOULLI AND BINOMIAL DISTRIBUTIONS
+ZOMGBernoulli distributions are generally used to model boolean experiments -- those whose only outcomes are success and failure.
+	- Some discrete random variable X will have a Bernoulli distribution with parameter p, where p <= 0 <= 1, if its probability mass funciton is given by px(1) = P(X=1) = p and px(0) = P(X=0) = 1-p
+	- This is denoted by Ber(p)
+	- Note here that we write px instead of p for the probability mass function so as to avoid confusion with parameter p, and to emphasize dependence on X.
+	- Example: you need to get 6 of 10 4-choice multiple choice questions right.
+		a. for all i in {1,2,...,10}, R_{i} = 0 if ith answer is false, and 1 if ith answer is correct.
+		b. X = R1 + R2 + R3 + ... + R10
+			i. Answering the first correctly and the second incorrectly is given by p*(1-p), or 1/4 * 3/4
+			ii. This is possible ONLY because the events are independent.
+		c. P(X=0) = P(R1=0)*...*P(R10=0) = (3/4)^10
+		d. P(X=1) = (1/4)*(3/4)^9*10
+			i. ... which is the probability of the given scenario multipled by the number of ways it can happen.
+			ii. To find how many ways it can happen, the formula is n!/((n-k)!k!)
+	- So the overall formula is as so: px(k) = P(X = k) = (n choose k)p^k(1-p)^(n-k)
+	- aka Bin(n, p)
+
+4.4 GEOMETRIC DISTRIBUTION
+Geometric distributions deal with experiments that run continuously until they are true. That is, they are expressed as
+	- px(k) = P(X=k) = (1-p)^(k-1)p

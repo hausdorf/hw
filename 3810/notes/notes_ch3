@@ -1,0 +1,174 @@
+3.1
+	Questions in this chapter:
+		- We know how signed and unsigned numbers are represented, but how are real numbers represented?
+		- On the level of circuits, how do we multiply or divide numbers? And how do we really subtract them?
+
+3.2
+	- Addition is performed the same way as base 10: numbers are carried, etc.; the difference is, the highest digit allowed anywhere is 1, not 9.
+	- Adding something like 7 and -6 in two's complement yields a positive number because we continuously carry until there's overflow. Weird.
+		a. Actually, this is not true. Overflow is monitored by checking properties of the operands and their answer. If two operands fit inside a 32-bit word, and their signs do not differ, and their sum is no larger than either of the operands, then we have just added a positive and negative number, and overflow has not occurred.
+		b. On the other hand, if you add two operands together, and their sign is the same but the result is negative, then our addition has overflowed to the sign bit, which has made the number negative. That's overflow.
+		c. The same principles apply to subtraction if you think of addition as adding two numbers with different signs.
+			i. e.g., if you subtract some positive number from a negative number (i.e., -4-2) and the result is positive, then overflow has occurred.
+			ii. or if you subtract a negative number from a positive number (i.e., 4-(-2)) and the result is negative, then overflow has occurred.
+		d. (a) - (c) APPLY TO SIGNED OPERATIONS ONLY.
+	- SIGNED OPS overflow rules are as follows:
+		a. If you add two numbers and the result is less than either of the operands, then you've overflowed.
+		b. if you subtract two numbers and the result is greater than either of the operands, then you've overflowed.
+		c. MIPS will not ignore overflow for add, addi, and sub, but WILL IGNORE overflow exceptions for addiu, addu, and subu
+			i. The reason is because sometimes unsigned ints are used for memory addresses, and overflow is ignored here. This is because it's the most common use of natural numbers, and so optimizing it yields performance advantages (I guess??).
+			ii. Interesting note: C compilers ignore overflow by default, so they always use arithmetic instructions like addu and addiu -- WHY??
+	- AN EXCEPTION is an event that disrupts program execution, usually because something has gone wrong; at the level of assembly, this is used to detect overflow.
+		a. In other words, it's a procedure call that IS NOT scheduled. Does this mean that it's not placed in the assembly code?
+	- AN INTERRUPT is an exception that occurs from outside the processor.
+		a. Some processors refer to all exceptions as interrupts.
+	- Graphics systems used to represent all graphics as 8 bits to represent each individual color of the 3 primary colors and 8 bits to represent the location of a pixel.
+	- Audio is also necessary: audio samples need more than 8 bits of precision, but the book says that 16 "are sufficient".
+	- To accomodate the fact that some things do not take up whole words, microprocessors allow for them to be stored as per their size, rather than to have one byte followed by 28 0's, which is what would happen if you had to store everything in terms of words.
+	- Additionally, most microprocessors these days include things like SIMD extensions, which allow the computer to take many of these smaller instructions and compute them at once (e.g., taking several 8-bit location instructions and computing operations on each of them all at once).
+		a. SIMD stands for Single Instruction Multiple Data. Useful, right?
+	- Saturation (not usually included in processors) is where, when you overflow, the number is set to either the most positive number or the most negative number possible, as opposed to giving you back the modulo, which is what happens when two's complement overflows.
+		a. Used mostly for media operations. You would not want to turn up a volume knob only to have it get really soft when you went too high; hence, they just set it to max in that case.
+	- Oddly, you can check for signed overflow in the following way:
+		a. ~$t1 = 2^32-$t1-1
+		b. so sltu $t3, $t3, $t2 == 2^32 - 1 < $t2 + $t1
+	- The rising popularity of multimedia has lead to a rise in ways to compute many instructions in parallel.
+	- using mfc0 leads to a hard problem. Information in the EPC (Exception Program Counter) must be copied to a register to use jr. So:
+			i. Either we copy all old values back and subsequently corrupt the return address from the EPC, or
+			ii. We write to a register and simply lose that register every time we throw that exception.
+		a. Both these options suck. ITRW, MIPS programmers have simply decided that we will use $k0 and $k1 for OS stuff, e.g., throwing excpetions.
+			i. These registers are NOT restored when we throw the exception.
+			ii. MIPS compilers avoid using these registers in the same way that they avoid using $at.
+			iii. We place the return address in one of these registers and then use jr whenever we feel like it.
+		b. QUESTION: Why don't we just add everything to the stack like a normal procedure call? Here are some possible answers:
+			i. We want to throw exceptions NOW, and preserve as much of the state of the computer as possible when it gets thrown. We don't want to perform an operation and simply return back, we are in recovery mode.
+	- Surprisingly, addition is faster when you determine carrying in the high-order bits first.
+		a. The reason is because the operation has to *pass through* fewer gates, even though you have to put more gates in the processor in total to achieve carry anticipation.
+		b. The most popular of the carrying anticipation schemes is called carry lookahead, which is in Secion C.6, Appendix C.
+	- Typical multiplication operations typically have 3 components:
+		a. The multiplicand, or the thing being multiplied by the...
+		b. multiplier, or scalar, which results in the...
+		c. product.
+	- To multiply something, the algoritm is:
+		a. start with the rightmost digit of the scalar, and multiply every digit of the multiplicand
+		b. advance one digit to the left in the multiplier.
+		c. repeat step (a), but do assume that one 0 is already at the beginning of your answer every time you advance a digit to the left in the multiplier
+	- Few things to notice about the product:
+		a. The product has many more digits than either the scalar or the multiplicand.
+			i. Ignoring the sign bits, in base 2, the product is n + m bits long where n and m are the length of the scalar and the multiplier in bits.
+		b. The length of the product in bits as compared with the multiplicand and the multiplier presents some interesting challenges for those seeking overflow protection.
+	- Multiplying in base 2 is much easier than in base 10.
+		a. If current digit of scalar is 1, then place a copy of the multiplicand's digit in the intermediate product's current digit.
+		b. If the current digit of the scalar is 0, then the immediate product's current digit is now 0.
+	- Sequential Version of the Multiplication Algorithm and its hardware:
+		a. Assumptions:
+			i. The multiplier goes in the 32-bit multiplier register.
+			ii. The 64-bit product register is initialized to 0.
+			iii. The multiplicand needs a 64-bit register. This is because, each time we move one digit left in the multiplier, the next intermediate product needs to have a zero at the beginning n digits. In order to accomodate this, we move the multiplier left one digit, leaving a 0 in the corresponding open register. Thus, in order to NOT lost the left digits one by one, we simply have the multiplicand register be 64 bits wide.
+		b. The algorithm:
+			i. If multiplier[0] is 1, add the whole multiplicand to product and place in product register. This is because given binary digits, you can only multiply something by 1 or 0; in the case of 1, the product is itself, and in the case of 0, it's 0.
+			ii. If multiplier[0] is 0, shift multiplicand register left 1 bit and shift the multiplier right 1 bit.
+			iii. If this is the 32nd repitition, you are done.
+		c. Highly costly. Around 100 cycles to multiply one number.
+			i. But according to Amdahl's law, even moderate frequency can limit performance, so even though multiplication happens relatively infrequently, we need to be able to handle it efficiently. It's also a matter of pride!
+			ii. Amdahl's law, BTW, is used to find the maximum posssible improvement to a system when only part of the system is improved. e.g., if 1 hour of work in a 19 hour job cannot be parallelized, then the job must take at least 1 hour, so the bottleneck is about 20x speedup.
+		d. In the real world, this is all sped up by performing the shifting and adding/testing steps in parallel. Hardware is also optimized to use only 32-bit registers by "noticing" where there are unused portions of registers and adders.
+		e. You can optimize this by putting making the multiplicand register and the ALU 32 bits, removign the multiplier register, and making the multiplier reside in the right half of the product register, with the product in the left half.
+			i. Additionally, strength reduction optimizations are done by some compilers for simple multiplicaitons. Additionally, they may elect to implement multiplication rather than sll, for example.
+		f. We can optimize this by unrolling the inner addition loop: essentially we provide a 32-bit adder for each one of the multiplier's bits. Each of these adders takes two parameters (obviously): one is the multiplicand ANDed with the multiplier digit (HUH?), and the other is the output of the prior adder.
+			i. This speeds up the time to log2(32), given a 32-bit word size. This is because you will have 32 additions on the first level, 16 on the next, 8 on the next, 4 on the next, and 2 on the last. That makes the entire multiplication take the time of 5 addition steps, since most of them are happening in parallel.
+			ii. This can even be sped up further by carry save adders (Section C.6, Appendix C), and also (apparently) because you can pipeline it so that you can support many multiplies simultaneously.
+		g. MIPS uses a pair of 32-bit registers to handle the 64-bit product, called hi and lo.
+			i. The 32-bit product is fetched by the programmer using mflo.
+			ii. The MIPS assembler generates a pseudo-instruction for multiply, which specifies three general-purpose registers, and uses mflo and mfhi to move the product into the proper place.
+			iii. The MIPS instructions are mult and multu.
+		h. Compilers use shift instructions for powers of two.
+		i. ALL MIPS MULTIPLICATION INSTRUCTIONS IGNORE OVERFLOW. SOFTWARE MUST CHECK THIS ITSELF, usually checking to see if the product is too big to fit in 32 bits, or so says the book.
+			i. There is no overflow if hi is 0 for multu or if 0 is the replicated sign in the case of mult.
+			ii. You can move mfhi to a general-purpose register to test for overflow. Presumably this is not done because of prohibitive overhead.
+
+Division:
+	- Division is split up into several components:
+		a. the dividend, which is divided by the...
+		b. divisor, which results in the...
+		c. quotient, and possibly a...
+		d. remainder!
+			i. (note also that the remainder must be < the quotient.)
+	- For the purposes here, we will assume the dividend and the divisor are both positive (and, therefore, that the quotient is also positive).
+	- Division Algorithm and its hardware.
+		a. Set the 32-bit quotient register to 0.
+		b. The divisor register is 64 bits: we will move it right one bit to align it with the dividend.
+		c. 
+
+
+
+
+3.5 FLOATING POINT
+Not everything is an integer, so computers also support, for example, numbers with fractions, which are also called reals.
+	- One practical need is the need to be able to have exactly one nonzero bit to the left of the radix. The only base that can really represent this is binary.
+		a. Why do we need this flexibility?
+	- The representation scheme we use is called floating point, because the binary point is not fixed, ant it can move among the bits freely.
+		a. Numbers here are represented as in scientific notation, in this form:
+			i. 1.xxxxxxxx_{two} * 2^(yyyy)
+	- So why have scientific notation in normalized for for reals?
+		a. It simplifies data transfer involving floats, it simplifies algorithms that include floats because they know that they will always be in the same form, and it allows for more precision because the unnecessary leading zeroes are stripped out of the number.
+FLOATING POINT REPRESENTATION
+Like all good designs, the designers of a float must compromise; in this case, it's between storage space for the fraction and the exponent.
+	- A fixed word size means that you have to take a bit from one to put a bit in the other.
+	- The tradeoff is between precision and range.
+	- Floating point numbers are usually a multiple of the word size, eg, doubles are 64 bits, and floats are 32 bits.
+	- The representation scheme is as follows for 32-bit floats:
+		a. 1 bit for the sign
+		b. 8 bits for the exponent
+		c. 23 bits for the fraction
+		- This is called sign and magnitude because the sign is seperated from the rest of the number.
+		d. Floating point numbers tend to be in the following form:
+			i. (-1)^s * F * 2^E
+			ii. MIPS makes this a wee bit more complicated that it seems here.
+		e. These chosen sizes for the exponent and the fraction give MIPS floats really good range.
+			i. Fractions can be as small as 2 * 10^-38 and as large as 2 * 10^38
+			ii. Why is this, exactly? Why 2 * [something]? Why not 1 * [something]?
+			iii. You can still overflow them (surprise!), though.
+				- In contrast to other representation schemes, overflow here means that the EXPONENT IS TOO LARGE TO REPRESENT.
+	- New exceptional events offered by float:
+		a. Programmers would also want to know if the exponent representing their very small number has gotten too large to be represented in the float (ie, the number has gotten too precise to represent with an 8-bit exponent). This is called UNDERFLOW.
+		b. INTERESTING NOTE: the use of scientific notation makes exceptional events like this occur under similar auspices. Also, the fractions end up being the same number, and the only thing that really changes is the exponent.
+	- Doubles provide some great ways to avoid these exceptional events.
+		a. First, the double has a larger exponent, at 11 bits.
+		b. At a cost! This number takes two words (on a 32-bit machine, that is) to represent.
+		- The parameters are:
+			a. 1 sign bit
+			b. 11-bit exponent
+			c. 52-bit fraction field.
+		c. And the range is even better: 2 * 10^-308 to 2 * 10^308
+	- Nice touches
+		a. Because all binary numbers in scientific notation have a 1 to the left of the decimal, the IEEE 754 standard actually makes this an assumption. This allows them to put only the non-obvious digits inside the fraction, and thus allows them to represent 24 bits inside a space of 23 bits (or, alternatively, 53 bits in a 52 bit space for doubles). (Cool, eh?)
+		b. the 23-bit or 53-bit number that is the fraction + 1. is called the SIGNIFICAND. This is a subtle but imporant distinction.
+		c. The one exception to all this is the number 0, which has no leading 1. This is given the reserved exponent value of 0.
+			i. This is the only exception so far. All other numbers (given some definition for "all"), at least, for our purposes right now, can be represented by the formula from before.
+		d. Instead of interrupting on a divide by 0, we can do many things, like set the number to +INF or -INF, for example.
+			i. INTERESTING NOTE: The point of infinity IS TO FORM TOPOLOGICAL CLOSURE OF THE REALS. Who knew?
+		e. If you 0/0, then you probably will get NaN.
+			i. This allows a user to postpone certain tests or decisions until later in the program. How? I don't know, the book doesn't say.
+		f. Designed specifically to be easily processed by integer comparisons, ESPECIALLY by sorting. For example, the sign bit is in the most significant bit space particularly because it makes it easier to gage, very roughly, how a float compares to something else.
+			i. This is trickier than it seems prima facie, because floats are still sign and magnitude, rather than two's complement.
+			ii. Putting exponent first is also strategic because it lets you get a general idea of how large (or small) a number is, which is also useful for comparisons.
+				- This gets dicey, though: if a number has a negative exponent, it LOOKS larger.
+			iii. For this reason, we have:
+		g. BIASED NOTATION.
+			i. The idea is to represent numbers in a way that is easily comparable. So the most negative number starts at -127, and it continues to 127.
+			ii. WHY NOT JUST START AT 00000000_{two}?
+				- Good question. The reason is that we as people tend to think in two's complement. The computer actually doesn't convert down from two's complement, though, so this is a human artifice.
+			iii. So the equation now looks like this: (-1)^s*(fraction)*2^(exponent-bias)
+			iv. The range, thus, is +/-1.0000 0000 0000 0000 0000 000_{two} * 2^(-126) to +/-1.1111 1111 1111 1111 1111 111_{two} * 2^127
+		h. At their core, comparisons and mathematical operations on floats are the same as integers, but there is a bit of overhead and bookkeeping for exponents and to normalize the result.
+		i. INTERESTING NOTE: Some computers try to increase range without removing bits by using bases other than 2. IBM mainframes use base 16, for example, because its easy to convert to base 2 and vice-versa. But this leads to surprising behavior, eg, when you change the significand by one bit, you have to express it as a hex number, so there can be up to 3 leading 0s, which means that you can drop up to 3 digits from the significand, which can lead to surprising accuracy problems.
+		j. There's a debate about whether to use the same registers for floats as for integers.
+			i. Clearly you should: people rarely perform float instructions on integers, so the instruction set will only be diluted slightly.
+			ii. Benefits include:
+				- Having twice as many registers without using up more bits in the instruction format
+				- Having twice the register bandwidth by having seperate integer and floating-point register sets
+				- Being able to customize registers to floating point; eg converting all sized operands in registers into a single internal format
+ACCURATE ARITHMETIC
+Integers represent a comparatively small amount of things accurately; floats represent a wide range of things, but only approximately.
+	- One important area that's affected by this is rounding. eg, adding 2.3400 + .0256 = 2.36, which is wrong. This is called the ULP, how much the last digit is off from a number.

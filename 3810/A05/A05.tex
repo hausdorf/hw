@@ -1,0 +1,213 @@
+%Author Alex Clemmer
+%CS 3810 Computer Organization
+%Assignment 5:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\begin{document}
+
+\section*{Assignment 5 }
+Alex Clemmer\\
+Student number: u0458675
+
+\subsection*{Problem 1:}
+\paragraph*{3.10.3:} $\textbf{a)}$ $\texttt{0x456AE400 = 0100 0101 0110 1010 1101 0100 0000 0000}_{two}$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Sign & Exponent & Fraction\\
+\hline
+$\texttt{0}$ & $\texttt{10001010}_{two}$ & $\texttt{110101011010100000000000}_{two}$ \\
+\hline
+$(-1)^0$ & $\texttt{127 + 11 = 138}$ & $\texttt{(1+) 0.835083}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{equation}
+\mbox{Value as a 32-bit float:} (-1)^0(1+ 0.8350830)2^11 \approx 3758.25
+\end{equation}
+
+$\textbf{b)}$ $\texttt{0xBE4CCCD = 1011 1110 0100 1100 1100 1100 1100 1101}_{two}$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Sign & Exponent & Fraction\\
+\hline
+$\texttt{1}$ & $\texttt{01111100}_{two}$ & $\texttt{10011001100110011001101}_{two}$ \\
+\hline
+$(-1)^1$ & $\texttt{127 - 3 = 124}$ & $\texttt{(1+) 0.6}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{equation}
+\mbox{Value as a 32-bit float:} (-1)^1(1+ 0.6)2^{-3} = -0.2
+\end{equation}
+
+\paragraph*{3.10.4:} $\textbf{a)}$ Convert 98.6 to 32-bit float
+
+\begin{align}
+98.6 = 1100010.10011001100110011001101_{two} \\
+= 1.10001010011001100110011001101_{two} * 2^6
+\end{align}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Sign & Exponent & Fraction\\
+\hline
+$(-1)^0$ & $\texttt{127 + 6 = 133}$ & $\texttt{}$ \\
+\hline
+$\texttt{0}$ & $\texttt{10000101}_{two}$ & $\texttt{1000101001100110011001}_{two}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+In hex, our number is: $\texttt{0x21629999}$.
+
+$\textbf{b)}$ Convert -40 to 32-bit float
+
+\begin{align}
+-40 = -101000_{two} \\
+= -1.01_{two} * 2^6
+\end{align}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Sign & Exponent & Fraction\\
+\hline
+$(-1)^1$ & $\texttt{127 + 5 = 132}$ & $\texttt{}$ \\
+\hline
+$\texttt{1}$ & $\texttt{10000100}_{two}$ & $\texttt{01000000000000000000000}_{two}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+In hex, our number is: $\texttt{42200000}$.
+
+
+\paragraph*{3.10.5:} Transformation to 64-bit double is trivial:
+
+$\textbf{a)}$  Convert 98.6 to 64-bit float
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Sign & Exponent & Fraction\\
+\hline
+$(-1)^0$ & $\texttt{1023 + 9 = 1029}$ & $\texttt{}$ \\
+\hline
+$\texttt{0}$ & $\texttt{10000000101}_{two}$ & $\texttt{10001010011001100110011...}_{two}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+$\textbf{b)}$ Convert -40 to 64-bit float
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Sign & Exponent & Fraction\\
+\hline
+$(-1)^1$ & $\texttt{1023 + 5 = 1029}$ & $\texttt{}$ \\
+\hline
+$\texttt{1}$ & $\texttt{10000000100}_{two}$ & $\texttt{0100000...}_{two}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Problem 2:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Sign & Exponent & Fraction\\
+\hline
+$(-1)^0$ & $\texttt{124-127 = -3}$ & $\texttt{}$ \\
+\hline
+$\texttt{0}$ & $\texttt{011111100}_{two}$ & $\texttt{1 .01010101010101010101010}_{two}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+First add the exponents:
+\begin{equation}
+-3 + 1 = -2
+\end{equation}
+
+Then multiply the numbers:
+
+\begin{align}
+1.01010101010101010101010_{two} * 110 \\
+= 101010101010101010101010 + 1010101010101010101010100 \\
+= .1111111111111111111111111 \\
+\end{align}
+
+The result is not 1 because the floating point does is not rounding, it's truncating. The ULP, or magnitude of the error is in the last position in the float, or a $2^{-23}$.
+
+\subsection*{Problem 3:}
+
+The guard bit is used to improve accuracy. It's an extra bit inside the float ALU or FPU (or whatever) that just keeps track of extra bits that get carried out.
+
+The round bit is similar to the guard bit. The reason we need two of these is because of multiplication.
+
+The sticky bit is used to navigate the nature of the round -- i.e., should we be rounding up or down? It records if numbers were shifted off the end, and by knowing that, we can give the illusion of calculating to infinite precision and simply rounding off.
+
+\begin{align}
+1.01010101010101010101010_{two} * 110 \\
+= 101010101010101010101010 + 1010101010101010101010100 \\
+= 1.0 \\
+\end{align}
+
+Really the only thing that's different here is that the sticky bit will let us know to round up, and rounding up creates a chain reaction that rounds the whole thing up to 1. This time there are no ULPs and error.
+
+\subsection*{Problem 4:}
+SEE ALSO LOGISIM SCREENSHOT.
+\begin{verbatim}
+a	b	|	EO
+T	T	|	F
+T	F	|	T
+F	T	|	T
+F	F	|	F
+
+(~A & B) + (A & ~B)
+\end{verbatim}
+
+\subsection*{Problem 5:}
+\begin{verbatim}
+a	b	c	d	|	ODD
+F	F	F	F	|	T
+F	F	F	T	|	F
+F	F	T	F	|	F
+F	F	T	T	|	T
+F	T	F	F	|	F
+F	T	F	T	|	T
+F	T	T	F	|	T
+F	T	T	T	|	F
+T	F	F	F	|	F
+T	F	F	T	|	F
+T	F	T	F	|	T
+T	F	T	T	|	F
+T	T	F	F	|	T
+T	T	F	T	|	F
+T	T	T	F	|	F
+T	T	T	T	|	T
+
+(~A & B) + (A & ~B)
+\end{verbatim}
+
+\subsection*{Problem 6:}
+D = (~A \& ~B \& ~C \& ~D) + (~A \& ~B \& C \& D) + (A \& ~B \& C \& ~D) + (A \& ~B \& ~C \& D) + (A \& B \& ~C \& ~D) + (A \& B \& C \& D)
+
+\subsection*{Problem 6:}
+SEE LOGISIM SCREENSHOT.
+
+\end{document}

@@ -1,0 +1,10 @@
+Is everything determined by randomness?
+	- Who knows? But scientists use tools of probability and statistics all the time.
+
+1.1 BIOMETRY
+	- The science (art?) of identifying a person based on biological characteristics, e.g., fingerprints or voice.
+	- Recent research indicates that iris recognition can beat all existing biometric systems.
+		a. First you get a picture of an iris and convert it into "iris code", which is 2048 bits.
+		b. Unfortunately, at different times and places, the iris code of the same person can be different.
+			i. This is why the system allows for about 34% mismatches.
+			ii. This works because different people have very different irides. Over a large collection of irides, lots of code bits take 0 and 1 about half the time.

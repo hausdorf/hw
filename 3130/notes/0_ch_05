@@ -1,0 +1,35 @@
+CONTINUOUS RANDOM VARIABLES
+Lots of experiments take values that happen on a continuous scale. To model these, we use continuous random variables.
+
+5.1 PROBABILITY DENSITY FUNCTIONS
+Continuous random variables are like discrete random variables that are continuously refined, forever. Because any point in an infinite-precision continuum would have a probability of 0, we analyze the probabilities of a spectrum.
+	- A random variable X is continuous if for some function f: \real -> \real and for any numbers a and b with a <= b, P(a <= X <= b) = integral(f(x),x,a,b)
+	- In other words, the probability that X lies in some interval is equal to the area under the probability density function over that interval. Thus, as the interval gets smaller, the probability goes down.
+	- IMPORTANT: Because P(a) = 0, you can be careless about intervals: P(a < X < b) = P(a <= X <=b)
+NOTES:
+	- Discrete random variables do not have a probability density function f.
+	- Continuous random variables do not have a probability mass function p.
+	- BOTH have distribution functions F(a) = P(X <= a) that take advantage of the fact that for a < b the event {X <= b} is a disjoint union of {X < a} and {a < X <= b}.
+		a. We can thus express the probability that X lies in an interval for both cases: P(a < X <= b) = P(X <= b) - P(X <= a) = F(b) - F(a)
+	- Both the probability distribution function and the probability density function of a continuous random variable contain all the probabilistic information about X. The probability distribution is described by either of them.
+Example: darts
+	- A dart hits a disc with radius r in some arbitrary way. What is the distance X between hitting point and center of the disc.
+	- P(X <= b) = 0, since distances cannot be negative.
+	- F(b) = 1 when b > r, which says that the probability density is 1 after a certain point.
+	- F(b) = P(X <= b) = (pi*b^2)/(pi*r^2) = b^2/r^2
+
+5.2 UNIFORM DISTRIBUTION
+In the natural world, we often find experiments that are basically arbitrary, except that we know in which bounds they appear. eg, radiation: if look at the emitted radiation of a substance over a period of time, and it greatly concentrates at any point, either something is wrong with your Geiger counter, or there is some sort of new law at work here. In other words, the distribution should be uniform.
+	- This is expressed by f(x) = 1/(a-b) for a <= x <= b
+	- This is denoted by U(a, b)
+
+5.3 EXPONENTIAL DISTRIBUTION
+Remember the reactor example from Chapter 3.
+	- v is the effluent volumetric rate
+	- vt is the volume that leaves over the interval [0,t]
+	- V is the volume of the reactor vessel
+	- (v/V)t is the fraction that will have left over interval [0,t] (when "t is not too large")
+	- Let random variable T be the residence time of a particle in the vessel
+		a. We can compute the distribution of T by dividing the interval [0,t] in n small intervals of equal length t/n.
+		b. If we assume perfect mixing, the probability that a particle has left is p = (v/V)t/n during any of the n intervals dividing t.
+		c. 

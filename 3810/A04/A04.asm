@@ -1,3 +1,6 @@
+# Alex Clemmer
+# u0458675
+
 .data
 	StartMessage: .asciiz "Please input a number > 0 and < 10: "
 	ErrorMsgLessThanZero: .asciiz "That number is less than 0! Oh noes! Try it again!\n"
@@ -82,10 +85,11 @@ SkipFirstLoop:
 	addi $s1, $t1, 1  # j = N + 1
 	
 	move $a0, $s1  # put j in params
+	sw $t0, 4($sp)
 	jal Recursion  # recursion(j)
 
 	# Restore tmp vars
-	lw $t0, ($sp)
+	lw $t0, 4($sp)
 	lw $t1, 12($sp)
 
 	add $s1, $v0, $v0  # j = j + j

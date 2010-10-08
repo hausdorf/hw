@@ -1,0 +1,56 @@
+3 CONDITIONAL PROBABILITY AND INDEPENDENCE
+Sometimes knowing another event has occurred means that we must reevaluate the probability of our current event.
+	- In the case where the probability of the current event is the same in both cases, the events are called independent.
+	- This is often needed to compute probabilities, and or simplify work.
+
+3.1 CONDITIONAL PROBABILITY
+Let L be "born in a long month" and R be "born in a month with the letter r".
+	- P(L) = 7/12 and P(R) = 8/12
+	- R \and L = {Jan,Mar,Oct,Dec}
+	- So P(R|L) = 4/7
+	- In other words, P(R|L) is the proportion that P(R \and L) occupies of P(L).
+Recall the 3 envelopes example:
+	- Event A: "envelope 1 is the middle one"; Event B: "envelope 2 is the middle one"
+	- P(A) = P(213 or 312) = 1/3, and P(B) = P(123 or 321) = 1/3
+	- What if we want them to not be in order (ie, {123, 321})?
+		i. C = {132, 213, 231, 312}, so P(C) = 4/6
+		ii. A \and C = {213, 312}, so P(A|C) = 1/2
+		iii. B \and C = {}, so P(B|C) = 0
+Conditional probability in general means finding the proportion of one event with respect to another.
+	- In other words, P(A|C) = (P(A \and C))/P(C), provided P(C) > 0
+	- By showing that P(A^c) = 1-P(A), we can show that, if we have a fixed conditioning event C, Q(A) = P(A|C), then Q is a probability function also. This works even where counting outcomes does not.
+Example: chemical reactor. A reactor is continuously stirred. On one side, fluid goes in, and on the other side, it flows out. Contents are perfectly mixed at all times, meaning that their distribution is completely uniform.
+	- Residence time is the time a particle spends before it leaves.
+	- R_{t} is the event that the particle has a residence time longer than t seconds.
+	- P(R_{t}) = e^-t
+	- P(R_{4}|R_{3}) = P(R_{4} \and R_{3})/P(R_{3}) = e^-4/e^-3
+
+3.2 THE MULTIPLICATION RULE
+The definition of conditional probability makes it possible to derive a useful multiplication rule:
+	- P(A \and C) = P(A|C)*P(C)
+	- In other words, computing P(A \and C) is a matter of computing P(C) and P(A|C) seperately, which is often easier than computing P(A \and C) directly.
+The example of no coincident birthdays: What is the probability that n arbitrarily-chosen people will have different birthdays? Let B_{2} denote the event that 2 people don't have the same birthday.
+	- There's only one day that the second person can't pick, so P(B_{2}) = 1 - 1/365.
+	- Person 3 can't pick either of these, so: P(B_{3}) = (1 - 2/365)(1 - 1/365) because P(A \and B) = P(A|B)P(C)
+	- For person n: B_{n} = A_{n} \and B_{n-1}, so P(B_{n}) = P(A_{n}|B_{n-1}) = (1 - (n-1)/365)...(1-1/365)
+What you condition on matters.
+	- Both P(A|C)P(C) and P(C|A)P(A) are equivalent, but usually one way is faster and easier.
+
+3.3 TOTAL PROBABILITY AND BAYES' RULE
+TP and Bayes' rule both help probability computations using conditional probability.
+MAD COW DISEASE
+	- B is the event that the cow has BSE
+	- T is the event that the test is positive
+	- P(T|B) = .7 and P(T|B^c) = .1
+		i. In other words, a healthy cow tests positive 10% of the time, where an infected one tests positive 70% of the time.
+		ii. So what is P(T)?
+	- P(T) = (T \and B) \or (T \and B^c), mostly because T and B are disjoint.
+		i. P(T \and B) = P(T|B)P(B)
+		ii. P(T \and B^c) = P(T|B^c)P(B^c)
+		iii. So, P(T) = P(T|B)P(B) \or P(T|B^c)P(B^c)
+		iv. This is a new way of thinking about things: we are computing a probability through the conditioning of several disjoint events that make up the whole sample space.
+TOTAL PROBABILITY:
+	- Given disjoint events C1, C2, ..., Cn = \omega. The probability of some event A can then be expressed as P(A) = P(A|C1)P(C1) + ... + P(A|Cm)P(Cm)
+BAYES' RULE:
+	- Given disjoint events C1, ..., Cm unioned together == \omega. The probability of Ci given some event A is then expressed as P(Ci|A) = (P(A|Ci)P(Ci))/(P(A|C1)P(C1) + ... + P(A|Cm)P(Cm))
+	- In other words: P(Ci|A) = (P(A|Ci)P(Ci))/(P(A))

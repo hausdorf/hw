@@ -1,0 +1,6 @@
+flex generates scanners, which recognize lexical patterns in text. flex needs a description (either supplied through file or standard in), which is a set of pairs of regular expressions and C code, called rules. flex then generates a C file called lex.yy.c, which has a function called yylex(). This files can be compiled and linked with the flex runtime library to produce an executable. When this is run, it looks for occurrences of the regular expressions in the input (which can also be a file). When it finds one of these, it executes the corresponding C code.
+A flex description is:
+	- "%%", which marks the beginning of the rules.
+	- [regex]			[C command]
+	  username		printf("%s", getlogin());
+	- Possibly some actually C code, after another "%%", which ends the "rules" section.

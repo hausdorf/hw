@@ -1,0 +1,41 @@
+CH01 REGULAR LANGUAGES
+
+What is a computer?
+	- We all have experiential knowledge of computers, but modeling a computer is complicated, and enough so that building a mathematical model directly is too complicated. Hence we will use an idealized model.
+		a. This is called a COMPUTATIONAL MODEL.
+		b. Yes, it's naive and inaccurate, but that's the price of abstraction.
+		c. We will use several models depending on what we want to focus.
+		d. The simpest, and first, of these is a Finite Automaton, or FA (also called the FSA).
+
+The FINITE AUTOMATON:
+	- Model of computation with a *very* limited amount of memory.
+	- Still useful, though: they still operate at the heart of some electromechanical devices (e.g., an electronic door), as well as in compilers and stuff.
+	- Tends to have small amount o fmemory, usually a few bits to hold which state we're in (i.e., 1, 10, 110, etc. for states 1, 2, and 6, respectively).
+	- Think of an FA like this: most machines keep track of a state with a boolean flag, for example. An FA does not have this ability. In an FA, you have n states, and your ONLY memory consists of a number from 1 to n. In other words, your ONLY memory is the number of your current state.
+		a. In other words, an FA is a machine whose state IS its memory.
+
+FA State Diagram
+	- Each FA has states, which represents what state a machine is in given a set of inputs.
+		a. There is the start state, which is where we begin.
+		b. There is the final, or accept state, which results in an accept if we run out of input while we are on that particular state.
+		c. There are also transitions, which are govern how, where, and when one can move about between states in an FA.
+		d. NOTE also that if the FA runs out of input and it is NOT in an accept state, then the input is rejected.
+
+FORMAL DEFINITION of an FA
+	- The formal definition attempts to:
+		a. remove ambiguity about what something is
+		b. help express things clearly and directly
+	- Formal definitions are also a bit arcane, as everything must be spelled out and so on.
+	- An FA in short has many parts:
+		a. an input alphabet.
+		b. a start state
+		c. a set of accept states
+		d. a set of states
+		e. rules for moving (a transformation function)
+	- Officially, an FA is: (Q, Sigma, lower-case delta, q_{0}, F), where:
+		a. Q is the set of all states
+		b. Sigma is the alphabet
+		c. lower-case delta: Q x Sigma -> Q is the transition function (transforming some combination of state Q and symbol from Sigma into another state, Q; additionally maps such transitions for literally all combinations of alphabet Sigma and set of states Q)
+		d. q_{0} is the start state
+		e. F is a subset of Q: the accept states
+	- If A is the set of all strings that some machine M accepts, A is the language of machine M, or L(M) = A. M recognizes or maps A.

@@ -1,0 +1,79 @@
+0.1 AUTOMATA, COMPUTABILITY, AND COMPLEXITY
+There are three areas of theory of computation:
+	1. automata
+	2. computability
+	3. complexity
+	- In each of these cases, the theory was started in the 1930's by mathematicians, and then was brought into the practical realm as decades passed and computers rose to prominence.
+Complexity problems come in different varieties: some hard, some not.
+	- Sorting is easy. You can do it relatively quickly even on very stupid machines.
+	- Finding the optimal schedule for an entire university (i.e., making sure each has its own room, same classes should be in the same proximity) could take thousands of years even with a supercomputer.
+Problems that appear hard occasionally have exploitable (and sometimes subtle) properties:
+	- If you can detect the source of the increase in complexity, you may be able to reduce the problem to something simpler (and more efficient).
+	- You might be able to settle for a less optimal solution space (i.e., one that is less precise, but is faster to compute).
+	- Some problems are only hard in the worst-case scenario.
+	- Sometimes there are alternative methods for finding a solution (e.g., randomized computation).
+Interesting note: unlike other fields, cryptography wants methods that are ONLY hard to compute, not methods that are sometimes easy to compute.
+Computability theory shows that computing has a distinct (and surprising) set of limitations):
+	- There is no algorithm that can determine whether any arbitrary mathematical statement is true of false.
+		a. Actually, this conclusion lead to ideas that govern computation, and in particular, which helped people build the first computers.
+Computability and complexity are closely related:
+	- Complexity identifies which problems are hard and which problems are easy (and why), while computability theory attempts to identify which problems are solvable and which are not.
+Automata theory describes the mathematical models of computation:
+	- Some tasks cannot be described efficiently within certain models of computation (e.g., the FA).
+A rough guide for finding proofs:
+	- Understand what you want to prove. You may want to:
+		a. Rewrite it in your own words.
+		b. Break it into parts.
+		c. Experiment with examples.
+A proof is:
+	- A well-written set of statements
+	- Each following from the previous statements in sequence.
+	- Methodical and meticulous, both in form and rigor: this decreases errors.
+	- As simple and as brief as possible: you are communicating, and making it as tractable as possible makes it easier to verify by you, and by others.
+Examples of proofs:
+	- We prove demorgan's law by proving that each element of (A or B)^c  is also in (A^c and B^c).
+		a. x is not in either A or B. Which in other words means that x is both not in A and not in B. Going the other way, if x is not in A and x is not in B, then x is not in either A or B.
+	- For any graph G, the sum of the degrees of the nodes in G is an even number.
+		a. Every edge in G is connected to 2 nodes. For each node N, each node it connects to must have another edge at the end of it. So each edge implies that there are 2 degrees that must be counted. So for every edge, there is a corresponding equal number of degrees.
+Proof by Construction:
+	- Show how to build something generically given constraints (i.e., for all even numbers, you can construct them as 2n, which shows that they are divisible by 2).
+	- Example: For each even number n > 2, there exists a 3-regular graph with n nodes.
+		a. For a set of vertices V [0, 1), each vertex v in V has edges going to v to v+1, v-1, v+(v/2). In other words, each vertex has an edge that goes to the one before, the one after, and the one on the opposite end of the circle (and the unnamed connection is that the last node links to the first, and vice-versa).
+Proof by Contradiction:
+	- Take the statement as a premise, and show that something obviously false reuslts.
+	- Example: sqrt(2) is irrational.
+		a. A rational number can be expressed as m/n, where both are integers. If sqrt(2) = n/m, then
+			n*sqrt(2) = m
+			2n^2 = m^2
+			m must be even because 2n^2 is even, so:
+			2n^2 = (2k)^2 = 4k^2
+			n^2 = 2k^2
+			This CANNOT be true, because if they were even, m/n would reduce to an integer. Since it is a rational number, it can (and must) be expressed as a ratio, m/n, which means that m MUST NOT be even. Hence, sqrt(2) is irrational.
+Proof by Induction:
+	- Used to show that all elements of a set have some property.
+	- Each of the proofs have two steps:
+		a. the induction step
+			i. Proves that for i >=1, if P(i) is true, then so is P(i+1)
+			ii. In the induction step, the assumption that P(i) is true is called the induction hypothesis.
+		b. the basis
+			i. Proves that P(1) is true.
+	- After these two steps, then the proof (that P(i) is true for each i) is done.
+		a. P(1) is proven by the basis.
+		b. P(2) is proven by the induction step, which proves that if P(1) is true, then P(2) is true.
+		c. P(3) is true if P(2) is true, and this step extends for all i.
+	- Sometimes the stronger induction hypothesis that j <= i && P(j) is used.
+	- Example format:
+		a. Basis: Prove that P(1) is true.
+		b. Induction step: for each i >= 1, we assume that P(i) is true and use that assumption to pshow that P(i+1) is true.
+	- Example prove that P_t = PM^t - Y (M^t-1)/(M-1):
+		a. P is principal, I is the yearly interest rate, Y is the monthly payment, M is the monthly multiplier, or the rate at which the loan changes each month.
+		b. P_0 = P, P_1 = MP_0 - Y, etc.
+		c. Basis: Prove that this is true for t=0.
+			i. P_0 = PM^0-Y(M^0-1)/(M-1), M^0 = 1, P_0 = P.
+		d. Induction step: show that this is true for k + 1.
+			i. P_k = PM^k-Y(M^k-1)/(M-1)
+			ii. P_k+1 = PM^(k+1)-Y(M^(k+1)-1)/(M-1)
+			iii. P_k+1 = P_kM-Y
+			iv. P_k+1 = [PM^k-Y(M^k-1)/(M-1)]M-Y
+			v. = PM^(k+1) - Y(M^(k+1)-M)/(M-1) - Y(M-1)/(M-1)
+			vi. = PM^k+1-Y(M^k+1 - 1)/(M-1)

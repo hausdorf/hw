@@ -1,0 +1,7 @@
+- Using more registers may increase clock speed, but this is not absolute; 31 registers may not be faster than 32 registers. Designers thus take this seriously, but try hard to balance many solutions to many problems all at once.
+- MIPS uses 32 registers because more would require more bits to represent in the instructions (e.g., if I want to address register # 5, I'd have to put "011" in the instruction, and the more registers you put in, the more space this address ends up taking).
+- Primitives are generally able to be contained in registers, but not all data types are simple; they are stored in memory and processed as such.
+- DTI are used to transfer data -- be it complex or primitive -- from memory to processor registers.
+- Memory addresses in MIPS uses byte addressing, which means that it makes no sense to say that something exists at memory address "1". We would say that something exists at address 4, or 8, or 12.
+- Programs will often use constants as operands, which supplants the (artificial) need for there to be a place in memory where that value resides. This way is faster and uses less energy.
+- R type instructions are broken up into fields. They are 6, 5, 5, 5, 5, and 6 bits, respectively. The first field, 6 bits, is the opcode, which either tells what type of instruction it is, or what instruction it actually is, depending. The second and third are operands, the fourth is where the result is put, and the fifth is the shift amount. The sixth is the function code.
