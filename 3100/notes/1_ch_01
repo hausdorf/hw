@@ -39,3 +39,11 @@ FORMAL DEFINITION of an FA
 		d. q_{0} is the start state
 		e. F is a subset of Q: the accept states
 	- If A is the set of all strings that some machine M accepts, A is the language of machine M, or L(M) = A. M recognizes or maps A.
+
+FORMAL DEFINITION OF COMPUTATION
+	- r_{0} = q_{0}, or the machine starts in the start state
+	- \sigma{r_{i}, w_{i+1} = r_{i+1} for all i < 0, or the machine proceeds through states
+	- r_{n} \element F
+
+REGULAR LANGUAGES
+Any language that is accepted by some FA.

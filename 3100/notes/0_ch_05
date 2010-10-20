@@ -1,0 +1,36 @@
+5 APPLICATIONS OF FINITE AUTOMATA
+Finite automata are surprisingly useful even in modern computing.
+
+5.1 STRING PROCESSING
+Sometimes we need to find all occurrences of some short string, called the pattern string, inside a larger string, called a text string.
+	- Example: find "ana" in "bananarama's ana".
+	- Example: find some DNA subsequence in a genome.
+	- Naive approaches will sequentially examine the text, examining each character as a possible starting point, and taking time proportional to the product of the two lengths.
+		a. This is good because it's simple.
+		b. One simple improvement is to build a DFA for all strings that end in the pattern string, which allows you to examine each symbol of the text only once. This is the basis of the Knuth-Morris-Pratt algorithm. They also shoed how to build the DFA quickly, and the end result is a runtime proportional to the length of the text.
+
+5.2 FINITE-STATE MACHINES
+	- Networks use FAs. Communications devices are designed to be in one of a fixed number of states. Thus, an event happening can tell the program *exactly* which state to switch to.
+	- In other words, an FSA is an FA that uses actions as transitions.
+	- And FSA also can specify the behavior of NPCs, called bots in a game: each event triggers a specific response, and thus a specific change in state.
+		a. This is naive and seemingly ineffective, but it's also really easy to use.
+
+5.3 STATECHARTS
+A lot of tasks can be reduced to a set of states and their actions. For example, calling someone on the phone starts with hearing a dialtone, which moves the person to the state of dialing the phone number, etc.
+	- Statecharts help codify these sorts of statements into an easily-understood meta-representation (frequently the UML).
+	- Frequently programs can be reduced to a program shell, which is a glorified state chart.
+
+5.4 LEXICAL ANALYSIS
+When you want to compile a program (in, say, C or Java), the very first step is called lexical analysis. This process isolates keywords, identifiers, operators, and the like. This also allows us to eliminate things like comments, which are pretty much irrelevant to further steps.
+	- The input to a lexer is the source code as a string, and the output is a sequence of units called tokens.
+		a. A TOKEN is a category ("identifier", "relational operator", etc.), and a LEXEME is one specific instance of the token. Keywords are often seperate tokens.
+	- You can't reduce a programming language to REs, but there are portions that are REs.
+		a. Example: the "then" construct in programming languages
+			TOKEN           RE
+			then						then
+			variable name   [a-zA-Z][a-zA-Z0-9]*
+	- One of the lexer's jobs is to replace each token with a lexeme.
+		a. In theory, we should look through the source string one symbol at a time, but in practice, the lexer has to look ahead to where the token ends. The reason is, "then" may be part of another word, eg, "thence". So the lexer must be able to back up if it reads the next symbol and that's a new token.
+		b. Further, as we discover tokens, there may be specific actions that must be taken.
+			- One example of this numbers: if the lexer encounters a number, then it might also calculate the value of that number. You might have the lexer calculate the value of the number as it goes.
+			- Another example of this is variables. In a lot (maybe most) statically- and strongly-typed languages (C, Java, etc), every variable must be declared before use. A lexer will keep track of variables with a symbol table. That way, when the lexer encounters a variable, it can look it up and take the appropriate corresponding action.

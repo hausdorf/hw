@@ -1,0 +1,46 @@
+4 PROPERTIES OF REGULAR LANGUAGES
+The FA is actually a horribly limited model of computation. It has distinct and limitations, but to accurately describe them, we must make the space of of Regular Languages (RLs) more discrete by splitting it using (relatively simple) conceptualizations, like the Pumping lemma and the notion of distinguishable strings.
+
+4.1 CLOSURE PROPERTIES
+A set is closed under some operation if that operation given some set yields only numbers from the same set.
+	- Integers, eg, are closed under multiplication but not division.
+	- The set of RLs is closed under all Kleene operations (ie, union, concatenation, star).
+		a. Which states basically that any Kleene operation on some RL yields another RL.
+		b. Provable by showing that, eg, concatenating an RE yields another RE.
+		c. Remember that this question is a property of sets of languages, not about individual strings.
+	- The set of all RLs is also closed under complementation (a) and intersection (b).
+		a. An RL is complemented by inverting all states (ie, switching accept states to reject, and reject states to accept). Since both represent an RL, the set is closed over the operation.
+		b. We can express an intersection as follows: L1 \and L2 = (L1^c \or L2^c)^c. Because the set is closed over the complement operation (see (a)) and the \or operation, we know it is also thus closed over this operation.
+	- INTERESTING NOTE: (b) gives the algorithm for finding the intersection of two RLs: complement each of the RLs, union them, and then complement *that* RL. Voila.
+	- A better algorithm for intersection is called the PRODUCT.
+		a. The initial idea is that you want to run a string through 2 machines simultaneously. If either of them rejects, then it's not in the intersection.
+		b. Thus, the solution is to keep track of a pair of states from each machine. The product machine has all possible pairs of states from two machines. eg, the start state is the pair of start states, and an accept state is any state where BOTH are accept states.
+		c. The formal definition of this, the Cartesian Product, can make them look more succinct than they really are:
+			i. A x B = {(a,b): a \element A, b \element B}. L1 is accepted by automaton M1, with 5-tuple (Q1, \sigma, q1, T1, \lsigma1) and L2 is accepted by automaton M2, with 5-tuple (Q2, \sigma, q2, T2, \lsigma2).
+			ii. L1 \and L2 is accepted by automaton (Q1 x Q2, \sigma, (q1, q2), T1 x T2, \lsigma), where \lsigma((r,s),x) = (\lsigma1(r,x),\lsigma2(s,x)).
+
+4.2 DISTINGUISHABLE STRINGS
+Questions of closure would not be worth a whole lot if there were no languages that were not Rls. These are called Nonregular Languages, or NLs.
+	- Take, for example, the set B = {0^n1^n : n >= 0} = {\epsilon, 01, 0011, 000111}
+		a. This cannot be an FA for this because in a sense it must count the number of 0s and then, after that, the number of 1s. At the end of the string of 0s, the FA must be in a state that's unique to that number of 0s, because it must then count that many of 1s to go after it. Since an FA is finite in memory, this is not a realistic possibility, because the number of 1s is arbitrary, and thus could require any number of states.
+		b. INTERESTING NOTE: in other words, THE STUDY OF THE FA IS THE STUDY OF WHAT, IN THE CONTINUUM OF POSSIBILITIES, IT IS POSSIBLE TO REPRESENT AND COMPUTE GIVEN ONLY A FINITE AMOUNT OF MEMORY. Each automaton has its own set of limitations related to its scheme for accomplishing this. The reason it is important is because they are so simple and atomic, because they appear so frequently, and because everything in computing reduces to them.
+	- The FA corresponds to a computer with no external memory, only a fixed set of bits it can manipulate. A DFA, for example, can only jump to an instruction number. The memory cannot be expanded once you build the FA.
+One concept that makes closure, FAs, and RLs more generally applicable is the idea of DISTINGUISHABLE STRINGS.
+	- Two strings x and y are indistinguishable with respect to L if for every string z, it holds that xz \element L iff yz \element of L. Otherwise, they are distinguishable.
+		a. In other words, x and y are distinguishable with respect to L if there is some suffix z that causes 1 to be outside of the language while the other is inside.
+		b. THEOREM: If we assume that M is an FA accepting language L, and we let x and y represent distinguishable strings with respect to L, then M must be in a different state after reading x than y.
+			- Assume that x and y put M in the same state. Add z. If M is then in a different state, then clearly we can't say that x and y put M in the same state initially, since they have both were supposed to have followed the same input.
+		c. A set of strings is PAIRWISE DISTINGUISHABLE if each string inside the set is distinguishable from the other.
+			i. If DL is a set of pairwise distinguishable strings with respect to L, then the FA for L is of length |DL|.
+			ii. Also, and thusly, if |DL| is infinite, then the FA is not regular.
+		d. INTERESTING NOTE: If, given an FA, the set of inputs is the same as the set of states, and is pairwise distinguishable, then the FA is the smallest it can possibly be.
+
+4.3 THE PUMPING LEMMA
+The PL says, to some extent, that "every RL has some repetetiveness about it" [the book, pg 38].
+	- The PL is:
+		a. Let A be an RL accepted by some DFA with k states. The for any string z in A with at least k symbols, you can find an early internal subsegment that can be pumped. That is, z can be split as uvw where:
+			i. v is nonempty
+			ii. |uv| <= k
+			iii. uv^iw is in A for all i >= 0
+		b. In other words, if a string has more symbols than there are states in the FA that represents it, then it repeats at some point. If it doesn't repeat, then it *definitely* isn't an RL.
+			i. Note that this cannot be used to show that a language is an RL, but it can, under the right conditions, be used to show that a string is *not* an RL.

@@ -1,0 +1,75 @@
+%Author Alex Clemmer
+%CS 3100 Computer Organization
+%Assignment 5:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\begin{document}
+
+\section*{Assignment 5 }
+Alex Clemmer\\
+Student number: u0458675
+
+\subsection*{Problem 1:} $\texttt{0, 011, 111}$
+
+\subsection*{Problem 2:} This PDA accepts all strings except those with only one $\texttt{1}$.
+
+\subsection*{Problem 3:} $\textbf{a)}$
+
+The basis of the automaton is that it will "guess" when the middle $\texttt{a}$ of the string is. But there are a few other challenges as well.
+
+One thing to keep in mind is that for a string to have a "middle letter", it must be an odd number of letters long. This ends up making the PDA easier to construct, as we will see.
+
+Given that we don't really care about the characters that come before or after the middle $\texttt{a}$, all we need to do is count them and make sure they balance up. So for the first part of the PDA, we will push a symbol to the stack for every character we see, and after the middle $\texttt{a}$ we will pop once for every symbol we find. If the stack isn't empty, then we reject.
+
+Those parts are easy; the key is finding the middle of the string, and making sure there's an $\texttt{a}$ there. The way to do this is to nondeterministically "guess" where it is. That's simple enough.
+
+In the PDA I build, you can see the design is followed to a T: in q1, we push items to the stack for every symbol we see, with the added possibility that the machine guesses that this last $\texttt{a}$ is the middle character in the string. In the event that this guess is made, we pop continuously until we run out of string, and then if the stack is empty, we accept.
+
+
+$\textbf{b)}$ Please see the file named $\texttt{3\_pda.png}$
+
+$\textbf{c)}$ Please see the file named $\texttt{3\_accept.png}$
+
+$\textbf{d)}$ Please see the file named $\texttt{3\_reject.png}$
+
+\subsection*{Problem 4:} $\textbf{a)}$
+
+This PDA is slightly trickier. It's $\textit{really}$ important to keep in mind the corner cases. For example, $\texttt{222}$, $\texttt{01}$, $\texttt{02}$, and $\texttt{\{\}}$ are all accepted.
+
+The other thing to note is that the number of $\texttt{0}$s is either equal to the number of $\texttt{1}$s or $\texttt{2}$s. The easiest way to make sure we account for this is to count the number of $\texttt{0}$s and compare that number to the number of $\texttt{1}$s and $\texttt{2}$s.
+
+That part isn't hard at all. Note here that these numbers absolutely $\textit{must happen in sequence}$, e.g., "123", but never "132". This allows us to count the number of $\texttt{0}$s and then the number of $\texttt{1}$s and then the number of $\texttt{2}$s in that order. That way, we don't have to tally up the $\texttt{0}$s and $\texttt{1}$s and $\texttt{2}$s as we go. Much simpler!
+
+So, to do this, we just count the $\texttt{0}$s and then branch off and let the machine nondeterministically "guess" whether the number of $\texttt{0}$s is equal to the number of $\texttt{1}$s or $\texttt{2}$s.
+
+So the procedure, at least so far, is to first count the $\texttt{0}$s by pushing to the stack every time we encounter one. Then when we encounter some other number, we can just start counting that. To count those numbers, we pop the stack. Then, at the end, if the stack is empty, we accept. Simple.
+
+My implementation is a bit trickier looking that it really is conceptually. I basically implemented the the "core", which does what was described above. The extraneous paths are to account for the corner cases (e.g., things like  $\texttt{222}$, $\texttt{01}$, $\texttt{02}$, $\texttt{022222}$, $\texttt{11111}$, and so on).
+
+$\textbf{b)}$ Please see the file named $\texttt{4\_pda.png}$
+
+$\textbf{c)}$ Please see the file named $\texttt{4\_accept.png}$
+
+$\textbf{d)}$ Please see the file named $\texttt{4\_reject.png}$
+
+\subsection*{Problem 5:} $\textbf{a)}$
+This one is actually significantly easier. We only need to track two things: whether the number of $\texttt{0}$s is equal to the number of $\texttt{1}$s, or is twice that amount. There was some ambiguity here. I chose to interpret the rules to mean that either there are strictly the same number of $\texttt{0}$s as there are $\texttt{1}$s, or there are twice as many $\texttt{0}$s. A minor modification could me made to the PDA to make it so that the number of $\texttt{1}$s could be the integer quotient of $\texttt{0}$s divided by 2. But this seemed odd too me, so I didn't implement it.
+
+Since PDAs are nondeterministic, I chose to force the automaton to guess at the very beginning. One branch causes the PDA to verify that there are the same number of $\texttt{0}$s as there are $\texttt{1}$s. This is accomplished by pushing to the stack every time we read a $\texttt{0}$ and the popping when we read a $\texttt{1}$.
+
+The other branch is only slightly more complicated; we run through two $\texttt{0}$s and push only once. Then every time we encounter a $\texttt{1}$, we pop. Empty stack is accepted.
+
+It's also useful to note that empty set is included.
+
+$\textbf{b)}$ Please see the file named $\texttt{5\_pda.png}$
+
+$\textbf{c)}$ Please see the file named $\texttt{5\_accept.png}$
+
+$\textbf{d)}$ Please see the file named $\texttt{5\_reject.png}$
+
+\end{document}
