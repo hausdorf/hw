@@ -25,9 +25,9 @@ We do this because it is impossible to add two numbers of different signs from w
 
 On the other hand, the careful viewer will note that if we add $\texttt{-7}$ and $\texttt{-8}$, we will get $\texttt{1}$. But note there that we have added two numbers of the SAME sign, and then the sum had a DIFFERENT sign -- which is exactly what we're checking for here! This turns out to be our rule for overflow.
 
-\paragraph*{Signed Subtraction} is clearly the trickiest of all. We track $\texttt{a}_{31}$, $\texttt{b}_{31}$, $\texttt{signed}$, $\texttt{B}_{inverse}$, and $\texttt{sum}$, but NOT the $\texttt{carry}$.
+\paragraph*{Signed Subtraction} is clearly the trickiest of all. Actually, it's not: it's really just the same as addition when you invert the second operand. In fact, you can clearly use the exact same gates for both operations. A more detailed explanation follows anyway.
 
-Here's what all that means: the number is signed, so $\texttt{signed}$ is always $\texttt{1}$. The operation is subtraction, so $\texttt{B}_{inverse}$ is also always $\texttt{1}$. That's the easy stuff.
+Ostensibly, we track $\texttt{a}_{31}$, $\texttt{b}_{31}$, $\texttt{signed}$, $\texttt{B}_{inverse}$, and $\texttt{sum}$, but NOT the $\texttt{carry}$. Here's what all that means: the number is signed, so $\texttt{signed}$ is always $\texttt{1}$. The operation is subtraction, so $\texttt{B}_{inverse}$ is also always $\texttt{1}$. That's the easy stuff.
 
 The more challenging part is, where can subtraction give us overflow? The answer is actually pretty straightforward: when we are subtracting two numbers with different signs. For example, given the range (again) of $\texttt{-8}$ and $\texttt{7}$, if we subtract $\texttt{-8}$ by $\texttt{7}$, we end up with what should be $\texttt{-15}$, but really is $\texttt{1}$. Conversely if we subtract $\texttt{8}$ by $\texttt{-7}$, we should end up with 15, but really end up with $\texttt{-1}$.
 
@@ -39,6 +39,8 @@ ALL these conditions must be present for overflow in signed subtraction. They in
 
 \subsection*{TRUTH TABLE:}
 Note that the character '-' indicates that the given bit does not factor into whether the given operation overflows.
+
+Note also that signed addition and subtraction are actually identical, even though subtraction will always have the $\texttt{B}_{inverse}$ bit flipped. I have thus included this bit as a paranthetical in the table, and omitted it from both the circuit and the Sum-Of-Products.
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
@@ -51,14 +53,14 @@ $\textit{unsigned addition}$ & $\texttt{-}$ & $\texttt{-}$ & $\texttt{-}$ & $\te
 $\textit{unsigned subtraction}$ & $\texttt{-}$ & $\texttt{-}$ & $\texttt{-}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{0}$ \\
 \hline
 \hline
-$\textit{signed addition}$ & $\texttt{0}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{0}$ & $\texttt{-}$ \\
+$\textit{signed addition}$ & $\texttt{0}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{(0)}$ & $\texttt{-}$ \\
 \hline
- & $\texttt{1}$ & $\texttt{1}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{0}$ & $\texttt{-}$ \\
+ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{(0)}$ & $\texttt{-}$ \\
 \hline
 \hline
-$\textit{signed subtraction}$ & $\texttt{0}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{-}$ \\
+$\textit{signed subtraction}$ & $\texttt{0}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{(1)}$ & $\texttt{-}$ \\
 \hline
- & $\texttt{1}$ & $\texttt{1}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{-}$ \\
+ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{(1)}$ & $\texttt{-}$ \\
 \hline
 \end{tabular}
 \end{center}
@@ -68,14 +70,14 @@ $\textit{signed subtraction}$ & $\texttt{0}$ & $\texttt{0}$ & $\texttt{1}$ & $\t
 Key:  $\textit{a}_{31}$ = $\texttt{a}$; $\textit{b}_{31}$ = $\texttt{b}$; $\textit{sum}$ = $\texttt{su}$; $\textit{signed}$ = $\texttt{si}$; $\textit{B}_{inverse}$ = $\texttt{bi}$; $\textit{carry}$ = $\texttt{c}$
 
 \begin{eqnarray*} 
-\mbox{(si' bi' c) $\vee$ (si' bi c') $\vee$ (a' b' su si bi') $\vee$ (a b su' si bi') $\vee$ (a' b' su si bi) $\vee$ (a b su' si bi)} \\
+\mbox{(si' bi' c) $\vee$ (si' bi c') $\vee$ (a' b' su si) $\vee$ (a b su' si)} \\
 \end{eqnarray*}
 
 If this isn't clear, this one is basically the same thing, but with more obvious names:
 
 \begin{eqnarray*}
-(SIGN' B_{inv}' CARRY) \vee (SIGN' B_{inv} B_{inv}' CARRY') \vee (a_{31}' b_{31}' SUM SIGN B_{inv}') \vee \\
-(a_{31} b_{31} SUM' SIGN B_{inv}') \vee (a_{31}' b_{31}' SIGN B_{inv} SUM) \vee (a_{31} b_{31} SIGN B_{inv} SUM')
+(SIGN' B_{inv}' CARRY) \vee (SIGN' B_{inv} B_{inv}' CARRY') \vee (a_{31}' b_{31}' SUM SIGN) \vee \\
+(a_{31} b_{31} SUM' SIGN)
 \end{eqnarray*}
 
 \subsection*{ALU CIRCUIT:}
