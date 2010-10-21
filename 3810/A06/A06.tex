@@ -1,0 +1,78 @@
+%Author Alex Clemmer
+%CS 3810 Computer Organization
+%Assignment 5:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\begin{document}
+
+\section*{Assignment 5 }
+Alex Clemmer\\
+Student number: u0458675
+
+\subsection*{DISCUSSION:}
+\paragraph*{Unsigned Addition} is stupid-simple. The $\texttt{signed}$ bit $\textit{must}$ be $\texttt{0}$, as must be the $\texttt{B}_{inverse}$ bit. The only way to overflow an unsigned number is to trip the $\texttt{carry}$ bit, so that's what we look for.
+
+\paragraph*{Unsigned Subtraction} is nearly as simple. Its $\texttt{B}_{inverse}$ bit $\textit{must}$ be tripped, since we invert the number for subtraction. Since we are counting on the number to overflow until and go to the other side of the number wheel, we look for the $\texttt{carry}$ bit to be UNtripped in the case of overflow.
+
+\paragraph*{Signed Addition} is trickier. Its $\texttt{signed}$ bit is clearly $\texttt{1}$ (unlike the previous two), and its $\texttt{B}_{inverse}$ bit is $\texttt{0}$, because we are not subtracting. We ignore the $\texttt{carry}$ bit and instead concentrate on the last bits of the operands and the sum. The key here is that $\texttt{a}_{31}$ and $\texttt{b}_{31}$ must be the SAME as each other (either both positive or both negative), while the $\texttt{sum}$ must be DIFFERENT (i.e., the opposite of them).
+
+We do this because it is impossible to add two numbers of different signs from within the range of possible values and end up with something outside the range. For example, if our range is $\texttt{-8}$ to $\texttt{7}$, and we add the minimum positive integer, $\texttt{1}$ and the minimum negative integer, $\texttt{-8}$, we end up with only $\texttt{-7}$.
+
+On the other hand, the careful reviewer will note that if we add $\texttt{-8}$ and $\texttt{-8}$, we will get $\texttt{0}$. But note there that we have added two numbers of the SAME sign, and then the sum had a DIFFERENT sign -- which is exactly what we're checking for here!
+
+\paragraph*{Signed Subtraction} is clearly the trickiest of all. We track $\texttt{a}_{31}$, $\texttt{b}_{31}$, $\texttt{signed}$, $\texttt{B}_{inverse}$, and $\texttt{carry}$, but NOT the $\texttt{sum}$.
+
+Here's what all that means: the number is signed, so $\texttt{signed}$ is always $\texttt{1}$. The operation is subtraction, so $\texttt{B}_{inverse}$ is also always $\texttt{1}$. That's the easy stuff.
+
+The more challenging part is, where can subtraction give us overflow? The answer is: when we are subtracting two numbers with different signs. For example: given the range (again) of $\texttt{-8}$ and $\texttt{7}$, if we subtract $\texttt{-8}$ by $\texttt{7}$, we end up with what should be $\texttt{-14}$, but really is $\texttt{1}$. Conversely if we subtract $\texttt{8}$ by $\texttt{-7}$, we should end up with 14, but really end up with $\texttt{-1}$.
+
+Note also that if you subtract two numbers of different signs, you will always end up in the range. e.g., $\texttt{-8 - 7 = -1}$. Since this was covered in the last paragraph of signed addition, I won't retread here.
+
+So on the high level, that's how it works, but when you get down to it, what matters to us is how the bits are represented in the actual ALU. We know that the second operand, B, will get inverted so that we can add it to A. Here's where it gets a bit dicey: since the times where it overflows are when we subtract two numbers of different signs, and B gets inverted, here they will end up having the SAME sign. So, whatever happens, $\texttt{a}_{31}$ and $\texttt{b}_{31}$ will both be the same. We also know that this operation WILL trip the $\texttt{carry}$ bit, because we're overflowing.
+
+ALL these conditions must be present for overflow in signed subtraction. They individually do not constitute overflow themselves.
+
+\subsection*{TRUTH TABLE:}
+Note that the character '-' indicates that the given bit does not factor into whether the given operation overflows.
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+& $\textit{a}_{31}$ & $\textit{b}_{31}$ & $\textit{sum}$ & $\textit{signed}$ & $\textit{B}_{inverse}$ & $\textit{carry}$ \\
+\hline
+\hline
+$\textit{unsigned addition}$ & $\texttt{-}$ & $\texttt{-}$ & $\texttt{-}$ & $\texttt{0}$ & $\texttt{0}$ & $\texttt{1}$ \\
+\hline
+\hline
+$\textit{unsigned subtraction}$ & $\texttt{-}$ & $\texttt{-}$ & $\texttt{-}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{0}$ \\
+\hline
+\hline
+$\textit{signed addition}$ & $\texttt{0}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{0}$ & $\texttt{-}$ \\
+\hline
+ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{0}$ & $\texttt{1}$ & $\texttt{0}$ & $\texttt{-}$ \\
+\hline
+\hline
+$\textit{signed subtraction}$ & $\texttt{0}$ & $\texttt{0}$ & $\texttt{-}$ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{1}$ \\
+\hline
+ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{-}$ & $\texttt{1}$ & $\texttt{1}$ & $\texttt{1}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{SUM-OF-PRODUCTS EQUATION:}
+
+\begin{eqnarray*} 
+(SIGN' B_{inv}' CARRY) \vee (SIGN' B_{inv} B_{inv}') \vee (a_{31}' b_{31}' SUM SIGN B_{inv}') \vee \\
+(a_{31} b_{31} SUM' SIGN B_{inv}') \vee (a_{31}' b_{31}' SIGN B_{inv} CARRY) \vee (a_{31} b_{31} SIGN B_{inv} CARRY)
+\end{eqnarray*}
+
+\subsection*{ALU CIRCUIT:}
+
+\includegraphics[width=150mm]{alu.jpg}
+
+
+\end{document}
