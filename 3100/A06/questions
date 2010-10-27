@@ -1,0 +1,3 @@
+3. Run through precedences with me. In the case of the calculator, we tokenize and build the tree, and then what happens? How does the program go from there? Does it just traverse the tree?
+4. Under what circumstances do PDAs reject?
+

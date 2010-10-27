@@ -1,0 +1,27 @@
+Script started on Sun Oct 24 10:51:17 2010
+]0;alex@Fabienne: ~/Desktop/School/3100/A06[1m[7m%[m[1m[m                                                                                                   [m[m[m[J
+[35malex[00m at [33mFabienne[00m in [01;32m~/Desktop/School/3100/A06[00m on [35mmaster[32m![00m
+± [K[87C[32m▸▸▸▸▸▸▸▸▸▸[00m[97D../a.out
+]0;alex@Fabienne: ./a.out{a=2}+{b=3}+a^b^a-a-b-a
+510
+
+syntax error
+2^2^2^2
+65536
+
+syntax error
+8/4/2
+1
+
+syntax error
+8/4/2/0
+Divide by zero
+1
+
+syntax error
+^C
+]0;alex@Fabienne: ~/Desktop/School/3100/A06[1m[7m%[m[1m[m                                                                                                   [m[m[m[J
+[35malex[00m at [33mFabienne[00m in [01;32m~/Desktop/School/3100/A06[00m on [35mmaster[32m![00m
+± [K[87C[32m▸▸▸▸▸▸▸▸▸▸[00m[97Deexit
+]0;alex@Fabienne: exit
+Script done on Sun Oct 24 10:52:16 2010

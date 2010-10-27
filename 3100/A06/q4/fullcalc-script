@@ -1,0 +1,69 @@
+Script started on Sat Oct 23 18:55:10 2010
+0m;mamlJex@Fabienne: ~/Desktop/School/3100/A061m7m%m1mm
+35malex00m at 33mFabienne00m in 01;32m~/Desktop/School/3100/A0600m on 35mmaster32m!00m
+± K87C32m▸▸▸▸▸▸▸▸▸▸00m97D../a.out
+0;alex@Fabienne: ./a.out{a=2}
+2
+a
+2
+
+This statement allocates a variable called 'a' with the value of 2. Recalling 'a' gives us the value that it holds, which in this case is 2.
+
+{a=2}+a^a
+6
+
+'a' is allocated to 2 and then added to itself raised to the power of itself; 2 + 4 is 6.
+
+{a=2}+{b=3}+a^b^a
+517
+
+'a' is set to 2 and 'b' is set to 3, and they are both added together (total: 5) and then added to a^b^a, which is 512. Result: 517.
+
+88-44*2+15/(99-88-11+5)
+3
+
+88 is subracted by 44*2 (which in total is 0), which is then added to 15/5, which is 3.
+
+88-44*2+15/99-88-11+5
+-93.8485
+
+88-44*2 is 0, which is added to 15/99, which, subtracted by 94 is -93.848484...
+
+
+
+
+{a=2}+{b=3}+a^b^a-a-b-a
+510
+
+When we respect the left- and right-associativity of the various expressions here, we can rewrite it all as so: (((({a=2} + {b=3}) + (a^(b^a))) - a) - b) - a. So to evaluate, we recurse to the right until the allocation of 'a', which is 2. Then we step up to the addition operator and then step down to the allocation of 'b', which is 3. 2 and 3 is 5. Then we step up to the other addition, and then back down to the exponent. We first evaluate b^a, which is 9. 2^9 is 512. We step back up the tree to the addition, which can now fully evaluate the expression 5+512, which is 517. We step up to the leftmost subtraction. To evalutate this subtraction, we have to step down to evaluate the 'a' on the left, which is 2. 517-2 is 515. We step up to the next subtraction which requires that we step down to get the value of 'b', which is 3. We step back up the the subtraction, which is 515-3, or 512. We step up to the last subtraction, which is the very top level of the parse tree. We step down one last time to get 'a', which is 2, and then step back up to subtract 512-2, which is 510.
+
+a-b-a-b-a-b
+-11
+
+Subtraction is left-associative, so the equation can be rewritten as ((((a-b)-a)-b)-a)-b. To evaluate, we recurse to the leftmost leaf, which is the evaluation of 'a', or 2. We step up to the leftmost subtraction and then back down to evaluate 'b', which is 3. 2-3 is -1. We step back up and evaluate 'a', which is 2. -1-2 is -3. Step up, evaluate 'b', which is 3. -3-3 is -6. Step up and evaluate 'a', which is 2. -6-2 is -8. Step up and evaluate the final term, 'b', which is 3. -8-3 is -11.
+
+
+2^2^2^2
+65536
+
+Exponents are right-associative, so the equation would look like so: 2^(2^(2^2))). So to evaluate the leftmost 2, we have to recurse all the way down the right end of the tree. The rightmost term we can actually evaluate is 2^2, which is 4. 2^4 is 16. Return this to the next level up, and we have 2^16, which is 65,536.. 
+
+8/4/2
+1
+
+Division is left-associative, so the equation could be rewritten as follows: (8/4)/2. 8/4 is 2, and 2/2 is 1.
+
+8/4/2/0
+Divide by zero
+1
+
+Again, division is left associative. 8/4 is 2, 2/2 is 1, and 1/0 is a divides-by-zero.
+
+
+
+^C
+0m;mamlJex@Fabienne: ~/Desktop/School/3100/A061m7m%m1mm
+35malex00m at 33mFabienne00m in 01;32m~/Desktop/School/3100/A0600m on 35mmaster32m!00m
+± K87C32m▸▸▸▸▸▸▸▸▸▸00m97Deexit
+0;alex@Fabienne: exit
+Script done on Sat Oct 23 18:57:22 2010
