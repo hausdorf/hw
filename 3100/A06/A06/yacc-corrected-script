@@ -1,0 +1,27 @@
+Script started on Sat Oct 23 16:16:15 2010
+0m;mamlJex@Fabienne: ~/Desktop/School/3100/A061m7m%m1mm
+35malex00m at 33mFabienne00m in 01;32m~/Desktop/School/3100/A0600m on 35mmaster32m!00m
+± K87C32m▸▸▸▸▸▸▸▸▸▸00m97D../a.out
+0;alex@Fabienne: ./a.out
+syntax error
+3+4*5
+23
+3_+44//576*6
+6.42857
+7*7*4-3-1
+192
+2-9+4*2
+1
+7*4/2/4-3
+0.5
+4+4*4+4*=4+4
+40
+^C
+0m;mamlJex@Fabienne: ~/Desktop/School/3100/A061m7m%m1mm
+35malex00m at 33mFabienne00m in 01;32m~/Desktop/School/3100/A0600m on 35mmaster32m!00m
+
+As we can see, the expressions tend to be evaluated correctly. This is because the left-associativity applies to the additive operators (i.e., '-' and '+') first and the multiplicative operators ('*' and '/') second. Because of this, expressions are grouped leftmost according to these operators. That is, 3+4*5 would become (3+4)*5. When the left associativity relates to the multiplicative operators, then this becomes (4*5).
+
+± K87C32m▸▸▸▸▸▸▸▸▸▸00m97Deexit
+0;alex@Fabienne: exit
+Script done on Sat Oct 23 16:17:44 2010

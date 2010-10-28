@@ -98,7 +98,7 @@ Given the language $L = \{ww | w \in \{0,1\}^*\}$ and the string $z = 0^n 1^n 0^
 
 \paragraph{d)} There are a couple of cases we could (and should) consider here: (1) any time $v$ and $x$ fall in the same symbol space ($\textit{e.g.}$, they both fall within the first $0^n$, or the last $1^n$); (2) any time they end up in different symbol spaces ($\textit{e.g.}$, one falls in the first $0^n$, the other falls in the second $0^n$); (3) any time $x$ or $v$ straddles more than one of the symbol spaces ($\textit{e.g.}$, $x$ takes up the first $0^n$ as well as the first $1^n$).
 
-There are various permutations of this that can be considered (that is, there are multiple situations that satisfy each rule), but it would probably be sufficient to show that there is a systematic problem with each of them. For example, you could show pretty easily that any time you pump one or more types of symbol, the string is no longer in $L$, because you simply can't pump ALL the types of symbol in the given string $z$; you have to pick 2 out of the 4, and that $\textit{always}$ violates $L$.
+There are various permutations of this that can be considered (that is, there are multiple situations that satisfy each rule), but it would probably be sufficient to show that there is a systematic problem with each of them. For example, you could show pretty easily that any time you pump one or more types of symbol, the string is no longer in $L$, because you simply can't pump ALL the types of symbol in the given string $z$; you have to pick 1, 2, or maybe even 3 out of the 4, and that $\textit{always}$ violates $L$.
 
 \subsection*{Problem 5:}
 
@@ -121,13 +121,13 @@ The ambiguity here is clearly eliminated simply because there is no way for a us
 
 \paragraph{a)} $X$ is nullable because it directly produces $\varepsilon$; $Y$ is a bit subtler, but it can call $X$ directly, $\textit{i.e.}$, with no terminals around it, and can therefore also produce $\varepsilon$.
 
-\paragraph{b)} We eliminated $\varepsilon$, and then we eliminated the production $Y \to X$. Doing that last step, at least in this case, is pretty simple: since $Y \to X$ with literally no terminals or complications around the invocation of $X$, we are able to just put everything in $X$ as a production of $Y$. Note that we also retain $Y$'s only unique production, the terminal $c$.
+\paragraph{b)} We eliminated $\varepsilon$ (rule 1), and then we eliminated the production $Y \to X$ (rule 2). Doing that last step, at least in this case, is pretty simple: since $Y \to X$ with literally no terminals or complications around the invocation of $X$, we are able to just put everything in $X$ as a production of $Y$. Note that we also retain $Y$'s only unique production, the terminal $c$.
 
 \paragraph{c)} The derivation sequence for $\texttt{ab}$ is as follows: $\texttt{S -> AB -> ab}$. The derivation sequence for $\texttt{abbb}$ is $\texttt{S -> EF -> AXBX -> aXBX -> aXbX -> abbX -> abbb}$.
 
 \subsection*{Problem 7:} 
 
-This is the PDA for example 9.2 on page 84:\\
+The following is the PDA for example 9.2 on page 84. Note that I did the Chomsky Normalized form; the PDA for the original is a lot simpler (but who doesn't like a challenge?):\\
 \includegraphics[width=110mm]{7_pda.png}
 
 And these are the results of some of the strings I fed it:\\
@@ -136,6 +136,7 @@ And these are the results of some of the strings I fed it:\\
 
 \subsection*{Problem 8:} 
 
+The PDA state $\texttt{A=[p,Z0,p]}$ actually implies a couple of rules, but the one we are concerned with comes from comes from the second rule of the PDA: $\texttt{[p,Z0,r\_2] ->}$ $\texttt{( [p,(,r\_1] [r\_1,Z0,r\_2] for r\_i in \{p,q\} }$. This comes from the last general rule in the text: "General rule: If ?(p,a,g) contains ?q,g1,...,gn, introduce one generic rule [p,g,q0] $\to$ a [q,a,q1][q1,g1,q2]...[qn,gn,q0] and create one instance of the rule for each qi $\in$ Q chosen in all possible ways." In fact, this is nearly a one-to-one mapping for the rule generated.
 
 
 \end{document}
