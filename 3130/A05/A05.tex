@@ -8,6 +8,12 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{haldefs}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
 
 \begin{document}
 
@@ -20,7 +26,7 @@ Student number: u0458675
 \paragraph{(a)} The probability of the function is 1 over the interval. Thus, $k$ will have only one possible value:
 
 \begin{equation}
-\begin{array}{rcr}
+\begin{array}{rcc}
 \displaystyle\int^\pi_{-\pi} k(1+ \cos{x})\,dx & = & 1 \\[.15in]
 k\displaystyle\int^\pi_{-\pi} 1+ \cos{x}\,dx & = & 1 \\[.15in]
 k \begin{bmatrix} x + \sin(x) \end{bmatrix}_{-\pi}^{\pi}\,dx & = & 1 \\[.15in]
@@ -29,10 +35,10 @@ k & = & \cfrac{1}{2\pi} \\[.15in]
 \end{array}
 \end{equation}
 
-\paragraph{*(b)} The CDF is given by the antiderivative of the PDF, bounded from $-\infty$ to some point $b$. In this case:
+\paragraph{(b)} The CDF is given by the antiderivative of the PDF, bounded from $-\infty$ to some point $b$. In this case:
 
 \begin{equation}
-\begin{array}{rcc}
+\begin{array}{rcl}
 F(x) & = & \displaystyle\int^b_{-\infty} \cfrac{1+ \cos{x}}{2\pi}\,dx \\[.15in]
 & = & \begin{bmatrix} \cfrac{\sin{x} + x}{2\pi}\end{bmatrix}^{b}_{-\infty} \\[.15in]
 \end{array}
@@ -41,42 +47,50 @@ F(x) & = & \displaystyle\int^b_{-\infty} \cfrac{1+ \cos{x}}{2\pi}\,dx \\[.15in]
 This integral does not actually converge. Given any point $b$, we're going to get a non-convergent sum. Of course, that doesn't make this useless, as this gives only the probability $P(X \le b)$. We could instead evaluate over an interval, in which case we would conclude that
 
 \begin{equation}
-\begin{array}{rcc}
-\begin{bmatrix} \cfrac{\sin{x} + x}{a}\end{bmatrix}^{b}_{-\infty} & = & \cfrac{\sin{b} + b - \sin{a} - a}{2\pi}\\[.15in]
+\begin{array}{rcl}
+\begin{bmatrix} \cfrac{\sin{x} + x}{a}\end{bmatrix}^{b}_{a} & = & \cfrac{\sin{b} + b - \sin{a} - a}{2\pi}\\[.15in]
 \end{array}
 \end{equation}
 
-\paragraph{*(c)} This is easily calculated given the CDF:
+\paragraph{(c)} This is easily calculated given the CDF:
 \begin{equation}
-\begin{array}{rcc}
+\begin{array}{rcl}
 P(0 \le X \le \frac{\pi}{2}) & = & \displaystyle\int^{\frac{\pi}{2}}_{0} \cfrac{1+ \cos{x}}{2\pi} \,dx \\[.15in]
 & = & \begin{bmatrix} \cfrac{\sin{x} + x}{2\pi}\end{bmatrix}^{\frac{\pi}{2}}_{0} \\[.15in]
 & = & \cfrac{\pi + 2}{4\pi} \\[.15in]
 \end{array}
 \end{equation}
 
-\paragraph{*(d)} To find the expected value, we can take the antiderivative of $x * f(x)$, where $f(x)$ is the PDF, and then split the problem into two domains: $(-\infty, 0]$ and $[0, \infty)$. Doing so gives us the following:
+\paragraph{(d)} To find the expected value, we can take the antiderivative of $x * f(x)$, where $f(x)$ is the PDF, and then constrict the bounds to those delineated. Doing so gives us the following:
 \begin{equation}
 \begin{array}{rcl}
-\Ep[X] & = & \displaystyle\int^{\infty}_{-\infty} x \left( \cfrac{1+ \cos{x}}{2\pi} \right) \,dx \\[.15in]
-& = & \begin{bmatrix} \cfrac{2 \cos{x} + x(2 \sin{x} + x)}{4\pi}\end{bmatrix}^{\infty}_{-\infty} \\[.15in]
-& = & \begin{bmatrix} \cfrac{2 \cos{x} + x(2 \sin{x} + x)}{4\pi}\end{bmatrix}^{0}_{-\infty} + \begin{bmatrix} \cfrac{2 \cos{x} + x(2 \sin{x} + x)}{4\pi}\end{bmatrix}^{\infty}_{0} \\[.15in]
-& = & -\infty + \infty \\[.15in]
+\Ep[X] & = & \displaystyle\int^{\pi}_{-\pi} x \left( \cfrac{1+ \cos{x}}{2\pi} \right) \,dx \\[.15in]
+& = & \begin{bmatrix} \cfrac{2 \cos{x} + x(2 \sin{x} + x)}{4\pi}\end{bmatrix}^{\pi}_{-\pi} \\[.15in]
+& = & \cfrac{\pi^2-2}{4\pi} - \cfrac{\pi^2-2}{4\pi} = 0 \\[.15in]
 \end{array}
 \end{equation}
 
-Thus, because each half gives us infinity, the expected value $\textit{does not exist}$.
+\paragraph{(e)} Variance is given by $\Ep[X^2] - \Ep[X]^2$, so we have part of this already solved:
 
-\paragraph{(e)} This 
+\begin{equation}
+\begin{array}{rcl}
+\Ep[X^2] - \Ep[X]^2 & = & \Ep[X^2] - 0 \\[.15in]
+& = &  \displaystyle\int^{\pi}_{-\pi} x^2 f(x) \,dx \\[.15in]
+& = &  \displaystyle\int^{\pi}_{-\pi} x^2 \left( \cfrac{1+ \cos{x}}{2\pi} \right) \,dx \\[.15in]
+& = & \begin{bmatrix} \cfrac{6x \cos{x} + 3(x^2-2) \sin{x} + x^3}{6 \pi} \end{bmatrix}^{\pi}_{-\pi} \\[.15in]
+& = & \cfrac{\pi^2 - 6}{3} \\[.15in]
+\end{array}
+\end{equation}
 
 \subsection*{Problem 2:}
 
-\paragraph{(a)} This is a pretty straightforward transformation. Given $p_{X, Y}(a, b) = f(a)g(b)$:
+\paragraph{(a)} This is a pretty straightforward transformation. Here we will assume some arbitrary bounds for each equation; further, we will carry the equation through the integration step, assuming that both $g(b)$ and $f(b)$ can be anti-derived. Given $p_{X, Y}(a, b) = f(a)g(b)$:
 
 \begin{equation}
 \begin{array}{rcc}
 p_{X}(a) & = & \displaystyle\int^{t}_{s} p_{X, Y}(a, b) \,db \\[.15in]
 & = & f(a) \begin{bmatrix} G(b) \end{bmatrix}^{t}_{s}\\[.15in]
+& = & C \cdot f(a) \mbox{ for some constant } C \\[.15in]
 \end{array}
 \end{equation}
 
@@ -84,10 +98,11 @@ p_{X}(a) & = & \displaystyle\int^{t}_{s} p_{X, Y}(a, b) \,db \\[.15in]
 \begin{array}{rcc}
 p_{Y}(b) & = & \displaystyle\int^{r}_{q} p_{X, Y}(a, b) \,da \\[.15in]
 & = & g(b) \begin{bmatrix} F(a) \end{bmatrix}^{r}_{q}\\[.15in]
+& = & C \cdot g(b) \mbox{ for some constant } C \\[.15in]
 \end{array}
 \end{equation}
 
-\paragraph{(b)} $X$ and $Y$ will of course be independent. If $P(A \cap B)$ for any two sets of discrete quantities is also $P(A)P(B)$, then they are independent. This question just told us that $p_{X, Y}(a,b) = f(a)g(b)$; since $p_{X, Y}(a, b)$ truly is just the intersection of the two, they are clearly independent.
+\paragraph{(b)} $X$ and $Y$ will of course be independent. If $P(A \cap B)$ for any two sets of discrete quantities is also $P(A)P(B)$, then they are independent. This question just told us that $p_{X, Y}(a,b) = f(a)g(b)$; thus they are clearly independent.
 
 \subsection*{Problem 3:}
 
@@ -141,14 +156,80 @@ f(x | Y=y) & = & \cfrac{f(x, y)}{f_{Y}(y)} \\[.15in]
 
 \begin{equation}
 \begin{array}{rcl}
-P(X \le \frac{1}{2} | Y = \frac{1}{2}) & = & \displaystyle\int^{\frac{1}{2}}_{0} \cfrac{\frac{12}{17} (x^2y + xy + 2y)}{2y} \,dx \\[.15in]
-& = & \displaystyle\int^{\frac{1}{2}}_{0} \cfrac{\frac{12}{17} (x^2(\frac{1}{2}) + x(\frac{1}{2}) + 2(\frac{1}{2}))}{2(\frac{1}{2})} \,dx \\[.15in]
-& = & \displaystyle\int^{\frac{1}{2}}_{0} \cfrac{6 (x^2 + x + 2)}{17} \,dx \\[.15in]
+P(X \le \frac{1}{2} | Y = \frac{1}{2}) & = & \displaystyle\int^{\frac{1}{2}}_{0} \cfrac{\frac{12}{17} (x^2y + xy + 2y)}{2y} \,dy \\[.15in]
+& = & \displaystyle\int^{\frac{1}{2}}_{0} \cfrac{\frac{12}{17} (x^2(\frac{1}{2}) + x(\frac{1}{2}) + 2(\frac{1}{2}))}{2(\frac{1}{2})} \,dy \\[.15in]
+& = & \displaystyle\int^{\frac{1}{2}}_{0} \cfrac{6 (x^2 + x + 2)}{17} \,dy \\[.15in]
 & = & \begin{bmatrix} \cfrac{x (2x^2 + 3x + 12)}{17} \end{bmatrix}^{\frac{1}{2}}_{0} \\[.15in]
 & = & \cfrac{7}{17} \\[.15in]
 \end{array}
 \end{equation}
 
+\paragraph{(f)} This is, in a lot of ways, the same problem as the last one:
+
+\begin{equation}
+\begin{array}{rcl}
+\Ep[X | Y = \frac{1}{2}] & = & \displaystyle\int^{b}_{a} x f(x | Y = y) \,dy \\[.15in]
+& = & \displaystyle\int^{1}_{0} x \cfrac{\frac{12}{17} (x^2y + xy + 2y)}{2y} \,dy \\[.15in]
+& = & \displaystyle\int^{1}_{0} x \cfrac{6 (x^2 + x + 2)}{17}  \,dy \\[.15in]
+& = & \begin{bmatrix} \cfrac{6}{17} \left( \cfrac{x^4}{4} + \cfrac{x^3}{3} + x^2 \right) \end{bmatrix}^{1}_{0} \\[.15in]
+& = & \cfrac{19}{34}
+\end{array}
+\end{equation}
+
+\subsection*{Problem 3:}
+
+\paragraph{(a)}
+
+\renewcommand\arraystretch{1.5}
+\begin{tabular}{ c || c | r }
+& \multicolumn{2}{c}{$a$} \\
+\hline
+\hline
+\multirow{2}{*}{$b$} & $pr$ & $r(1-p)$ \\
+\cline{2-3}
+& $p(1-r)$ & $(1-p)(1-r)$ \\
+\end{tabular}
+
+\paragraph{(b)}
+\renewcommand\arraystretch{1.5}
+\begin{tabular}{ c | c | c | c | c | c }
+& \multicolumn{5}{c}{outcome $(X = a, Y = b)$} \\
+\hline
+\multirow{4}{*}{sum} & & 11 & 12 & 21 & 22 \\
+\cline{2-6}
+& 2 & $pr$ & & & \\
+\cline{2-6}
+& 3 & & $(p-1)r$ & $p(r-1)$ & \\
+\cline{2-6}
+& 4 & & & & $(p-1)(r-1)$ \\
+\end{tabular}
+
+\paragraph{(c)}
+
+Adding all the probabilities gives us 1: $pr + p(r-1) + r(p-1) + (p-1)(r-1) = 1$. So the way to check this is to add up both the columns and rows. If you check both, you will find that they are consistent and both add to this probability. \\
+
+\renewcommand\arraystretch{1.5}
+\begin{tabular}{ c | c | c | c }
+& \multicolumn{3}{c}{$X = a$} \\
+\hline
+\multirow{4}{*}{$S=b$} & & 1 & 2 \\
+\cline{2-4}
+& 2 & $pr$ & \\
+\cline{2-4}
+& 3 & $p(r-1)$ & $r(p-1)$  \\
+\cline{2-4}
+& 4 & & $(p-1)(r-1)$ \\
+\end{tabular}
+
+\paragraph{(d)}
+
+This is pretty easy. We just take the weighted sum of all the values from the line where $\{S = 3\}$:
+
+\begin{equation}
+\Ep[X | S = 3] = 1p(r-1) + 2r(p-1)
+\end{equation}
+
+\paragraph{(e)}
 
 
 
