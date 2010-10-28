@@ -199,14 +199,14 @@ P(X \le \frac{1}{2} | Y = \frac{1}{2}) & = & \displaystyle\int^{\frac{1}{2}}_{0}
 \cline{2-6}
 & 2 & $pr$ & & & \\
 \cline{2-6}
-& 3 & & $(p-1)r$ & $p(r-1)$ & \\
+& 3 & & $(1-p)r$ & $p(1-r)$ & \\
 \cline{2-6}
-& 4 & & & & $(p-1)(r-1)$ \\
+& 4 & & & & $(1-p)(1-r)$ \\
 \end{tabular}
 
 \paragraph{(c)}
 
-Adding all the probabilities gives us 1: $pr + p(r-1) + r(p-1) + (p-1)(r-1) = 1$. So the way to check this is to add up both the columns and rows. If you check both, you will find that they are consistent and both add to this probability. \\
+Adding all the probabilities gives us 1: $pr + p(1-r) + r(1-p) + (1-p)(1-r) = 1$. So the way to check this is to add up both the columns and rows. If you check both, you will find that they are consistent and both add to this probability. \\
 
 \renewcommand\arraystretch{1.5}
 \begin{tabular}{ c | c | c | c }
@@ -216,9 +216,9 @@ Adding all the probabilities gives us 1: $pr + p(r-1) + r(p-1) + (p-1)(r-1) = 1$
 \cline{2-4}
 & 2 & $pr$ & \\
 \cline{2-4}
-& 3 & $p(r-1)$ & $r(p-1)$  \\
+& 3 & $p(1-r)$ & $r(1-p)$  \\
 \cline{2-4}
-& 4 & & $(p-1)(r-1)$ \\
+& 4 & & $(1-p)(1-r)$ \\
 \end{tabular}
 
 \paragraph{(d)}
@@ -226,11 +226,30 @@ Adding all the probabilities gives us 1: $pr + p(r-1) + r(p-1) + (p-1)(r-1) = 1$
 This is pretty easy. We just take the weighted sum of all the values from the line where $\{S = 3\}$:
 
 \begin{equation}
-\Ep[X | S = 3] = 1p(r-1) + 2r(p-1)
+\Ep[X | S = 3] = 1p(1-r) + 2r(1-p)
 \end{equation}
 
 \paragraph{(e)}
 
+Given $0 \le p, r \le 1$, we can infer that $1-p$ and $p$ are complements (and the same holds for $1-r$ and $r$. Also given is that $pr + p(1-r) + r(1-p) + (1-r)(1-p) = 1$. Let us assume for the sake of argument that the proposition is true, that $P(S=2) = P(S=3) = P(S=4)$. If that's true, then any two terms from this last equation should be equal. Let's look at just one pair of them:
 
+\begin{equation}
+\begin{array}{rcl}
+pr & = & p(1-r) + r(1-p)
+\end{array}
+\end{equation}
+
+The fact that $p(1-r) + r(1-p)$ can be expressed as $pr$ implies that both $(1-r)$ and $(1-p)$ are both 1. In other words, if the above is true, then it is certain that we will roll heads for both coins all the time.
+
+Yet, if that's true, then $p$ and $r$ must both be 0. But consider that, as the proposition states, $P(S=2) = P(S=4)$:
+
+\begin{equation}
+\begin{array}{rcl}
+pr & = & (1-r)(1-p) \\
+0 & = & 1
+\end{array}
+\end{equation}
+
+And this is a contradiction. Since $pr$ is $0 \cdot 0$, and $(1-r)(1-p)$ is $1 \cdot 1$, this proposition must also be saying that $1 = 2$.
 
 \end{document}
