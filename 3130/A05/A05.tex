@@ -1,0 +1,155 @@
+%Author Alex Clemmer
+%CS 3130 Eng Stats Prob
+%Assignment 6:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{haldefs}
+
+\begin{document}
+
+\section*{Assignment 5}
+Alex Clemmer\\
+Student number: u0458675
+
+\subsection*{Problem 1:} 
+
+\paragraph{(a)} The probability of the function is 1 over the interval. Thus, $k$ will have only one possible value:
+
+\begin{equation}
+\begin{array}{rcr}
+\displaystyle\int^\pi_{-\pi} k(1+ \cos{x})\,dx & = & 1 \\[.15in]
+k\displaystyle\int^\pi_{-\pi} 1+ \cos{x}\,dx & = & 1 \\[.15in]
+k \begin{bmatrix} x + \sin(x) \end{bmatrix}_{-\pi}^{\pi}\,dx & = & 1 \\[.15in]
+2k\pi & = & 1 \\[.15in]
+k & = & \cfrac{1}{2\pi} \\[.15in]
+\end{array}
+\end{equation}
+
+\paragraph{*(b)} The CDF is given by the antiderivative of the PDF, bounded from $-\infty$ to some point $b$. In this case:
+
+\begin{equation}
+\begin{array}{rcc}
+F(x) & = & \displaystyle\int^b_{-\infty} \cfrac{1+ \cos{x}}{2\pi}\,dx \\[.15in]
+& = & \begin{bmatrix} \cfrac{\sin{x} + x}{2\pi}\end{bmatrix}^{b}_{-\infty} \\[.15in]
+\end{array}
+\end{equation}
+
+This integral does not actually converge. Given any point $b$, we're going to get a non-convergent sum. Of course, that doesn't make this useless, as this gives only the probability $P(X \le b)$. We could instead evaluate over an interval, in which case we would conclude that
+
+\begin{equation}
+\begin{array}{rcc}
+\begin{bmatrix} \cfrac{\sin{x} + x}{a}\end{bmatrix}^{b}_{-\infty} & = & \cfrac{\sin{b} + b - \sin{a} - a}{2\pi}\\[.15in]
+\end{array}
+\end{equation}
+
+\paragraph{*(c)} This is easily calculated given the CDF:
+\begin{equation}
+\begin{array}{rcc}
+P(0 \le X \le \frac{\pi}{2}) & = & \displaystyle\int^{\frac{\pi}{2}}_{0} \cfrac{1+ \cos{x}}{2\pi} \,dx \\[.15in]
+& = & \begin{bmatrix} \cfrac{\sin{x} + x}{2\pi}\end{bmatrix}^{\frac{\pi}{2}}_{0} \\[.15in]
+& = & \cfrac{\pi + 2}{4\pi} \\[.15in]
+\end{array}
+\end{equation}
+
+\paragraph{*(d)} To find the expected value, we can take the antiderivative of $x * f(x)$, where $f(x)$ is the PDF, and then split the problem into two domains: $(-\infty, 0]$ and $[0, \infty)$. Doing so gives us the following:
+\begin{equation}
+\begin{array}{rcl}
+\Ep[X] & = & \displaystyle\int^{\infty}_{-\infty} x \left( \cfrac{1+ \cos{x}}{2\pi} \right) \,dx \\[.15in]
+& = & \begin{bmatrix} \cfrac{2 \cos{x} + x(2 \sin{x} + x)}{4\pi}\end{bmatrix}^{\infty}_{-\infty} \\[.15in]
+& = & \begin{bmatrix} \cfrac{2 \cos{x} + x(2 \sin{x} + x)}{4\pi}\end{bmatrix}^{0}_{-\infty} + \begin{bmatrix} \cfrac{2 \cos{x} + x(2 \sin{x} + x)}{4\pi}\end{bmatrix}^{\infty}_{0} \\[.15in]
+& = & -\infty + \infty \\[.15in]
+\end{array}
+\end{equation}
+
+Thus, because each half gives us infinity, the expected value $\textit{does not exist}$.
+
+\paragraph{(e)} This 
+
+\subsection*{Problem 2:}
+
+\paragraph{(a)} This is a pretty straightforward transformation. Given $p_{X, Y}(a, b) = f(a)g(b)$:
+
+\begin{equation}
+\begin{array}{rcc}
+p_{X}(a) & = & \displaystyle\int^{t}_{s} p_{X, Y}(a, b) \,db \\[.15in]
+& = & f(a) \begin{bmatrix} G(b) \end{bmatrix}^{t}_{s}\\[.15in]
+\end{array}
+\end{equation}
+
+\begin{equation}
+\begin{array}{rcc}
+p_{Y}(b) & = & \displaystyle\int^{r}_{q} p_{X, Y}(a, b) \,da \\[.15in]
+& = & g(b) \begin{bmatrix} F(a) \end{bmatrix}^{r}_{q}\\[.15in]
+\end{array}
+\end{equation}
+
+\paragraph{(b)} $X$ and $Y$ will of course be independent. If $P(A \cap B)$ for any two sets of discrete quantities is also $P(A)P(B)$, then they are independent. This question just told us that $p_{X, Y}(a,b) = f(a)g(b)$; since $p_{X, Y}(a, b)$ truly is just the intersection of the two, they are clearly independent.
+
+\subsection*{Problem 3:}
+
+\paragraph{(a)} If we double-integrate $f(x)$ over its entire interval, it should total 1. This is pretty handy for finding $k$:
+
+\begin{equation}
+\begin{array}{rcl}
+1 & = & \displaystyle\int^{1}_{0} \displaystyle\int^{1}_{0} k (x^2y + xy + 2y) \,dx \,dy \\[.15in]
+& = & k \displaystyle\int^{1}_{0} \displaystyle\int^{1}_{0} (x^2y + xy + 2y) \,dx \,dy \\[.15in]
+& = & k \displaystyle\int^{1}_{0} \begin{bmatrix} \cfrac{x^3y}{3} + \cfrac{x^2y}{2} + 2xy \end{bmatrix}^{x = 1}_{x = 0} \,dy \\[.15in]
+& = & k \displaystyle\int^{1}_{0} \frac{17y}{6} \,dy \\[.15in]
+& = & k \begin{bmatrix} \cfrac{17}{6} y^2 \end{bmatrix}^{y = 1}_{y = 0} \\[.15in]
+& = & k \cfrac{17}{12} \\[.15in]
+\cfrac{12}{17} & = & k \\[.15in]
+\end{array}
+\end{equation}
+
+\paragraph{(b)} Finding the marginal PDF manifests from exactly the same concepts as above:
+
+\begin{equation}
+\begin{array}{rcl}
+f_{X}(x) & = & \displaystyle\int^{1}_{0} \frac{12}{17} (x^2y + xy + 2y) \,dy \\[.15in]
+& = & \cfrac{12}{17} \begin{bmatrix} \cfrac{y^2 (x^2 + x + 2)}{2} \end{bmatrix}^{y = 1}_{y = 0} \\[.15in]
+& = & \cfrac{12}{17} \left( \cfrac{x^2 + x + 2}{2} \right) \\[.17in]
+& = & \cfrac{6(x^2 + x + 2)}{17} \\[.15in]
+\end{array}
+\end{equation}
+
+\paragraph{(c)} And the same principles will hold for $f_{Y}(y)$ also:
+
+\begin{equation}
+\begin{array}{rcl}
+f_{Y}(y) & = & \displaystyle\int^{1}_{0} \frac{12}{17} (x^2y + xy + 2y) \,dx \\[.15in]
+& = & \cfrac{12}{17} \begin{bmatrix} \cfrac{x^3y}{3} + \cfrac{x^3y}{2} + 2xy \end{bmatrix}^{x = 1}_{x = 0} \\[.15in]
+& = & \cfrac{12}{17} \left( \cfrac{17y}{6} \right) \\[.17in]
+& = & 2y \\[.15in]
+\end{array}
+\end{equation}
+
+\paragraph{(d)} The conditional PDF $f(x|y)$ is also pretty straightforward to derive:
+
+\begin{equation}
+\begin{array}{rcl}
+f(x | Y=y) & = & \cfrac{f(x, y)}{f_{Y}(y)} \\[.15in]
+& = & \cfrac{\frac{12}{17} (x^2y + xy + 2y)}{2y} \\[.15in]
+& = & \cfrac{6 (x^2 + x + 2)}{17} \\[.15in]
+\end{array}
+\end{equation}
+
+\paragraph{(e)} This one is only slightly trickier than the last:
+
+\begin{equation}
+\begin{array}{rcl}
+P(X \le \frac{1}{2} | Y = \frac{1}{2}) & = & \displaystyle\int^{\frac{1}{2}}_{0} \cfrac{\frac{12}{17} (x^2y + xy + 2y)}{2y} \,dx \\[.15in]
+& = & \displaystyle\int^{\frac{1}{2}}_{0} \cfrac{\frac{12}{17} (x^2(\frac{1}{2}) + x(\frac{1}{2}) + 2(\frac{1}{2}))}{2(\frac{1}{2})} \,dx \\[.15in]
+& = & \displaystyle\int^{\frac{1}{2}}_{0} \cfrac{6 (x^2 + x + 2)}{17} \,dx \\[.15in]
+& = & \begin{bmatrix} \cfrac{x (2x^2 + 3x + 12)}{17} \end{bmatrix}^{\frac{1}{2}}_{0} \\[.15in]
+& = & \cfrac{7}{17} \\[.15in]
+\end{array}
+\end{equation}
+
+
+
+
+\end{document}
