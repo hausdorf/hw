@@ -1,0 +1,131 @@
+%Author Alex Clemmer
+%CS 3810 Computer Organization
+%Assignment 8:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 8}
+Alex Clemmer\\
+Student number: u0458675
+
+\section*{Problem 1:}
+
+So the way to calculate this is to take the total percent failure of the branch predictor (in the case of (a), this is 60\%), and then multiply it by the total number of branch instructions (in the case of (a), this is 15\%). This gives us the percentage of failed branch predictions that comprise the whole.
+
+For each of these failed instructions, 2 instructions must be thrown out. So multiplying this result by the number of stall cycles gives us the total stall cycle increase. \\
+
+$\textbf{KEY}$ The formula on the right of these tables can be interpreted as: (stall cycles) (\% failed instructions) (\% branch instructions) = result
+
+\begin{equation}
+\begin{array}{rll}
+\textbf{4.23.1} & \mbox{instructions} \textbf{(a)} \mbox{, accuracy} \textbf{(a)} & \texttt{2} \cdot \texttt{(1-0.4)} \cdot \texttt{0.15 = 0.18} \\[.05in]
+&  \mbox{instructions} \textbf{(b)} \mbox{, accuracy} \textbf{(b)} & \texttt{2} \cdot \texttt{(1-0.6)} \cdot \texttt{0.1 = 0.08} \\[.05in]
+&  \mbox{instructions} \textbf{(a)} \mbox{, accuracy} \textbf{(b)} & \texttt{2} \cdot \texttt{(1-0.6)} \cdot \texttt{0.15 = 0.12} \\[.05in]
+&  \mbox{instructions} \textbf{(b)} \mbox{, accuracy} \textbf{(a)} & \texttt{2} \cdot \texttt{(1-0.4)} \cdot \texttt{0.1 = 0.12} \\[.05in]
+\end{array}
+\end{equation}
+
+The failure cost of the always-$\textit{not}$-taken predictor is also 2 cycles:
+
+\begin{equation}
+\begin{array}{rll}
+\textbf{4.23.2} &  \mbox{instructions} \textbf{(a)} \mbox{, accuracy} \textbf{(a)} & \texttt{2} \cdot \texttt{(1-0.6)} \cdot \texttt{0.15 = 0.12} \\[.05in]
+&  \mbox{instructions} \textbf{(b)} \mbox{, accuracy} \textbf{(b)} & \texttt{2} \cdot \texttt{(1-0.4)} \cdot \texttt{0.1 = 0.12} \\[.05in]
+&  \mbox{instructions} \textbf{(a)} \mbox{, accuracy} \textbf{(b)} & \texttt{2} \cdot \texttt{(1-0.4)} \cdot \texttt{0.15 = 0.18} \\[.05in]
+&  \mbox{instructions} \textbf{(a)} \mbox{, accuracy} \textbf{(b)} & \texttt{2} \cdot \texttt{(1-0.6)} \cdot \texttt{0.1 = 0.08} \\[.05in]
+\end{array}
+\end{equation}
+
+And finally, our 2-bit predictor will also cost 2 cycles upon failure:
+
+\begin{equation}
+\begin{array}{rll}
+\textbf{4.23.2} & \mbox{instructions} \textbf{(a)} \mbox{, accuracy} \textbf{(a)} & \texttt{2} \cdot \texttt{(1-0.8)} \cdot \texttt{0.15 = 0.06} \\[.05in]
+& \mbox{instructions} \textbf{(b)} \mbox{, accuracy} \textbf{(b)} & \texttt{2} \cdot \texttt{(1-0.95)} \cdot \texttt{0.1 = 0.01} \\[.05in]
+& \mbox{instructions} \textbf{(a)} \mbox{, accuracy} \textbf{(b)} & \texttt{2} \cdot \texttt{(1-0.95)} \cdot \texttt{0.15 = 0.015} \\[.05in]
+& \mbox{instructions} \textbf{(b)} \mbox{, accuracy} \textbf{(a)} & \texttt{2} \cdot \texttt{(1-0.8)} \cdot \texttt{0.1 = 0.04} \\[.05in]
+\end{array}
+\end{equation}
+
+\section*{Problem 2:}
+
+\paragraph{(a)}
+
+First we identify the stalls. There's one between the first and second $\texttt{lw}$. That's about it. So we have two cases: the first is that we skip, and the second is that we don't. In the case of the skip, we have $\texttt{9}$ cycles (one per instruction) + $\texttt{1}$ for the delay between the $\texttt{lw}$s. That gives us $\texttt{10}$. When we don't skip, we have $\texttt{10}$ cycles + $\texttt{1}$ for the delay, which is $\texttt{11}$.
+
+We don't skip when we loop for the second and fourth time, so that gives us $\texttt{20}$ cycles. We $\textit{do}$ skip on the first, third, and fifth time, so that gives us $\texttt{33}$ more cycles. Then we have to add $\texttt{1}$ cycle each for both $\texttt{ori}$s at the beginning and end. Then we have to add $\texttt{4}$ to compensate for the pipeline winding down.
+
+$\textbf{This all gives us a total of \texttt{58} cycles.}$
+
+\paragraph{(b)}
+\begin{verbatim}
+Func:
+        lw   $t1, 0($a1)
+        ori  $t0, $a0, 0        # Start here
+Loop:
+        lw   $t2, 8($t1)
+        add  $t3, $t0, $a2
+        bne  $t2, $t3, Skip
+        addi $t0, $t0, -1
+        add  $t4, $t4, $t2
+Skip:
+        addi $a1, $a1, 4
+        bne  $t0, $zero, Loop
+        lw   $t1, 0($a1)
+        ori  $v0, $t4, 0        # End here
+        jr   $ra
+\end{verbatim}
+
+\paragraph{(c)}
+
+Eliminating all hazards, we can start by counting the number of instructions that get executed. In the loop, if we skip, we have $\texttt{8}$ and if we don't we have $\texttt{7}$.
+
+We skip three times and don't skip two, which gives us $\texttt{37}$ total instructions. Then we account for the $\texttt{lw}$ at the beginning and the $\texttt{ori}$ at the beginning and end. That adds three for a total of $\texttt{40}$. Then we have four more instructions for loop wind-down, $\textbf{which gives us a total of \texttt{44}}$.
+
+\section*{Problem 3:}
+
+For $\textbf{4.38.1}$, the energy consumption is exactly the same for both designs. The operation consists of an I-Mem read, two register reads, and a register written.
+
+\begin{equation}
+\begin{array}{rll}
+\textbf{4.38.1} & \textbf{(a)} & \texttt{100pJ + 2} \cdot \texttt{60pJ + 70pJ = 290pJ} \\[.05in]
+& \textbf{(b)} & \texttt{200pJ + 2} \cdot \texttt{90pJ + 80pJ = 460pJ} \\[.05in]
+\end{array}
+\end{equation}
+
+For $\textbf{4.38.2}$, every instruction reads I-Mem and 2 registers (although careful attention should be paid to the fact that only one of these registers may be read, as I found out the hard way).
+
+Store will require a D-Mem write, while load will require both a register write and a memory read. All other instructions will either manipulate only the registers ($\textit{e.g.}$, $\texttt{add}$), or nothing ($\textit{e.g.}$, $\texttt{j}$).
+
+Since $\texttt{lw}$ and $\texttt{sw}$ will definitely consume more energy than their counterparts which do not require access to D-Mem, the contest is between them and them alone. Since the energy consumption of a read to D-Mem and a register write are more combined than a D-Mem write, $\texttt{lw}$ is the clear winner.
+
+\begin{equation}
+\begin{array}{rll}
+\textbf{4.38.2} & \textbf{(a)} & \texttt{100pJ + 2} \cdot \texttt{60pJ + 70pJ + 120pJ = 410pJ} \\[.05in]
+& \textbf{(b)} & \texttt{200pJ + 2} \cdot \texttt{90pJ + 80pJ + 300pJ = 760pJ} \\[.05in]
+\end{array}
+\end{equation}
+
+Lastly, in the case of $\textbf{4.38.3}$, we have to be a bit more creative. I start by looking for things that can be eliminated, either from every instruction, or even just from the critical instruction. The one that pops out is the register reads; we are always reading both registers, even if the instruction doesn't actually use registers, and even if we only need to read one. This might not mean much for instruction time, but it will mean something for energy consumption. We would have to implement separate control lines for each, but since the energy consumption for control is "negligible" without these control lines, I will also assume that it is negligible with them.
+
+\begin{equation}
+\begin{array}{rll}
+\textbf{4.38.3} & \textbf{(a)} & \texttt{100pJ + 60pJ + 70pJ + 120pJ = 350pJ} \\[.05in]
+& \textbf{(b)} & \texttt{200pJ + 90pJ + 80pJ + 300pJ = 670pJ} \\[.05in]
+\end{array}
+\end{equation}
+
+As we can see, we save $\texttt{60pJ}$ in the first case and $\texttt{90pJ}$ in the second case. It doesn't sound huge, until you consider that that's about 15\% and 11\%, respectively.
+
+\end{document}
