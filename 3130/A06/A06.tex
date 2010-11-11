@@ -26,23 +26,23 @@ Student number: u0458675
 \paragraph{(a)} 
 
 \renewcommand\arraystretch{1.5}
-\begin{tabular}{ c | c | c | c | c | c | c}
-& \multicolumn{6}{c}{$R$} \\
+\begin{tabular}{ c | c | c | c | c | c | c }
+& \multicolumn{4}{c}{$R$} \\
 \hline
 \multirow{7}{*}{$D$} & & 0 & 1 & 2 & 3 & 4 \\
 \cline{2-7}
-& 0 & & & & & $\frac{1}{16}$ \\
+& 0 & & & & & $\frac{188}{3201}$ \\
 \cline{2-7}
-& 1 & & & & $\frac{1}{4}$ & \\
+& 1 & & & & $4 \cdot \frac{200}{3201}$ & \\
 \cline{2-7}
-& 2 & & & $\frac{6}{16}$ & & \\
+& 2 & & & $6 \cdot \frac{1225}{19206}$ & & \\
 \cline{2-7}
-& 3 & & $\frac{1}{4}$ & & & \\
+& 3 & & $4 \cdot \frac{200}{3201}$ & & & \\
 \cline{2-7}
-& 4 & $\frac{1}{16}$ & & & & \\
+& 4 & $\frac{188}{3201}$ & & & & \\
 \end{tabular}
-
-Not that all the both the marginal distributions and the whole table add to 1, although I didn't draw that into the table.
+ \\\\\\
+Note that all the both the marginal distributions and the whole table add to 1, although I didn't draw that into the table. I figured this out by building this huge tree and putting the values together that had the same $\textit{type}$ of composition ($\textit{e.g.}$, three of a kind, all are one kind, etc.).
 
 \paragraph{(b)}
 
@@ -50,8 +50,8 @@ First, we need to find the $\Ep[RD]$:
 
 \begin{equation}
 \begin{array}{rll}
-\Ep[RD] & = & (4 \cdot 0) \left( \cfrac{1}{16} \right) + (3 \cdot 1) \left( \cfrac{1}{4} \right) + (2 \cdot 2) \left( \cfrac{6}{16} \right) + (1 \cdot 3) \left( \cfrac{1}{4} \right) (0 \cdot 4) \left( \cfrac{1}{16} \right) \\[.05in]
-& = & 3 \\[.05in]
+\Ep[RD] & = & (4 \cdot 0) \left( \cfrac{188}{3201} \right) + (3 \cdot 1) \left(4 \cdot \cfrac{200}{3201} \right) + (2 \cdot 2) \left(6 \cdot \cfrac{1225}{19206} \right) + (1 \cdot 3) \left(4 \cdot \cfrac{200}{3201} \right) + (0 \cdot 4) \left( \cfrac{188}{3201} \right) \\[.05in]
+& = & \cfrac{100}{33} \\[.05in]
 \end{array}
 \end{equation}
 
@@ -59,25 +59,18 @@ We will also need to multiply $\Ep[R]$ and $\Ep[D]$ together, so we find them ne
 
 \begin{equation}
 \begin{array}{rll}
-\Ep[R] & = & (4) \left( \cfrac{1}{16} \right) + (3) \left( \cfrac{1}{4} \right) + (2) \left( \cfrac{6}{16} \right) + (1) \left( \cfrac{1}{4} \right) (0) \left( \cfrac{1}{16} \right) \\[.05in]
+\Ep[R] & = & 1\left(4 \cdot \cfrac{200}{3201} \right) + 2\left(6 \cdot \cfrac{1225}{19206} \right) + \left(4 \cdot \cfrac{200}{3201} \right) + \left( 4 \cdot \cfrac{188}{3201} \right) \\[.05in]
 & = & 2 \\[.05in]
 \end{array}
 \end{equation}
 
-\begin{equation}
-\begin{array}{rll}
-\Ep[D] & = & (4) \left( \cfrac{1}{16} \right) + (3) \left( \cfrac{1}{4} \right) + (2) \left( \cfrac{6}{16} \right) + (1) \left( \cfrac{1}{4} \right) (0) \left( \cfrac{1}{16} \right) \\[.05in]
-& = & 2 \\[.05in]
-\end{array}
-\end{equation}
-
-Now we put them all together:
+The same holds for $\Ep[D]$, as they are symmetric. Now we put them all together:
 
 \begin{equation}
 \begin{array}{rll}
 \mbox{Cov}(R, D) & = & \Ep[RD]-\Ep[R] \Ep[D] \\[.05in]
-& = & 3 - (2 \cdot 2) \\[.05in]
-& = & -1 \\[.05in]
+& = & \cfrac{100}{33} - (2 \cdot 2) \\[.05in]
+& = & -\cfrac{1}{162} \\[.05in]
 \end{array}
 \end{equation}
 
@@ -88,29 +81,19 @@ First we need to find both Var($R$) and Var($D$):
 
 \begin{equation}
 \begin{array}{rll}
-\mbox{Var}(R) & = & (4^2) \left( \cfrac{1}{16} \right) + (3^2) \left( \cfrac{1}{4} \right) + (2^2) \left( \cfrac{6}{16} \right) + (1^2) \left( \cfrac{1}{4} \right) (0^2) \left( \cfrac{1}{16} \right) - \Ep[R]^2 \\[.05in]
-& = & 5 - \Ep[R]^2 \\[.05in]
-& = & 5 - 2 \\[.05in]
-& = & 3 \\[.05in]
+\mbox{Var}(R) & = & 1^2 \left(4 \cdot \cfrac{200}{3201} \right) + 2^2 \left(6 \cdot \cfrac{1225}{19206} \right) + 3^2 \left(4 \cdot \cfrac{200}{3201} \right) + 4^2 \left( 4 \cdot \cfrac{188}{3201} \right)  \\[.1in]
+& = & \cfrac{164}{33} -4 \\[.1in]
+& = & \cfrac{32}{33} \\[.05in]
 \end{array}
 \end{equation}
 
-\begin{equation}
-\begin{array}{rll}
-\mbox{Var}(D) & = & (4^2) \left( \cfrac{1}{16} \right) + (3^2) \left( \cfrac{1}{4} \right) + (2^2) \left( \cfrac{6}{16} \right) + (1^2) \left( \cfrac{1}{4} \right) (0^2) \left( \cfrac{1}{16} \right) - \Ep[D]^2 \\[.05in]
-& = & 5 - \Ep[D]^2 \\[.05in]
-& = & 5 - 2 \\[.05in]
-& = & 3 \\[.05in]
-\end{array}
-\end{equation}
-
-After that, it's easy to plug them into the equation:
+Var($D$) will be the same. After that, it's easy to plug them into the equation:
 
 \begin{equation}
 \begin{array}{rll}
-\rho(R,D) & = & \cfrac{\mbox{Cov}(R,D)}{\sqrt{\mbox{Var}(R)\mbox{Var}(D)}} \\[.05in]
-& = & \cfrac{-1}{\sqrt{3 \cdot 3}} \\[.15in]
-& = & -\cfrac{1}{3}
+\rho(R,D) & = & \cfrac{\mbox{Cov}(R,D)}{\sqrt{\mbox{Var}(R)\mbox{Var}(D)}} \\[.15in]
+& = & \cfrac{-\cfrac{32}{33}}{\sqrt{\cfrac{32}{33} \cdot \cfrac{32}{33}}} \\[.2in]
+& = & -1\\[.1in]
 \end{array}
 \end{equation}
 
@@ -179,7 +162,7 @@ Now we can put it all together:
 \begin{equation}
 \begin{array}{rll}
 \Ep[XY] - \Ep[X]\Ep[Y] & = & \cfrac{1}{3} - \left( \cfrac{5}{9} \right) \left( \cfrac{11}{18} \right) \\[.15in]
-& = & \cfrac{107}{162} \\[.15in]
+& = & \cfrac{-1}{162} \\[.15in]
 \end{array}
 \end{equation}
 
@@ -229,10 +212,71 @@ We use a similar strategy to find the variance for $Y$:
 \begin{equation}
 \begin{array}{rll}
 \rho(R,D) & = & \cfrac{\mbox{Cov}(R,D)}{\sqrt{\mbox{Var}(R)\mbox{Var}(D)}} \\[.2in]
-& = & \cfrac{\frac{107}{162}}{\sqrt{\frac{23}{324} \cdot \frac{13}{162}}} \\[.2in]
-& = & 107\sqrt{\frac{2}{299}}
+& = & \cfrac{\frac{-1}{162}}{\sqrt{\frac{23}{324} \cdot \frac{13}{162}}} \\[.2in]
+& = & -\sqrt{\frac{2}{299}}
 \end{array}
 \end{equation}
+
+\subsection*{Problem 3:}
+
+\paragraph{(a)}
+
+$\Ep[X]$ and $\Ep[Y]$ will look pretty similar. They are both binomials, and it is a matter of simply substituting in one variable for another. Here we have a binomial distribution: $p(x_i) = r$, while $1-p = g+1-(r+g)$, as the number of blues is the number of marbles that are neither green nor red. This makes calculating $\Ep[X]$ $\textit{much}$ easier:
+
+\begin{equation}
+\begin{array}{rll}
+\Ep[X] & = & \displaystyle\sum\limits_{n} x_n p(x_n) \\
+& = & np(x_n) \\
+& = & nr \\
+\end{array}
+\end{equation}
+
+Similarly, $\Ep[Y] = ng$.
+
+\paragraph{(b)}
+
+Only slightly trickier, and also made a lot easier by it being binomial:
+
+\begin{equation}
+\begin{array}{rll}
+\mbox{Var}(X) & = & np(1-p) \\
+\end{array}
+\end{equation}
+
+$p$ in the case of $X$ is $r$. $(1-p)$ is not that much trickier. We know $r$ and $g$, so $(1-p) = (1-(r+g))$. So:
+
+\begin{equation}
+\begin{array}{rll}
+\mbox{Var}(X) & = & nr(1-(r+g)) \\
+\end{array}
+\end{equation}
+
+And:
+
+\begin{equation}
+\begin{array}{rll}
+\mbox{Var}(Y) & = & ng(1-(r+g)) \\
+\end{array}
+\end{equation}
+
+\paragraph{(c)}
+
+These variables are not covariant; there is not dependence. Therefore:
+
+\begin{equation}
+\begin{array}{rll}
+\mbox{Var}(X+Y) & = & \mbox{Var}(X) + \mbox{Var}(X) \\
+& = & nr(1-(r+g)) + ng(1-(r+g)) \\
+\end{array}
+\end{equation}
+
+\paragraph{(d)}
+
+As said before, the covariance is 0 when the variables are independent.
+
+\paragraph{(e)}
+
+
 
 
 
