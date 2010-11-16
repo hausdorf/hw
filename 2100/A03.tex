@@ -1,0 +1,105 @@
+%Author Alex Clemmer
+%CS 2100 Discrete Math
+%Assignment 3:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+
+\begin{document}
+
+\section*{Assignment 3}
+Alex Clemmer\\
+CS 2100 \\
+Student number: u0458675
+
+\subsection*{Problem 1:} 
+
+So for $b_n = \cfrac{1}{2^1} + \cfrac{1}{2^2} + ... + \cfrac{1}{2^n}$. We want to show that $b_n = 1 - \cfrac{1}{2^n}$. Both formulae report that for $n=1$, $b = \frac{1}{2}$, and for $n = 2$, $b = \frac{3}{4}$. The recursive formula is as follows:
+
+\begin{equation}
+\begin{array}{rll}
+b_n & = & b_{n-1} + \cfrac{1}{2^n} \\[.15in]
+& = & \left( 1-\cfrac{1}{2^{n-1}} \right) + \cfrac{1}{2^n} \\[.2in]
+1- \cfrac{1}{2^n} & = & \left( 1-\cfrac{1}{2^{n-1}} \right) + \cfrac{1}{2^n} \\[.15in]
+1- \cfrac{2}{2^n} & = & 1-\cfrac{1}{2^{n-1}} \\[.15in]
+\cfrac{2}{2^n} & = & \cfrac{1}{2^{n-1}} \\[.15in]
+\end{array}
+\end{equation}	
+
+We can use this in the original equation:
+
+\begin{equation}
+\begin{array}{rll}
+b_n & = & b_{n-1} + \cfrac{1}{2^n} \\[.15in]
+& = & \left( 1- \cfrac{1}{2^{n-1}} \right) + \cfrac{1}{2^n} \\[.2in]
+& = & 1- \cfrac{2}{2^n} + \cfrac{1}{2^n} \\[.2in]
+& = & 1- \cfrac{1}{2^n} \\[.2in]
+\end{array}
+\end{equation}	
+
+\subsection*{Problem 2:}
+
+\begin{equation}
+\begin{array}{rll}
+(p_n - p_{n-1})^2 - 2p^2_{n-1} & = & (-1)^{n-1} \\[.05in]
+p_n^2 - 2p_n p_{n-1} + p_{n-1}^2 - 2p_{n-1}^2 & = & \\[.05in]
+p_n^2 - 2p_n p_{n-1} - p_{n-1}^2 & = & \\[.05in]
+-p_n^2 + 2p_n p_{n-1} + p_{n-1}^2 & = & \\[.05in]
+(p_n + p_{n-1})^2 - 2p_n^2 & = & (-1)^{n} \\[.05in]
+2p_n^2 + (-1)^n & = & (p_n + p_{n-1})^2 \\[.05in]
+2p_n^2 + (-1)^n & = & p_n^2 + p_n(p_{n-1}) + p_n^2 \\[.05in]
+(-1)^n & = & -p_n^2 + p_n(p_{n-1}) + p_n^2 \\[.05in]
+(-1)^{n+1} & = & (p_{n-1} - p_n)^2 \\[.05in]
+(-1)^{n-1} & = & (p_{n-1} - p_n)^2 \\[.05in]
+\end{array}
+\end{equation}	
+
+\subsection*{Problem 3:}
+
+This next one is pretty simple.
+
+\begin{equation}
+\begin{array}{rll}
+F_{2m-2} & = & F_1 + F_3 + ... + F_{2m-1} \\[.1in]
+& = & F_1 + F_3 + ... + F_{2m-3} + F_{2m-1} \\[.1in]
+& = & F_{2m-2} + F_{2m-1} \\[.1in]
+\end{array}
+\end{equation}	
+
+This of course is the definition of the Fibonacci sequence.
+
+\subsection*{Problem 4:}
+
+
+\subsection*{Problem 5:}
+
+
+
+\subsection*{Problem 6:}
+
+If we divide up all numbers by $\equiv (\mbox{mod } 7)$, then we have 7 buckets, numbered 0 to 6. Given 5 numbers, either there must be 5 out of 7 buckets filled, or there must be one bucket for which $x_i > 1$. If its the latter case, then the rules holds, as any number that is subtracted by another number similarly $\equiv (\mbox{mod } 7)$ will give us $0 \equiv (\mbox{mod } 7)$ ($\textit{e.g.}$, $13-6 = 7$).
+
+The $\textit{only}$ alternative is that at least one pair of the modulo sums up to seven by filling one of the critical pairs: $\{(1,6),(2,5),(3,4)\}$. In other words, failing the last condition, we $\textit{must}$ pick 5 numbers whose modulo are different. We cannot pick 5 modulo without satisfying at least one of the above pairs, and therefore this is true.
+
+\subsection*{Problem 7:}
+
+\paragraph{(c)} There are only 8 quadrants in a cube. The farthest points away from each other in any quadrant of a cube can be described as $a \sqrt{3}$. In this case, the side of the whole cube is length 1, which means that the length of the $\frac{1}{2}$. Thus the diagonals in any of the quadrants will be $\frac{\sqrt{3}}{2}$.
+
+Since there are 9 points and only 8 quadrants, 2 points will be in the same quadrant by basic pigeonhole principle. Therefore, the farthest they can possibly be from each other is the length of the diagonal, $\frac{\sqrt{3}}{2}$.
+
+\paragraph{(d)} There are four quadrants for any cartesian plane. With 5 points other than the origin $O$, there must be one quadrant with 2 points, by the basic pigeonhole principle. These points, called $P$ and $Q$, are guaranteed to make some acute angle $\angle POQ$, even if it's only slightly.
+
+It has not escaped my attention that the boundaries may appear to present a problem, however, it should be noted that it is not correct to make the axes "communal" property among all quadrants -- in other words, we need to designate what quadrant each particular half-axis is a part of, otherwise their space is external to all the quadrants, which then makes "quadrants" an inaccurate name.
+
+What's important is that the quadrants equally divide the plane, and that's what we assume here.
+
+\end{document}
