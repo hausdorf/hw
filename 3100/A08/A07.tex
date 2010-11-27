@@ -1,0 +1,52 @@
+%Author Alex Clemmer
+%CS 3100 Eng Stats Prob
+%Assignment 8:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+
+\begin{document}
+
+\section*{Assignment 8}
+Alex Clemmer\\
+CS 3100 \\
+Student number: u0458675
+
+\subsection*{Problem 1:} 
+
+\paragraph{(a)} False. If $2=3$, then $1=2$. That is, if two numbers are equal, they all must be equal; there is no possibility that $2=3$ while $1 \neq 2$.
+
+\paragraph{(b)} True. $2=3$ iff $1=2$, because if one number is equal to another number, all numbers must be equal. This means a necessary condition is that if one of the two conditions is true, so must both be.
+
+\paragraph{(c)} 
+
+\paragraph{(d)} 
+
+\paragraph{(e)} True. If a graph has a clique of more than one vertex, then it also has a clique that is one vertex smaller than that. But this is not necessarily true in reverse: a graph with a clique of $k$ vertices does not necessarily have a clique of $k+1$ vertices.
+
+\paragraph{(f)} False. If a graph has a clique of $k$ vertices, it does not necessarily have a clique of $k+1$ vertices. But this is true in reverse, as we have seen above: if we have a clique of $k+1$ vertices, as long as $k>1$, this graph also has a clique of $k$ vertices.
+
+\paragraph{(g)} True. If $c$ logically follows from $b$, and the conclusion that $b \Rightarrow c$ follows logically from $a$, then both $b$ and $c$ must logically follow from $a$. But this is not necessarily true the other way: if $b$ and $c$ follow from $a$, it may not be the case that $c$ also follows from $b$, let alone that the conclusion that $b \Rightarrow c$ follows from $a$.
+
+\subsection*{Problem 2:}
+
+\paragraph{(a)} This is $\textbf{not}$ a mapping reduction. $1,2,$ and $3$ are all mapped to $1$, where a function that maps reducibility should map each number uniquely to one other number. This is why cardinality is so important.
+
+\paragraph{(b)} This is a mapping reduction. $1$ is mapped to both $1$ and $4$. A function that maps reducibility should produce each number once, but since our sets $A, B = \{1,2,3\}$, this is inconsequential: all numbers mapped after $3$ are irrelevant.
+
+\paragraph{(c)} In order to reduce $A_{TM}$ to $A_{bt}$, all we need to do is map all inputs from $A_{TM}$ into $A_{bt}$. We can do this by sequentially putting $A_{TM}[i]$ into $A_{bt}[i]$, which basically means that every single ends up $A_{TM}[i]$ getting mapped to $\varepsilon$, which is what $A_{bt}$ is all the time.
+
+
+\subsection*{Problem 3:}
+
+
+\end{document}

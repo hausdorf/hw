@@ -1,0 +1,50 @@
+%Author Alex Clemmer
+%CS 2100 Discrete Math
+%Assignment 4:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+
+\begin{document}
+
+\section*{Assignment 4}
+Alex Clemmer\\
+CS 2100 \\
+Student number: u0458675
+
+\subsection*{Problem 1:} 
+
+\paragraph{(a)} I will assume that differences in order constitutes a "different combination", ($\textit{e.g.} \{1,1,2\} \not\equiv \{2,1,1\}$) because in this situation it makes sense, where in other situations (dice roll, for example), the answer is: $50 \cdot 50 \cdot 50 = 125,000$.
+
+\paragraph{(b)} If we select one number and do not allow it to be selected again, then each subsequent number will have one less possibility. So: $50 \cdot 49 \cdot 48 = 117,600$.
+
+\paragraph{(c)} The first can be any of the numbers, but the second must be the exact same number (which in other words means the second number can only ever be 1 number, which gives us $50 \cdot 1$ so far). I will also assume that the third must be different (which is a rational expectation given how we treated problems $\textit{a}$ and $\textit{b}$). Thus: $50 \cdot 1 \cdot 49 = 2,450$.
+
+\paragraph{(d)} The strategy here is to add up all the possible ways that we could have two numbers that are the same and one that is not.
+
+There are three ways this could happen: our pattern must be $XXY$, $XYX$, or $YXX$. The exclusive factor here is $Y$, because $Y$ must $\textit{not}$ be the same number as $X$. Thus for every possible $X$, there are 49 possible $Y$ (or, every number is possible $\textit{except}$ that one). Likewise, for every possible $X$, there is only one possible second $X$, since $X \ne X$ is not possible.
+
+This makes the last part easy: for $XXY$, the combination must be $50 \cdot 1 \cdot 49 = 2,450$; for $XYX$, the combination must be $50 \cdot 49 \cdot 1 = 2,450$; for $YXX$, the combination must be $49 \cdot 50 \cdot 1 = 2,450$.
+
+When we add these up, we get the total possibilities: $\textbf{7,350}$.
+
+\begin{equation}
+\begin{array}{rll}
+b_n & = & b_{n-1} + \cfrac{1}{2^n} \\[.15in]
+& = & \left( 1-\cfrac{1}{2^{n-1}} \right) + \cfrac{1}{2^n} \\[.2in]
+1- \cfrac{1}{2^n} & = & \left( 1-\cfrac{1}{2^{n-1}} \right) + \cfrac{1}{2^n} \\[.15in]
+1- \cfrac{2}{2^n} & = & 1-\cfrac{1}{2^{n-1}} \\[.15in]
+\cfrac{2}{2^n} & = & \cfrac{1}{2^{n-1}} \\[.15in]
+\end{array}
+\end{equation}	
+
+\end{document}
