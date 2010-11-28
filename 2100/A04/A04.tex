@@ -21,7 +21,7 @@ Alex Clemmer\\
 CS 2100 \\
 Student number: u0458675
 
-\subsection*{Problem 1:} 
+\subsection*{Problem 1: \textit{15, pg. 396}} 
 
 \paragraph{(a)} I will assume that differences in order constitutes a "different combination", ($\textit{e.g.} \{1,1,2\} \not\equiv \{2,1,1\}$) because in this situation it makes sense, where in other situations (dice roll, for example), the answer is: $50 \cdot 50 \cdot 50 = 125,000$.
 
@@ -37,14 +37,127 @@ This makes the last part easy: for $XXY$, the combination must be $50 \cdot 1 \c
 
 When we add these up, we get the total possibilities: $\textbf{7,350}$.
 
+\subsection*{Problem 2: \textit{21, pg. 396}}
+
+\paragraph{(a)} Since we have no way to disqualify dates (apart from the fact that we know that no one was born on February 29th), each person asked has the possibility of being born on any of the 365 days that are in a year. So the sequence determining this will look something like this:
+
 \begin{equation}
 \begin{array}{rll}
-b_n & = & b_{n-1} + \cfrac{1}{2^n} \\[.15in]
-& = & \left( 1-\cfrac{1}{2^{n-1}} \right) + \cfrac{1}{2^n} \\[.2in]
-1- \cfrac{1}{2^n} & = & \left( 1-\cfrac{1}{2^{n-1}} \right) + \cfrac{1}{2^n} \\[.15in]
-1- \cfrac{2}{2^n} & = & 1-\cfrac{1}{2^{n-1}} \\[.15in]
-\cfrac{2}{2^n} & = & \cfrac{1}{2^{n-1}} \\[.15in]
+sum & = & \mbox{Poss}_1 \cdot \mbox{Poss}_2 \cdot \ldots \cdot \mbox{Poss}_n \\
+& = & 356_1 \cdot 356_2 \cdot \ldots \cdot 356_n \\
+& = & 356^n \\
 \end{array}
 \end{equation}	
+
+So in this case, we can determinately answer that there are $365^{30}$ possibilities.
+
+\paragraph{(b)} Allowing for no duplicates means we can disqualify one day for every person:
+
+\begin{equation}
+\begin{array}{rll}
+sum & = & (356-0) \cdot (356-1) \cdot \ldots \cdot (356-n) \\
+& = & 356^n - 30! \\
+\end{array}
+\end{equation}	
+
+\paragraph{(c)} $30!$ is positively minuscule compared to $365^{30}$. My calculator can't handle these numbers, but a quick run to Mathematica reveals that when we take the total without duplicates and divide it by the total $\textit{with}$ duplicates, the total ends up being absolutely paltry:
+
+\begin{equation}
+\begin{array}{rll}
+\mbox{\% Without duplicates} & = & 1- \cfrac{365^n-30!}{365^n} \\[.1in]
+& = & 3.5881793395065x10^{-45}\\
+\end{array}
+\end{equation}
+
+This is a lot smaller than I would have expected.
+
+\subsection*{Problem 3: \textit{6, pg. 406}} We can make this problem easier, at least initially, by thinking of each couple as an atomic unit. That is, rather than thinking of 10 people, let's think of 5 couples. So the problem now is, how many different orders can 5 couples stand? The answer is $5! = 120$.
+
+But that doesn't completely answer the question. Each couple could stand in 2 different orientations ($\textit{e.g.}$, \{Person 1, Person 2\} or \{Person 2, Person 1\}). So we must multiply that by $2^5$.
+
+The total we get is $\textbf{3840}$.
+
+\subsection*{Problem 4: \textit{26, pg. 407}}
+
+\paragraph{(a)} Assuming the question is, how many possible subsets of 4 are there in a set of 16 (which is the total number of marbles in the bag), then our answer is as follows:
+
+\begin{equation}
+\begin{array}{rll}
+\left ( \begin{array}{c} n \\ k \end{array} \right ) & = & \cfrac{n!}{r!(n-r)!} \\[.15in]
+& = & \cfrac{16!}{4!(16-4)!} \\[.15in]
+& = & \mathbf{1820} \\[.15in]
+\end{array}
+\end{equation}
+
+\paragraph{(b)} This question is basically asking us to find how many subsets of 4 there are both in 5 and 8 (the number of red and blue, respectively). Since there are only 3 green marbles, we can't have an all-green choice, so we don't calculate it.
+
+\begin{equation}
+\begin{array}{rll}
+\left ( \begin{array}{c} 5 \\ 4 \end{array} \right ) & = & \cfrac{5!}{4!(5-4)!} \\[.15in]
+& = & 5 \\[.1in]
+\end{array}
+\end{equation}
+
+\begin{equation}
+\begin{array}{rll}
+\left ( \begin{array}{c} 8 \\ 4 \end{array} \right ) & = & \cfrac{8!}{4!(8-4)!} \\[.15in]
+& = & 70 \\[.15in]
+\end{array}
+\end{equation}
+
+Since they are disjoint sets, we can add them together without worrying about overlap. This gives us the total number of ways there are to select 4 of the same color: $\mathbf{5+70=75}$.
+
+\paragraph{(c)} We start by breaking them into discrete cases. Since we always want 2 of some color, we can start by evaluating all $n \choose 2$, where $n$ is the number of marbles for that color. From there, we can combine them to find out, for example, how many ways there are to choose, say, RRGG, or BBGG.
+
+\begin{equation}
+\begin{array}{rll}
+\left ( \begin{array}{c} 3 \\ 2 \end{array} \right )_{Green} & = & 3 \\[.15in]
+\end{array}
+\end{equation}
+
+\begin{equation}
+\begin{array}{rll}
+\left ( \begin{array}{c} 5 \\ 2 \end{array} \right )_{Red} & = & 10 \\[.15in]
+\end{array}
+\end{equation}
+
+\begin{equation}
+\begin{array}{rll}
+\left ( \begin{array}{c} 8 \\ 2 \end{array} \right )_{Blue} & = & 28 \\[.15in]
+\end{array}
+\end{equation}
+
+Each of the above is the number of k-element subsets we can generate from some n-element set, so the way we get the final result is to just multiply them together. This comes out to: $\mathbf{3 \cdot 10 \cdot 28 = 840}$.
+
+\subsection*{Problem 5: \textit{29, pg. 407}}
+
+\paragraph{(a)} Assuming things work $\textit{exactly}$ as it does in the problem ($\textit{i.e.}$, all 11 numbers must be different, and the order doesn't matter at all), the problem is a simple $80 \choose 11$, which Mathematica tells me works out to be 10,477,677,064,400.
+
+\paragraph{(b)} I will again assume they want us to calculate this disregarding order. On a ticket with 11 spaces, we are given 7 of them. This leaves us with 4 spaces to account for. That means we have a pool of 73 possible choices. So how many possible subsets of 4 are there in 73?
+
+\begin{equation}
+{73 \choose 4} = 1,088,430
+\end{equation}
+
+\paragraph{(c)} To find the ratio, we simply divide the total number of subsets of 4 in 73 by the total number of subsets of 11 in 80:
+
+\begin{equation}
+\begin{array}{rll}
+\cfrac{{73 \choose 4}}{{80 \choose 11}} & = & \cfrac{3}{28879240} \\[.15in]
+\end{array}
+\end{equation}
+
+\subsection*{Problem 6: \textit{33, pg. 408}}
+
+
+
+
+
+
+
+
+
+
+
 
 \end{document}
