@@ -71,11 +71,11 @@ sum & = & (356-0) \cdot (356-1) \cdot \ldots \cdot (356-n) \\
 
 This is a lot smaller than I would have expected.
 
-\subsection*{Problem 3: \textit{6, pg. 406}} We can make this problem easier, at least initially, by thinking of each couple as an atomic unit. That is, rather than thinking of 10 people, let's think of 5 couples. So the problem now is, how many different orders can 5 couples stand? The answer is $5! = 120$.
+\subsection*{Problem 3: \textit{6, pg. 406}} We can make this problem easier, at least initially, by thinking of each couple as an atomic unit. That is, rather than thinking of 10 people, let's think of 5 couples. So the problem now is, how many different orders can 5 couples stand? The answer is $5! = 120$. If we discount the equivalent states, that's $\frac{120}{5} = 24$
 
 But that doesn't completely answer the question. Each couple could stand in 2 different orientations ($\textit{e.g.}$, \{Person 1, Person 2\} or \{Person 2, Person 1\}). So we must multiply that by $2^5$.
 
-The total we get is $\textbf{3840}$.
+The total we get is $\textbf{768}$.
 
 \subsection*{Problem 4: \textit{26, pg. 407}}
 
@@ -127,7 +127,7 @@ Since they are disjoint sets, we can add them together without worrying about ov
 \end{array}
 \end{equation}
 
-Each of the above is the number of k-element subsets we can generate from some n-element set, so the way we get the final result is to just multiply them together. This comes out to: $\mathbf{3 \cdot 10 \cdot 28 = 840}$.
+Each of the above is the number of k-element subsets we can generate from some n-element set. To get the total, we multiply each possibility and add them together ($\textit{e.g.}, R \cdot G + G \cdot B + B \cdot R$) This comes out to: $\mathbf{3 \cdot 10 + 3 \cdot 28 + 20 \cdot 28 = 394}$.
 
 \subsection*{Problem 5: \textit{29, pg. 407}}
 
@@ -147,17 +147,24 @@ Each of the above is the number of k-element subsets we can generate from some n
 \end{array}
 \end{equation}
 
-\subsection*{Problem 6: \textit{33, pg. 408}}
+\subsection*{Problem 6: \textit{33, pg. 408}} The sum of every other number in row $n$ of the AT works out to be a function of powers of 2. When $x = -1$, the result is $0^n$. When we add every other term in some row n, we end up adding only the negative coefficients. So this tells us that the total of the negative coefficients is some function of the power of 2 contingent up on $n$.
 
+\subsection*{Problem 7: \textit{34, pg. 408}} The coefficient of $h$ will always come from the term that makes $h^2$. Thus, the coefficient is simply $n \choose n-2$.
 
+\subsection*{Problem 8: \textit{2, pg. 416}}
 
+\paragraph{(a)} This is trivial. ${10 \choose 5} = 252$.
 
+\paragraph{(b)} ${10 \choose 1} + {10 \choose 2} = 55$.
 
+\paragraph{(b)} ${10 \choose 8} + {10 \choose 9} + {10 \choose 10} = 56$.
 
+\subsection*{Problem 8: \textit{2, pg. 416}} Simple formula application:
 
-
-
-
-
+\begin{equation}
+\begin{array}{rll}
+\left ( \begin{array}{c} 11 + 4 - 1 \\ 11 \end{array} \right ) & = & 154 \\[.15in]
+\end{array}
+\end{equation}
 
 \end{document}
