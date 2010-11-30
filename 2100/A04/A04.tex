@@ -23,11 +23,15 @@ Student number: u0458675
 
 \subsection*{Problem 1: \textit{15, pg. 396}} 
 
-\paragraph{(a)} I will assume that differences in order constitutes a "different combination", ($\textit{e.g.} \{1,1,2\} \not\equiv \{2,1,1\}$) because in this situation it makes sense, where in other situations (dice roll, for example), the answer is: $50 \cdot 50 \cdot 50 = 125,000$.
+\paragraph{(a)} I will assume that differences in order constitutes a "different combination", ($\textit{e.g.} \{1,1,2\} \not\equiv \{2,1,1\}$) because in this situation it makes sense, where in other situations (dice roll, for example), the answer is: $\mathbf{50 \cdot 50 \cdot 50 = 125,000}$.
 
-\paragraph{(b)} If we select one number and do not allow it to be selected again, then each subsequent number will have one less possibility. So: $50 \cdot 49 \cdot 48 = 117,600$.
+\paragraph{(b)} If we select one number and do not allow it to be selected again, then each subsequent number will have one less possibility. So: $\mathbf{50 \cdot 49 \cdot 48 = 117,600}$.
 
-\paragraph{(c)} The first can be any of the numbers, but the second must be the exact same number (which in other words means the second number can only ever be 1 number, which gives us $50 \cdot 1$ so far). I will also assume that the third must be different (which is a rational expectation given that duplicates are not allowed at all in $\textit{a}$ and $\textit{b}$, and they did not explicitly tell me that the third number should be different here). Thus: $50 \cdot 1 \cdot 49 = 2,450$.
+\paragraph{(c)} The first can be any of the numbers, but the second must be the exact same number (which in other words means the second number can only ever be 1 number, which gives us $50 \cdot 1$ so far).
+
+If we assume that the third number must be different (which is a rational expectation given that duplicates are not allowed at all in $\textit{a}$ and $\textit{b}$, and they did not explicitly tell me that the third number can be the same here), then our total is $\mathbf{50 \cdot 1 \cdot 49 = 2,450}$.
+
+If we do not assume this, then our total is $\mathbf{ 50 \cdot 1 \cdot 50 = 2,500 }$.
 
 \paragraph{(d)} The strategy here is to add up all the possible ways that we could have two numbers that are the same and one that is not.
 
@@ -69,7 +73,7 @@ sum & = & (356-0) \cdot (356-1) \cdot \ldots \cdot (356-n) \\[.1in]
 \end{array}
 \end{equation}
 
-This is actually a lot larger than I would have expected.
+That means the total with duplicates is $\textbf{70.63162427\%}$. This is actually a lot larger than I would have expected.
 
 \subsection*{Problem 3: \textit{6, pg. 406}} We can make this problem easier, at least initially, by thinking of each couple as an atomic unit. That is, rather than thinking of 10 people, let's think of 5 couples. So the problem now is, how many different orders can 5 couples stand? The answer is $5! = 120$. If we discount the equivalent states, that's $\frac{120}{5} = 24$
 
@@ -147,23 +151,39 @@ Each of the above is the number of k-element subsets we can generate from some n
 \end{array}
 \end{equation}
 
-\subsection*{Problem 6: \textit{33, pg. 408}} The sum of every other number in row $n$ of the AT works out to be a function of powers of 2. When $x = -1$, the result is $0^n$. When we add every other term in some row n, we end up adding only the negative coefficients. So this tells us that the total of the negative coefficients is some function of the power of 2 contingent up on $n$.
+\subsection*{Problem 6: \textit{33, pg. 408}} The sum of every other number in row $n$ of the AT works out to be a function of powers of 2 (for fun, I'd say $f(x) = 2^{n-1}, n > 0; f(x) = 1, n = 0$).
 
-\subsection*{Problem 7: \textit{34, pg. 408}} The coefficient of $h$ will always come from the term that makes $h^2$. Thus, the coefficient is simply $n \choose n-2$.
+Now to the problem: each term in the AT is expressed as ${n \choose k} \cdot x^i$. Adding every other term in the AT will give us all the positive coefficients. That is, since we start with $i=0$, this coefficient will be positive; the next one we count will be $i=2$, and even a negative number raised to a power of 2 is positive. Thus every other number in the AT amounts to all the positive numbers. So everything else is negative.
+
+\subsection*{Problem 7: \textit{34, pg. 408}} First just look at the equation: $\cfrac{(1+h)^n -1}{h}$
+
+What we know immediately is that $(1+h)^n$ will always end with a "$+ 1$". Since the top part of this fraction subtracts 1 always, this term is eliminated in every possible case.
+
+That means that, when we divide by $h$, everything loses one factor of $h$. For example:
+
+\begin{equation}
+\begin{array}{rll}
+\cfrac{(1+h)^2-1}{h} & = & \cfrac{h^2 + 2h + 1 - 1}{h} \\[.15in]
+& = & \cfrac{h^2 + 2h}{h} \\[.15in]
+& = & h + 2 \\[.15in]
+\end{array}
+\end{equation}
+
+So the coefficient of $h$ will always come from the term that makes $h^2$. Since we know form the binomial theorem what this coefficient works out to, we know for certain what the coefficient of $h$ will be: it is simply $n \choose 2$, which is how the binomial theorem defines the coefficient for the $h^2$ given some equation.
 
 \subsection*{Problem 8: \textit{2, pg. 416}}
 
 \paragraph{(a)} This is trivial. ${10 \choose 5} = 252$.
 
-\paragraph{(b)} ${10 \choose 1} + {10 \choose 2} = 55$.
+\paragraph{(b)} ${10 \choose 0} + {10 \choose 1} + {10 \choose 2} = 56$.
 
-\paragraph{(b)} ${10 \choose 8} + {10 \choose 9} + {10 \choose 10} = 56$.
+\paragraph{(c)} ${10 \choose 8} + {10 \choose 9} + {10 \choose 10} = 56$.
 
-\subsection*{Problem 8: \textit{2, pg. 416}} Simple formula application:
+\subsection*{Problem 9: \textit{22, pg. 418}} Simple formula application:
 
 \begin{equation}
 \begin{array}{rll}
-\left ( \begin{array}{c} 11 + 4 - 1 \\ 11 \end{array} \right ) & = & 154 \\[.15in]
+\left ( \begin{array}{c} 11 + 4 - 1 \\ 11 \end{array} \right ) & = & 364 \\[.15in]
 \end{array}
 \end{equation}
 
