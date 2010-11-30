@@ -27,7 +27,7 @@ Student number: u0458675
 
 \paragraph{(b)} If we select one number and do not allow it to be selected again, then each subsequent number will have one less possibility. So: $50 \cdot 49 \cdot 48 = 117,600$.
 
-\paragraph{(c)} The first can be any of the numbers, but the second must be the exact same number (which in other words means the second number can only ever be 1 number, which gives us $50 \cdot 1$ so far). I will also assume that the third must be different (which is a rational expectation given how we treated problems $\textit{a}$ and $\textit{b}$). Thus: $50 \cdot 1 \cdot 49 = 2,450$.
+\paragraph{(c)} The first can be any of the numbers, but the second must be the exact same number (which in other words means the second number can only ever be 1 number, which gives us $50 \cdot 1$ so far). I will also assume that the third must be different (which is a rational expectation given that duplicates are not allowed at all in $\textit{a}$ and $\textit{b}$, and they did not explicitly tell me that the third number should be different here). Thus: $50 \cdot 1 \cdot 49 = 2,450$.
 
 \paragraph{(d)} The strategy here is to add up all the possible ways that we could have two numbers that are the same and one that is not.
 
@@ -55,21 +55,21 @@ So in this case, we can determinately answer that there are $365^{30}$ possibili
 
 \begin{equation}
 \begin{array}{rll}
-sum & = & (356-0) \cdot (356-1) \cdot \ldots \cdot (356-n) \\
-& = & 356^n - 30! \\
+sum & = & (356-0) \cdot (356-1) \cdot \ldots \cdot (356-n) \\[.1in]
+& = & \cfrac{365!}{335!} \\
 \end{array}
 \end{equation}	
 
-\paragraph{(c)} $30!$ is positively minuscule compared to $365^{30}$. My calculator can't handle these numbers, but a quick run to Mathematica reveals that when we take the total without duplicates and divide it by the total $\textit{with}$ duplicates, the total ends up being absolutely paltry:
+\paragraph{(c)} To do this, we just take the previous result and divide it by what we got in (a):
 
 \begin{equation}
 \begin{array}{rll}
-\mbox{\% Without duplicates} & = & 1- \cfrac{365^n-30!}{365^n} \\[.1in]
-& = & 3.5881793395065x10^{-45}\\
+\mbox{\% Without duplicates} & = & \cfrac{\frac{365!}{335!}}{365^n} \\[.1in]
+& \approx & 0.293683\\
 \end{array}
 \end{equation}
 
-This is a lot smaller than I would have expected.
+This is actually a lot larger than I would have expected.
 
 \subsection*{Problem 3: \textit{6, pg. 406}} We can make this problem easier, at least initially, by thinking of each couple as an atomic unit. That is, rather than thinking of 10 people, let's think of 5 couples. So the problem now is, how many different orders can 5 couples stand? The answer is $5! = 120$. If we discount the equivalent states, that's $\frac{120}{5} = 24$
 
