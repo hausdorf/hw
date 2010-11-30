@@ -51,19 +51,15 @@ lines((1/9)*t, 9*dchisq(t, 9), col='blue')
 
 # PROBLEM 1 (e):
 
-paste("Problem 1e -- P(\bar{x}_{10} < -0.5): ", pnorm(-0.5, 9, 18))
+paste("Problem 1e -- P(\bar{x}_{10} < -0.5): ", pnorm(-0.5, 0, 18))
 
 # PROBLEM 1 (f):
 
 p = rnorm.ave()
-q = integer(10000)
-q[p < -0.5] = 1
-q[p >= -0.5] = 0
-#print(q)
 t = 0
-for(i in q)
+for(i in p)
 {
-	if(i == 1)
+	if(i < -.5)
 	{
 		t = t + 1
 	}
@@ -97,6 +93,17 @@ paste("Problem 2b -- Variance of runif.min(): ", var(runif.min()))
 
 # PROBLEM 2 (c): 
 
+r = runif.min()
+z = 0
+for(i in r)
+{
+	if(i > 0.6)
+	{
+		z = z+1
+	}
+}
+z = z/10000
+paste("Problem 2c -- P(min > .6)", z)
 
 ###########
 # PROBLEM 3
@@ -143,7 +150,6 @@ paste("Problem 3e -- Variance of all means of the morley Expts: ", var(q))
 # the one outlier, are pretty close together.
 ###########
 
-
 ###########
 # PROBLEM 3 (g): The variance does match the theoretical variance:
 ###########
@@ -153,4 +159,11 @@ boxplot(q, ylab="Speed indicated by experiment")
 
 # Remove #5 and re-plot
 q = q[-(1)]
-boxplot(q, ylab="Speed indicated by experiment")
+boxplot(q, ylab="Speed indicated by experiment without first expt")
+
+# for variances:
+p = matrix(morley$Speed, 20, 5)
+q = apply(p, MARGIN=2, FUN=var)
+boxplot(q, ylab="variance in speed")
+q = q[-(1)]
+boxplot(q, ylab="variance in speed without first expt")
