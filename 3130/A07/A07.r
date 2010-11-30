@@ -51,7 +51,7 @@ lines((1/9)*t, 9*dchisq(t, 9), col='blue')
 
 # PROBLEM 1 (e):
 
-paste("Problem 1e -- P(\bar{x}_{10} < -0.5): ", pnorm(-0.5, 0, 18))
+paste("Problem 1e -- P(\bar{x}_{10} < -0.5): ", pnorm(-0.5, 0, 1/sqrt(10)))
 
 # PROBLEM 1 (f):
 
