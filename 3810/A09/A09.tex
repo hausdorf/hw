@@ -1,0 +1,86 @@
+%Author Alex Clemmer
+%CS 3810 Computer Organization
+%Assignment 9:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 9}
+Alex Clemmer\\
+Student number: u0458675
+
+\section*{Problem 1:}
+
+Spatial locality. If things are close together, and you have a lot of space in cache, clearly you will not miss as often.
+
+\section*{Problem 2:}
+
+\subsection*{5.4.1}
+
+For $\textbf{(a)}$ the cache line size is 4 words, with $21 + 1$ valid bit, $+ 4 words = 150$ bits to hold the whole line. For  $\textbf{(b)}$, it's 8, with $19 + 1$ valid bit $+8 words = 276$ bits to hold the whole line.
+
+\subsection*{5.4.2}
+
+$\textbf{(a)}$ has 64 entries, and $\textbf{(b)}$ has 128 entries.
+
+\subsection*{5.4.3}
+
+For $\textbf{(a)}$, I would guess that $1 + (\cfrac{\frac{22}{8}}{16}) \approx 1.172$. Similarly, for $\textbf{(b)}$, we have $1 + (\cfrac{\frac{20}{8}}{32}) \approx 1.078$
+
+\section*{Problem 3:}
+
+\subsection*{5.3.2}
+
+Assume that each of these addresses is in binary. In order, their addresses are:
+
+$\texttt{1, 10000110, 11010100, 1, 10000111, 11010101, 10100010, 10100001, 10, 101100, 101001, 11011101}$.
+
+The tag is just a binary address right-shifted 3 bits. The index can be obtained by shifting the binary address 1 bit to the left and then modding that by 8.
+
+As for misses and hits, the sequence should go: MMMHHHMMMMM.
+
+In the case of $\textbf{(b)}$:
+
+$\texttt{00000110, 11010110, 10101111, 11010110, 00000110,  01010100,}$ \\ $\texttt{ 01000001, 10110000k 01000000, 01101001, 01010101, 11010111}$.
+
+The tag of course is just the address shifted right three bits, and the index (again) is a right shift 1 and then a mod 8.
+
+The misses again demand their own section: MMMHMMMHHMHM.
+
+\subsection*{5.3.3} The best miss rate for $\textbf{(a)}$ would be C1(1 hit), C2 (3 hits), C4 (2 hits). Given these conditions, I suppose you want me to find the best design in terms of stall time, in which case: C1 $25 \cdot 11 + 2 \cdot 12 = 299$; C2 $25 \cdot 9 + 3 \cdot 12 = 261$; C3 $25 \cdot 10 + 4 \cdot 12 = 298$.
+
+The best miss rate for $\textbf{(b)}$ would be C1 (1hit), C2 (4 hits), C3 (4 hits). Given that, the stall times should be: C1 $25 \cdot 11 + 2 \cdot 12 = 299$; C2 $25 \cdot 8 + 3 \cdot 12 = 236$; C3 $25 \cdot 8 + 5 \cdot 12 = 260$.
+
+\section*{Problem 4:}
+
+\subsection*{5.6.4} The optimal block size given $\textbf{(a)}$ should be 16 bytes. For $\textbf{(b)}$, it should be 8 bytes.
+
+\subsection*{5.6.5} The optimal block size given $\textbf{(a)}$ should be 32 bytes. For $\textbf{(b)}$ it should be 8 bytes.
+
+\section*{Problem 5:} So the memory miss is 125 cycles / (1/3) = 375 clock cycles. Given the base CPI time of 2:
+
+First level cache would be $2 + 375 \cdot 5\% = 20.75$, or 39.5 in the case of doubling and 11.375 in the case of halving.
+
+Second-level direct-mapped cache will be $2 + 15 \cdot 5\% + 375 \cdot 3\% = 14$ or 25.25, or 8.375.
+
+Second-level eight-way associative works out to be $2 + 25 \cdot 5\% + 375 \cdot 1.8\% = 10$ or 16.75, or 6.625.
+
+\section*{Problem 6:} 
+
+Given $\textbf{(a)}$, we have a virtual address of 32 bits, physical memory of 4GB with page size of 8 KB, and a page table entry size of 4 bytes. So for a single level table, we would need $32-13 = 19$ bits or 512K entries. Thus the page table should be $512K \cdot 4$ bytes $ = 2 MB$.
+
+Given $\textbf{(b)}$, the virtual address is 64 bits, the physical memory is 4GB, page size is 4 KB, and PTE is 8 bytes. That means that a single-level table should be $64-12=52$ bits or $2^{52}$ entries, which seems wrong but isn't. The page table physical memory should thus be $2^{52} \cdot 8 = 2^{55}$ bytes.
+
+
+
+\end{document}
