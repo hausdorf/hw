@@ -1,0 +1,36 @@
+FINAL Tues 8 AM start
+
+Most material is from the last 1/3rd of the semester.
+	- Stalls, truth tables
+	- He will give us a code sequence and ask lots of questions
+		- Pipelined performance, data hazards, etc.
+	- Anything on the assignments and tests, said in class, is fair game
+	- Should be able to read code
+	- Floats
+	- DEFINITELY performance questions (e.g., CPI)
+
+Topics we've covered
+	- Abstractions
+		- From both the software and MIPS perspectives
+			- memory model
+			- instructions
+			- execution/process
+		- Designing logic
+			- Gates
+			- MUX
+			- ALU
+			- sums, differences, number representation
+		- Processor design (both with support for subset of MIPS)
+			- Single-cycle
+			- Pipeline
+			- hazards
+		- Memory system (VERY IMPORTANT)
+			- *Cache
+			- *Virtual memory
+		- I/O systems
+		- "Advanced" topics
+		- Performance questions
+			- bits in flight questions
+			- cache miss questions
+			- CPI
+			- how many bits do you need design $SOME_CACHE?

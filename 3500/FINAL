@@ -1,0 +1,22 @@
+IEnumerable/IEnumerable
+Tasks
+Delegates
+Lambda expressions
+Threads
+
+
+Techniques
+	- Iteration/control abstraction: give them access and no control, no transparency
+		- Iterative access to members of collection
+		- Cursors
+		- IEnumerator interface
+		- c# iterators (via yield return)
+		- Visitor OO pattern
+	- Delegates
+		- Passing methods as parameters
+		- Customizing sorting and searching algorithms
+		- Registering callbacks
+		- Launching threads
+	- Events
+		- Asynchronous behavior that triggers callbacks
+		- Used during GUI interfaces and async sockets
