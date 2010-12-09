@@ -64,7 +64,7 @@ Also worth noting is that increasing block size doesn't really change the read o
 \end{array}
 \end{equation}
 
-\paragraph{6.6.3} Obviously, the larger the memory, the more decode logic you have to wade through, not to mention the fact that propagating addresses around and through the Flash "array". What may be surprising is that the dropoff appears to be so precipitous. Remember though, that in this example, the size increases by powers of two, while the dropoff does not decline at this rate. So the effects are not as severe as one might think.
+\paragraph{6.6.3} Obviously, the larger the memory, the more decode logic you have to wade through, not to mention the fact that propagating addresses around and through the Flash "array" obviously costs time. What may be surprising is that the dropoff appears to be so precipitous. Remember though, that in this example, the size increases by powers of two, while the dropoff does not decline at this rate. So the effects are not as severe as one might think.
 
 \section*{Problem 3:}
 
@@ -104,20 +104,34 @@ Now we have to send the actual message. That's 100,000 bytes plus the overhead f
 
 For $\textbf{(a)}$, this gives us $1.0352342$ seconds $+ 4 \cdot 0.03$ ms, for a $\textbf{total of 1.0353542}$.
 
-For $\textbf{(b)}$, the same sort of derivation follows, for a $\textbf{total of 0.010472342}$.
+For $\textbf{(b)}$, the same sort of derivation follows, except we changed the clock speed from $10^6$ to $10^9$. This gives us a total of $\textbf{total of 0.010472342}$. It's a lot smaller because the clock cycle is smaller.
 
-\paragraph{3-D} The bottleneck is definitely $\textit{not}$ the speed of the signal. The bottleneck is how many time we send a signal per second. If you wanted to decrease the communication latency, I would start by increasing the frequency of the signal.
+\paragraph{3-D} It's important to note that between the two examples, the $\textit{only}$ difference is how fast we were sending the message out. This is pretty strong evidence that the main bottleneck is the frequency of our signal. If you want to go faster, increase how many cycles a second are going out.
+
+I should also say that, while it's not a problem here, as you drop your cycle time, other bottlenecks may appear. If the R/W overhead of a real machine is more like a few milliseconds, or, say, you actually have to access memory, then you will start optimizing in other places.
 
 \section*{Problem 4:}
 
-\paragraph{7.6.1} So there are $(m \times p \times n)$ multiplications, which leaves us with $(m \times p \times (n-1))$ additions. Unfortunately, we will be adding up the products, which means that we need to wait until at least two are available per addition. Thus the speedup should be in the ballpark of 4 times.
+\paragraph{7.6.1} So there are $(m \times p \times n)$ multiplications, which leaves us with $(m \times p \times (n-1))$ additions. We will be adding up the products, which means that we need to wait until at least two are available per addition. So, all things considered, in this case, the speedup should be in the ballpark of 4 times.
 
 \paragraph{7.6.2} In this case, we are basically mapping different elements to the same cache line. Thus, each update ends up causing a cache miss, and so any speedup gained is diminished by a factor of 3 multiplied by the costs associated with a cache miss.
 
 \paragraph{7.6.3} The simplest way is to traverse the matrix via columns instead of rows. That should pretty much eliminate the problem we were having because then the elements will end up mapped to different cache lines.
 
-The only other thing I can think of would be to process the matrix index $(i,j)$ and $(i+1,j)$ on the same core. Remember that we are dealing with false sharing, and thus this is important.
+The only other thing I can think of -- and this is minor in comparison -- would be to process the matrix index $(i,j)$ and $(i+1,j)$ on the same core. Remember that we are dealing with false sharing, and thus this is important.
 
-\section*{Problem 5:}
+\section*{Problem 5:} First, the constraints. Once again, the additions depend on pairs of products, so in some ways we will be dependent on that factor. We obviously have overhead of $mx + mx$ to begin with.
+
+That said, there are $(m \times p \times n)$ multiplications, and $(m \times p \times (n-1))$ additions. The multiplications are parallelizable, and after a few of them are done, so are the additions.
+
+At some point, we can expect the number of multiplications to strictly limit how much more we can speed this all up by parallelization. In other words, this is in lot of ways this is the ideally parallel problem, and the "hard" limitations on speedup will come from limiting the number of operations there are to perform.
+
+That is, apart from the distinct and well-defined constraints above, there will probably not be that many, unless you count hardware constraints ($\textit{e.g.}$, you have to run one OS per core on Intel's 80-core Polaris chip, because neither support that many cores; also there are issues with memory and things like that).
+
+Because the task is so blatantly parallelizable, the speed up limitation should be roughly the number of operations that can possibly be parallelized divided by the number of cores. My guess would be $\cfrac{mpn + t \cdot mp(n-1) - 2mx}{x}$, where $t$ is some variable that accounts for the "problem" of addition.
+
+What does that mean? Note that since addition is usually faster than multiplication (except in cases where the multiplication operation is strength-reduced, for example), the speedup afforded by parallelizing the addition will usually dependent on how fast the multiplication makes its operands available. That is, addition will execute as multiplication operations produce products to add together, and even then, the addition will finish generally before the next multiplication has, meaning that most of the speedup should be from how fast you can do the multiplication.
+
+That of course is not to say that you can't speed up by parallelizing the addition! Certainly computing all of them at once is faster than doing them sequentially, but it is not freely parallelizable as the multiplication is.
 
 \end{document}
