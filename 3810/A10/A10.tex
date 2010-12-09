@@ -21,57 +21,102 @@ Student number: u0458675
 
 \section*{Problem 1:}
 
+\paragraph{6.3.1} The book's example [pg. 577] contains a constant for controller overhead, while the question contains a "controller transfer rate". I will calculate exactly how I was told to by the TAs.
+
 \begin{equation}
 \begin{array}{llrll}
-\textbf{6.3.1} & \textbf{(a)} & 11.0 \mbox{ ms} + \cfrac{0.5 \mbox{ rotation}}{7,200 \mbox{ RPM}} + \cfrac{1 \mbox{ KB}}{34 \mbox{ MBytes/sec}} + \cfrac{1 \mbox{K B}}{480 \mbox{Mbits/sec}} & \approx & 15.1975 \mbox{ ms} \\[.15in]
+& \textbf{(a)} & 11.0 \mbox{ ms} + \cfrac{0.5 \mbox{ rotation}}{7,200 \mbox{ RPM}} + \cfrac{1 \mbox{ KB}}{34 \mbox{ MBytes/sec}} + \cfrac{1 \mbox{K B}}{480 \mbox{Mbits/sec}} & \approx & 15.1975 \mbox{ ms} \\[.15in]
 & \textbf{(b)} & 9.0 \mbox{ ms} + \cfrac{0.5 \mbox{ rotation}}{7,200 \mbox{ RPM}} + \cfrac{1 \mbox{ KB}}{30 \mbox{ MBytes/sec}} + \cfrac{1 \mbox{KB}}{500 \mbox{ Mbits/sec}} & \approx & 13.2013 \mbox{ ms}
 \end{array}
 \end{equation}
 
+\paragraph{6.3.2}
+Our best time would contain no seek overhead and no rotational latency. Thus:
+
 \begin{equation}
 \begin{array}{llrll}
-\textbf{6.3.2} & \textbf{(a)} & 11.0 \mbox{ ms} + \cfrac{0.5 \mbox{ rotation}}{7,200 \mbox{ RPM}} + \cfrac{2 \mbox{ KB}}{34 \mbox{ MB}} & \approx & 15.2241 \mbox{ ms} \\[.15in]
-& \textbf{(b)} & 9.0 \mbox{ ms} + \cfrac{0.5 \mbox{ rotation}}{7,200 \mbox{ RPM}} + \cfrac{2 \mbox{ KB}}{30 \mbox{ MB}} & \approx & 13.2318 \mbox{ ms}
+& \textbf{(a)} & \cfrac{2 \mbox{ KB}}{34 \mbox{ MBytes/sec}} + \cfrac{2 \mbox{ KB}}{480 \mbox{Mbits/sec}} & \approx & 0.061711519607 \mbox{ ms} \\[.15in]
+& \textbf{(b)} & \cfrac{2 \mbox{ KB}}{30 \mbox{ MBytes/sec}} + \cfrac{2 \mbox{ KB}}{500 \mbox{Mbits/sec}} & \approx & 0.06920016666 \mbox{ ms}
 \end{array}
 \end{equation}
 
-\paragraph{6.3.3} 
+\paragraph{6.3.3} There is a clear and dominant factor here, and it is seek time. Whether or not we get data fast or slow is pretty much contingent upon how long it takes to seek. After that, the dominant factor is the rotational latency. Obviously we don't want to downplay how much time this takes compared to the other two factors, but even worst-case it still only takes around half the total time that an average-case seek would take.
+
+Also worth noting is that increasing block size doesn't really change the read or write time by that much. In other words, for reasonably-sized blocks, the size does not appear to matter that much.
 
 \section*{Problem 2:}
 
-\begin{equation}
-\begin{array}{llrll}
-\textbf{6.6.1} & \textbf{(a)} & \cfrac{1 \mbox{ KB}}{34 \mbox{ MB}} & \approx & 0.0287224 \mbox{ ms} \\[.15in]
-& \textbf{(b)} & \cfrac{1 \mbox{ KB}}{30 \mbox{ MB}} & \approx & 0.0325520 \mbox{ ms}
-\end{array}
-\end{equation}
+\paragraph{6.6.1} 
 
 \begin{equation}
 \begin{array}{llrll}
-\textbf{6.6.2} & \textbf{(a)} & \cfrac{0.5 \mbox{ KB}}{34 \mbox{ MB}} & \approx & 0.014361 \mbox{ ms} \\[.15in]
-& \textbf{(b)} & \cfrac{0.5 \mbox{ KB}}{30 \mbox{ MB}} & \approx & 0.016276 \mbox{ ms}
+& \textbf{(a)} & \cfrac{1 \mbox{ KB}}{34 \mbox{ MBytes/sec}} + \cfrac{1 \mbox{ KB}}{480 \mbox{ Mbits/sec}} & \approx & 0.0308557598 \mbox{ ms} \\[.15in]
+& \textbf{(b)} & \cfrac{1 \mbox{ KB}}{30 \mbox{ MBytes/sec}} + \cfrac{1 \mbox{KB}}{500 \mbox{MBits/sec}} & \approx & 0.03460008333 \mbox{ ms}
 \end{array}
 \end{equation}
 
-\paragraph{6.6.3} 
+\paragraph{6.6.2}
+
+\begin{equation}
+\begin{array}{llrll}
+& \textbf{(a)} & \cfrac{0.5 \mbox{ KB}}{34 \mbox{ MBytes/sec}} + \cfrac{0.5 \mbox{ KB}}{480 \mbox{Mbits/sec}} & \approx & 0.0154279 \mbox{ ms} \\[.15in]
+& \textbf{(b)} & \cfrac{0.5 \mbox{ KB}}{30 \mbox{ MBytes/sec}} + \cfrac{0.5 \mbox{ KB}}{500 \mbox{Mbits/sec}} & \approx & 0.0173000 \mbox{ ms}
+\end{array}
+\end{equation}
+
+\paragraph{6.6.3} Obviously, the larger the memory, the more decode logic you have to wade through, not to mention the fact that propagating addresses around and through the Flash "array". What may be surprising is that the dropoff appears to be so precipitous. Remember though, that in this example, the size increases by powers of two, while the dropoff does not decline at this rate. So the effects are not as severe as one might think.
 
 \section*{Problem 3:}
 
-\paragraph{3-A} 
+\paragraph{3-A} So, first, the assumption I'm going to make is that one bit is sent per cycle. To compute this, we start by seeing how far a signal will travel in a single cycle:
 
-\paragraph{3-B} 
+\begin{equation}
+\begin{array}{llrll}
+& & \cfrac{2 \cdot 10^8 \mbox{ m/s}}{100 \cdot 10^6 \mbox{ MHz}} & = & 2 \mbox{ meters} \\[.15in]
+\end{array}
+\end{equation}
 
-\paragraph{3-C} 
+Then, we evaluate the "capacity" of the 10 meter wire. Assuming the rate of signal propagation across the wire is constant, that means that immediately as one is introduced at one end, another will disappear at the other end. Thus at any point there should be $\textbf{5 bits}$ moving across the wire.
 
-\paragraph{3-D} 
+\paragraph{3-B} The first thing we look at is how much wire the signal covers in one cycle:
+
+\begin{equation}
+\begin{array}{llrll}
+& & \cfrac{2 \cdot 10^8 \mbox{ m/s}}{10 \cdot 10^9 \mbox{ MHz}} & = & 0.02 \mbox{ meters} \\[.15in]
+\end{array}
+\end{equation}
+
+Using similar logic to above we get $\cfrac{1500 \mbox{ meters}}{0.02 \mbox{ meters/bit}} = 75,000 \mbox{ bits}$
+
+\paragraph{3-C} This is tricky. First we'll do $\textbf{(a)}$. Let's start with what we know. There is 1 request of 100 bytes that is sent out. Since we are writing, there is an overhead of 0.03 ms. The other end must read, which also incurs this overhead. In other words, the signal gets sent to the receiver, and then the server takes 0.03 ms to process this on top of transmission time. At this point, our total should look like this:
+
+\begin{equation}
+0.03 \mbox{ ms} + \cfrac{100 \cdot 10.2 \mbox{ bits}}{100 \cdot 10^6 \mbox{ bits/sec}} + \cfrac{100 \cdot 2^{10} \mbox{ bits}}{100 \cdot 10^6} + 0.03 \mbox{ ms}
+\end{equation}
+
+Since I do not see anything about the amount of time it takes to find the data on disk or respond, I will not account for it here, although you should note that this is DEFINITELY NOT negligible. So, assuming that there is no data retrieval wait, we have another 0.03 ms that we must wait before we can write back in response.
+
+Now we have to send the actual message. That's 100,000 bytes plus the overhead for each byte. And then at the end of the line, there's another read overhead. So, to our previous equation, we should add this:
+
+\begin{equation}
+... + 0.03 \mbox{ ms} + \cfrac{100,000 \cdot 10.2 \mbox{ bits}}{100 \cdot 10^6 \mbox{ bits/sec}} + \cfrac{100,000 \cdot 2^{10} \mbox{ bits}}{100 \cdot 10^6} + 0.03 \mbox{ ms}
+\end{equation}
+
+For $\textbf{(a)}$, this gives us $1.0352342$ seconds $+ 4 \cdot 0.03$ ms, for a $\textbf{total of 1.0353542}$.
+
+For $\textbf{(b)}$, the same sort of derivation follows, for a $\textbf{total of 0.010472342}$.
+
+\paragraph{3-D} The bottleneck is definitely $\textit{not}$ the speed of the signal. The bottleneck is how many time we send a signal per second. If you wanted to decrease the communication latency, I would start by increasing the frequency of the signal.
 
 \section*{Problem 4:}
 
-\paragraph{7.6.1} 
+\paragraph{7.6.1} So there are $(m \times p \times n)$ multiplications, which leaves us with $(m \times p \times (n-1))$ additions. Unfortunately, we will be adding up the products, which means that we need to wait until at least two are available per addition. Thus the speedup should be in the ballpark of 4 times.
 
-\paragraph{7.6.2} 
+\paragraph{7.6.2} In this case, we are basically mapping different elements to the same cache line. Thus, each update ends up causing a cache miss, and so any speedup gained is diminished by a factor of 3 multiplied by the costs associated with a cache miss.
 
-\paragraph{7.6.3} 
+\paragraph{7.6.3} The simplest way is to traverse the matrix via columns instead of rows. That should pretty much eliminate the problem we were having because then the elements will end up mapped to different cache lines.
+
+The only other thing I can think of would be to process the matrix index $(i,j)$ and $(i+1,j)$ on the same core. Remember that we are dealing with false sharing, and thus this is important.
 
 \section*{Problem 5:}
 

@@ -32,12 +32,21 @@ This minimization is pretty simple:
   1 2 3     1 2 3       1 2 3       1 2 3       
 \end{verbatim}
 
-Thus states 3 and 4 get merged.
+Thus states 3 and 4 get merged. We end up with a 3-state FA: 1 and 2 do not change, but 3 and 4 are merged into one state. This works because 3 and 4 both point to state 4 on a $\texttt{1}$ and state 2 on a $\texttt{0}$. Thus this merged hybrid state ends up moving to state 2 on a $\texttt{0}$ and itself on a $\texttt{1}$. Further, the only way to get to it is to move from state 2 into it using an input of $\texttt{1}$.
 
-[INSERT DIAGRAM HERE]
-
+\includegraphics[scale=0.60]{1_DFA.png}
 
 \subsection*{Problem 2:} 
+
+Really, the simplest way we can conclude that both halves of 10.13 are equivalent is by using the method of transformation from the last question. That is, we can just look at the DFAs and compare them to find out they're isomorphic.
+
+There are of course requisite checks we can run: they have the same number of states, and further, the same number of both final and non-final states, both of which are required for true equivalence. Then, looking at each in sequence starting from the top reveals that there is an equivalent state for each. In other words, for starters, we can conclude that they're isomorphic simply by looking at the machines (which is what we really did in the last problem).
+
+The biggest obstacle in this case is that the layout of the two graphs does not $\textit{prima facie}$ look that similar. Yet a closer inspection reveals that this is not the case: they in fact are isomorphic. As for actually listing their equivalent states between the two machines, the isomorphic relationship can be described as follows (numbers on the left corresponding to the left part of 10.13, and numbers on the right corresponding to the right part of 10.13):
+
+\begin{equation}
+\texttt{8->10; 11->11; 6->7; 12->12; 9->9; 10->6; 7->8; 4->1; 2->3; 3->2; 0->4; 5->0; 1->5}
+\end{equation}
 
 \subsection*{Problem 3:}
 
@@ -51,14 +60,23 @@ The one example of this is the NFAs that reduce to DFAs that do not loop. This $
 
 \subsection*{Problem 4:}
 
-DFAs and BDDs are
+BDDs are, in the words of the book, "minimized DFAs for certain finite languages of binary strings". Boolean formulae are in a lot of ways the ideal way to define finite languages with a two-symbol alphabet. The reason is, rather than being defined for strings unbounded in length ($\textit{e.g.}$, the Keene Star [as seen here: $\texttt{(ab)}^*$], which can produce any number of copies of some sub-expression), the boolean operators are closed over certain defined lengths of string. Since the length of strings is bound definitely, we end up with a really well-defined finite language.
+
+These definitions in mind, if we create a DFA that represents this language, and we minimize it to avoid redundant encoding steps, then we have by definition created a BDD.
 
 \subsection*{Problem 5:}
 
-This is not exactly an XOR, but it's close. It currently fails for input $\texttt{(a=1, b=0)}$ or $\texttt{(a=0, b=1)}$. Basically what's happening is that 
+This is not exactly an XOR, but it's close. It's currently the exact opposite of what we really want. For values $\texttt{(a=0, b=0)}$ and $\texttt{(a=1, b=1)}$, we return $\texttt{1}$, and for $\texttt{(a=0, b=1)}$ and $\texttt{(a=1, b=0)}$, we return $\texttt{0}$. The way to fix this is simply by changing rule $\texttt{g}$ to be $\textbf{NOT}$ negated as so: $\texttt{g = (q + r)}$. In other words, $\texttt{g}$ should be ONLY the boolean relation, and that should be NOT negated.
 
+\subsection*{Problem 6:}
 
+\subsection*{Problem 7:} This transformation is pretty straightforward. $a$ will stand for (a)'s Babies are illogical, $b$ will stand for (b)'s Nobody is despised who can manage a crocodile, and $c$ will stand for (c)'s Illogical persons are despised. A more complicated set of propositions might have OR relations and so on, but this one is so simple that it only has AND relations, because all of them must be true for our conclusion (Babies cannot manage crocodiles) to be true:
 
+\begin{equation}
+L = \{ abc | a \wedge b \wedge c \}
+\end{equation}
+
+In this way, $L$ is defined as a finite language with literally one string in it: $\texttt{111}$. In other words, there is only one possible way that our conclusion can be true: Babies cannot manage crocodiles ONLY in the case that (a) Babies are illogical AND (b) Nobody is despised who can manage a crocodile AND (c) Illogical persons are despised.
 
 
 
