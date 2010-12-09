@@ -68,24 +68,33 @@ These definitions in mind, if we create a DFA that represents this language, and
 
 This is not exactly an XOR, but it's close. It's currently the exact opposite of what we really want. For values $\texttt{(a=0, b=0)}$ and $\texttt{(a=1, b=1)}$, we return $\texttt{1}$, and for $\texttt{(a=0, b=1)}$ and $\texttt{(a=1, b=0)}$, we return $\texttt{0}$. The way to fix this is simply by changing rule $\texttt{g}$ to be $\textbf{NOT}$ negated as so: $\texttt{g = (q + r)}$. In other words, $\texttt{g}$ should be ONLY the boolean relation, and that should be NOT negated.
 
-\subsection*{Problem 6:}
+\subsection*{Problem 6:} For a two-bit adder there are a total of 4 inputs: $\texttt{a1, a0, b1, b0}$. Each corresponds to one digit in a two-digit binary number ($\textit{e.g.}$, $\texttt{a1}$ and $\texttt{a0}$ correspond to some two-digit number $\texttt{a}$). The worst possible ordering I found for these digits is enclosed in the file $\texttt{p6\_bad.ddc}$, and is $\texttt{b1*b0*a1*a0}$, and yields  is $\texttt{7}$ states. The best was $\texttt{b1*a1*b0*a0}$, and it yielded $\texttt{5}$ states.
 
-\subsection*{Problem 7:} This transformation is pretty straightforward. $a$ will stand for (a)'s Babies are illogical, $b$ will stand for (b)'s Nobody is despised who can manage a crocodile, and $c$ will stand for (c)'s Illogical persons are despised. A more complicated set of propositions might have OR relations and so on, but this one is so simple that it only has AND relations, because all of them must be true for our conclusion (Babies cannot manage crocodiles) to be true:
+A word of explanation: the script I generated may be simpler than my classmates'. I approached the problem like so: We know that we only have to worry about the FINAL carry bit, so all we have to do is analyze the bits given and find out if we have a situation where the carry bit is tripped at the end. That's incredibly simple. This is either the case when the rightmost digits of both numbers are 1 AND any of the left most digits are 1, OR when the leftmost digits are both one.
 
-\begin{equation}
-L = \{ abc | a \wedge b \wedge c \}
-\end{equation}
+I can understand why others might simulate the complete adder, but I found it completely unnecessary given that I really only care about the carry bit. Hence my very succinct solution.
 
-In this way, $L$ is defined as a finite language with literally one string in it: $\texttt{111}$. In other words, there is only one possible way that our conclusion can be true: Babies cannot manage crocodiles ONLY in the case that (a) Babies are illogical AND (b) Nobody is despised who can manage a crocodile AND (c) Illogical persons are despised.
+\subsection*{Problem 7:} This puzzle can be decomposed in a fairly straightforward way.
+\begin{verbatim}
+var = babies*despised*illogical*manage
 
+# Babies are Illogical
+A1 = babies => illogical
 
+# Nobody is despised who can manage a crocodile
+A2 = despised => manage'
 
+# Illogical persons are despised
+A3 = illogical => despised
 
+# Our goal
+goal = babies => manage
 
+# Our construction
+result = A1*A3*A2*goal
 
-
-
-
-
+#Result is false: babies => illogical, illogical => despised, despised => manage'.
+#AND this with our goal, babies => manage, and we get false. That's perfect.
+\end{verbatim}
 
 \end{document}
