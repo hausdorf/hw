@@ -21,7 +21,13 @@ Student number: u0458675
 
 \section*{Problem 1:}
 
-\paragraph{6.3.1} The book's example [pg. 577] contains a constant for controller overhead, while the question contains a "controller transfer rate". I will calculate exactly how I was told to by the TAs.
+\paragraph{6.3.1} The book's example [pg. 577] contains a constant for controller overhead, while the question contains a "controller transfer rate". I will calculate $\textit{exactly}$ how I was told to by Tyler, the TA.
+
+That said, I think that this is wrong, and the assignment tells us not to worry about the controller overhead anyway. The reason I think this is wrong is because in data storage, we all know that speed is the premium. I suspect that it is highly unlikely that we transfer all data from disk to the controller and then, after waiting for all of it, from the controller to main memory. Generally the idea is to get everything back to main as swiftly as possible, and it makes no sense to incur linear controller overhead.
+
+Besides that, I've researched this as best I can, and as far as I can tell, there is a controller overhead, but it tends to be the time it takes to get the controller activated and sending information out, rather than a linear stack on top of the disk transfer time.
+
+If you think that this reasoning is correct, then I would appreciate it if you took this into account as you evaluated the credit I get on this answer.
 
 \begin{equation}
 \begin{array}{llrll}
