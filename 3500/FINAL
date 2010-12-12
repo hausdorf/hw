@@ -20,3 +20,110 @@ Techniques
 	- Events
 		- Asynchronous behavior that triggers callbacks
 		- Used during GUI interfaces and async sockets
+	- Threading
+		- An approach to concurrency
+		- Sync with locks
+		- Avoiding deadlocks
+		- critical sections
+			- Part inside lock braces, want to be as small as possible
+		- GUI event thread
+		- Async socket
+	- Socket Programming
+		- For communicating over a network
+		- servers accept, clients connect
+		- sync blocking sockets
+		- async non-blocking sockets
+		- Like reading from a file, but you have to deal with the fact that it may not be complete
+	- SQL programming
+		- Incorporating DBs into programs
+		- Design DB schema
+		- Imposing keys and constraints
+		- Queries (selection, projection, join)
+		- Insert, delete, update
+		- You're using 2 languages when you use it, strangely
+		- Switching involves both a change to the connection string and the DLL that connects to the DB
+	- OOP Design Patterns
+		- Solutions to commonly-encountered patterns
+		- singletons
+		- factories
+		- adapter
+		- decorator
+		- visitor
+	- OO architecture
+		- Organizing programs around classes
+		- information hiding
+		- exploiting polymorphism via inheritance and interfaces
+	- Client/server arch
+		- Network-based
+		- Server program that accepts connections from remote clients
+	- Event-driven arch
+		- Programs organized around async events that are handled via callbacks
+		- usually involves threads
+	- GUI arch
+		- users interact with GUI components
+		- Relies heavily on events and callbacks
+	- MVC arch
+		- Model: business logic / "smarts"
+		- View: UI
+		- Controller: mediates between model and view
+	- DB-oriented arch
+		- Program uses DB, usually via remote server
+		- Can benefit from ACID properties of DB (atomicity, consistency, isolation, durability)
+
+- Software Dev tools
+	- Program dev (VS)
+	- GUI construction (VS)
+	- VCS (SVN)
+	- Debugging (VS)
+
+- Software Engineering
+	- Evolved from batch apps
+	- "Software crisis" is always there
+		- Better hardware, but not better software
+	- Idealized vs actual failure for software
+		- Hardware fails constantly, where software spikes and stuff
+	- Intersection of systems eng, CS, management, psychology
+	- lifecycle: analysis, design, development, testing, maintainence
+	- Identify and correct problems early
+
+- Version Control
+	- Keep track of evolution of programs
+	- When developing alone, solves multiple machine problem, allows recovery from mistakes
+	- Allows working with others, softens costs of that
+
+- Testing
+	- Goal: to affirm quality
+	- up to 40% of engineering effort.
+		- Process of executing a program with the intent of finding an error
+	- Testing can't show the absence of defects
+	- Testing models
+		- black, white box testing, unit, test-first approach
+
+- Debugging
+	- A defect that you put there
+	- Difficult, unpredictable amount of time, most people aren't systematic
+	- Experience debuggers are 20 times better than noobs
+	- Process: stabilize error, locate, fix, test teh fix, look for similar errors, reflect
+	- Locating errors: narrow region of suspicious code, come up with hypotheses, and devise tests to confirm/refute
+
+- Improving performance
+	- don't
+	- isolate hotspots
+	- pay attention to caching
+
+- Pair programming
+
+- UML
+	- Graphical notation for showing software at a high level
+	- Class diagrams are salient parts of class hierarchies
+	- Even though it's graphical, there are some semantics
+
+- IP
+	- Copyrights: protect expression, like software
+	- Patents protect ideas
+		- Expensive, time-consuming to get
+		- abused system
+	- Trademarks, trade secrets
+
+- Ethics
+	- Act consistently with public interest

@@ -1,0 +1,25 @@
+- temporal locality
+- spatial locality
+1. Good cache organization (e.g. books on a desk in some library) give the illusion of large memory that we can access as fast as a small memory.
+- DRAM
+- SRAM
+2. The "dynamic" of DRAM is because the capacitors must be periodically refreshed.
+- integrated circuit
+- block or line
+- hit
+- miss
+- hit ratio
+- miss penalty
+- direct mapped
+- tags
+- valid bit
+- cache index
+- early restart
+- critical word first/requested word first
+- processor control unit
+- write-through
+- write buffer
+- write carry
+- write-back
+- write allocate
+- no-write allocation

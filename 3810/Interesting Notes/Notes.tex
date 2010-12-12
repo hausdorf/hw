@@ -44,6 +44,28 @@ That is, L1 cache is small and fast; data on it is meant to be accessed repeated
 
 \paragraph{Memory is usually structured in true hierarchies: } In most memory models, if data is in memory level $i$, it is also in level $i+1$, assuming that there is such a level (and there would not be if $i$ is the hard drive.
 
+\paragraph{Does communication bandwidth or processing bandwidth matter more?} Depends. Look at the model of some computer on the internet: clearly communications is the bottleneck for the browser, as it doesn't have to compute a whole lot. But for the proxy server, it's both processing and communications bandwidth: faster servers are expensive, and communication BW is expensive too. In servers, it's really both, but more the processing BW. Processing power is expensive.
+
+\paragraph{Should cache lines be large or small?} Tough call. Increasing their size makes us miss less often, but also makes misses cost more time. The larger the cache line, the more time it takes to populated it with fresh data.
+
+But there's more to it. The miss rate drops off as the cache sizes get larger -- perhaps because after a certain threshold programs tend to just jump outside of the scope of the cache line, rather than incidentally using some variable that is close by, but simply out of scope.
+
+\paragraph{Why not use early restart for standard memory (rather than just I-Mem)?} We might, but it's less successful. With I-Mem, we tend to fetch sequentially from cache. So when we have a miss, we can begin the fetch of a new cache line and just restart the instruction as the word we need becomes available (rather than waiting for the whole line to show up). We can continue to fetch instructions "just in time" until the transfer of memory is complete.
+
+With regular data caches, memory access tends to be more erratic. If we incur a miss and start executing immediately when the word we need becomes available, all other fetches must wait until their instruction is loaded. In the case of just waiting for the data that's in the same cache line to load, the time is simply unpredictable. In the case of a cache miss, we won't know and will wait for the memory to load into cache before we start loading a different line into cache.
+
+\paragraph{What's the difference between a block address and a byte address?} If we say we have some byte address, and we want to know what block address it corresponds to, this is how we derive it:
+
+\begin{equation*}
+\mbox{block address} = \cfrac{\mbox{byte address}}{\mbox{block size (in bytes)}} \% \mbox{ \# of blocks in cache}
+\end{equation*} 
+
+In other words, we take the ordinal of a specific byte in a sequence of bytes ($\textit{e.g.}$, byte number 10 in a sequence of 20), and divide that by the number of bytes in a block. Then we take that number (it should be a natural number) and mod it by the number of blocks in the cache. This gives us the specific place our bite would be mapped to in a cache.
+
+Highly useful when we've indexed some information and need to know where to find it in a large cache.
+
+\paragraph{What is a ``streaming" workload?} Streaming workloads bring in a lot of data but reuse almost none of it. This is in contrast to most other types of workloads, which may take in a lot of data, but also tend to reuse it at least a little.
+
 \section*{Questions}
 
 \paragraph{Writing regs on clock edge} If contents of a register only change on clock edge, how is writing happening in the first half of the cycle, while reading happens the second half? Shouldn't this be reversed?

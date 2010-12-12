@@ -134,7 +134,7 @@ At some point, we can expect the number of multiplications to strictly limit how
 
 That is, apart from the distinct and well-defined constraints above, there will probably not be that many, unless you count hardware constraints ($\textit{e.g.}$, you have to run one OS per core on Intel's 80-core Polaris chip, because neither support that many cores; also there are issues with memory and things like that).
 
-Because the task is so blatantly parallelizable, the speed up limitation should be roughly the number of operations that can possibly be parallelized divided by the number of cores. My guess would be $\cfrac{mpn + t \cdot mp(n-1) - 2mx}{x}$, where $t$ is some variable that accounts for the "problem" of addition.
+Because the task is so blatantly parallelizable, the speed up limitation should be roughly the number of operations that can possibly be parallelized divided by the number of cores. My guess would be $\cfrac{mpn + t \cdot mp(n-1)}{x} - 2mx$, where $t$ is some variable that accounts for the "problem" of addition.
 
 What does that mean? Note that since addition is usually faster than multiplication (except in cases where the multiplication operation is strength-reduced, for example), the speedup afforded by parallelizing the addition will usually dependent on how fast the multiplication makes its operands available. That is, addition will execute as multiplication operations produce products to add together, and even then, the addition will finish generally before the next multiplication has, meaning that most of the speedup should be from how fast you can do the multiplication.
 

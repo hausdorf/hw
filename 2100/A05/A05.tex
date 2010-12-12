@@ -1,0 +1,91 @@
+%Author Alex Clemmer
+%CS 2100 Discrete Math
+%Assignment 5:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+
+\begin{document}
+
+\section*{Assignment 5}
+Alex Clemmer\\
+CS 2100 \\
+Student number: u0458675
+
+\subsection*{Problem 1: \textit{13, pg. 423}} 
+
+Where $S_1$, we can trivially see that the sequence is $0, 1$. Where $S_2$, we can see that the sequence is $00, 01, 10$. The thing to notice here is that there is a certain amount of repetitiveness --- that is, the sequence of $S_n = \{0, 1\}$ are the same as the first few derivations of $S_2$: the sequence is $\{00, 01, ...\}$, and if you ignore the trailing zeroes to the left, it is the same sequence.
+
+The only question that would remain is, how fast does this sequence add new derivations to the sequence? The answer is that it adds $n-1$ numbers to the sequence $S_{n-1}$. Thus, our answer is:
+
+\begin{equation}
+\begin{array}{rll}
+S_n = S_{n-1} + (n-1) \\[.0in]
+\end{array}
+\end{equation}
+
+\subsection*{Problem 2: \textit{8, pg. 423}} 
+
+$d_1 = 0$: if we have 1 envelope and 1 letter, then there are a total of 0 ways to put that letter in the wrong envelope. $d_2 = 1$: in the case that we have 2 envelopes and 2 letters, then there is exactly 1 way to put letters in incorrect envelopes. This in mind, it's relatively simple to derive $d_5$ from the formula:
+
+\begin{equation}
+\begin{array}{rcl}
+d_5 & = & 4 \cdot (d_{4} + d_{3}) \\[.08in]
+& = & 4 \cdot(d_4 + 2 \cdot (d_2 + d_1)) \\[.08in]
+& = & 4 \cdot(d_4 + 2 \cdot (1 + 0)) \\[.08in]
+& = & 4 \cdot(3 \cdot (d_3 + d_2) + 2) \\[.08in]
+& = & 4 \cdot(3 \cdot (2 + 1) + 2) \\[.08in]
+& = & 44 \\[.08in]
+\end{array}
+\end{equation}
+
+\subsection*{Problem 3: \textit{10, pg. 423}}
+
+Once again $t_n$ is a superset of $t_{n-1}$: for example, $t_1 = \{1-2\}$; observe that $t_2 = \{(1-2, 3-4), (1-3, 2-4), (1-4, 2-3)\}$ contains this pairing as the first element.
+
+The next thing to observe is that the problem is asking us how many ways we can set up the first round. The easiest way to visualize this is to set up each of the potential matches into columns. I've organized $t_2$ as an example below. In this example, each player gets a number from 1 to 4, and each column represents a potential set of matches that might make up the first round.
+
+\begin{verbatim}
+for n = 2
+round 1   round 2   round 3
+1-2       1-3       1-4
+3-4       2-4       2-3
+\end{verbatim}
+
+We can see here that there are thus a total of 3 ways to set up the first round of a tournament with 4 people in it. In contrast, notice how many matches are possible if there are only 2 players in the tournament:
+
+\begin{verbatim}
+round 1
+1-2
+\end{verbatim}
+
+To solve this problem, the best way is to look at how $t_1$ is expanded to $t_2$, and how $t_2$ is expanded to $t_3$, and so on. I won't bother to write out $n=3$ because it's a bit larger, but it's just a single-dimensional transform.
+
+That is, if we are recursively defining $t_n$, then the table should expand by a factor of $2n-1$. We can check this by observing that in expanding from 2 to 4 players, player 1 gets paired with all the others: from $\texttt{1-2}$ to $\texttt{1-2, 1-3, 1-4}$. When we multiply by $2n-1$, we are asserting this occurrence across all the numbers, which is accurate. Thus:
+
+\begin{equation}
+t_n = t_{n-1} \cdot (2n-1)
+\end{equation}
+
+\subsection*{Problem 4: \textit{6, pg. 435}} 
+
+\subsection*{Problem 5: \textit{8, pg. 436}} 
+
+\subsection*{Problem 6: \textit{19, pg. 436}} 
+
+\subsection*{Problem 7: \textit{22, pg. 436}} 
+
+\subsection*{Problem 8:} 
+
+\subsection*{Problem 9:} 
+
+\end{document}
