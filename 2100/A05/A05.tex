@@ -76,16 +76,253 @@ That is, if we are recursively defining $t_n$, then the table should expand by a
 t_n = t_{n-1} \cdot (2n-1)
 \end{equation}
 
-\subsection*{Problem 4: \textit{6, pg. 435}} 
+\subsection*{Problem 4: \textit{6 parts (b) \& (d), pg. 435}} 
 
-\subsection*{Problem 5: \textit{8, pg. 436}} 
+\paragraph{(b)} This problem is extremely straightforward. $\textit{Given}$:
 
-\subsection*{Problem 6: \textit{19, pg. 436}} 
+\begin{equation*}
+\begin{array}{rcl}
+a_n & = & b \cdot a_{n+1} + c, n \ge 1 \mbox{ and } b \ne 1 \\[.08in]
+\end{array}
+\end{equation*}
 
-\subsection*{Problem 7: \textit{22, pg. 436}} 
+We can derive the closed formula as follows:
 
-\subsection*{Problem 8:} 
+\begin{equation*}
+\begin{array}{rcl}
+& = & L \cdot b^n + \cfrac{c}{1-b} \\[.08in]
+\end{array}
+\end{equation*}
 
-\subsection*{Problem 9:} 
+Thus, given that $a_1 = 1, a_n = 3a_{n-1} + 2, n \ge 1$, we can use the above principle to derive most of the closed formula:
+
+\begin{equation*}
+\begin{array}{rcl}
+a_n & = & L \cdot 3^n + \cfrac{2}{1-3} \\[.08in]
+& = & L \cdot 3^n - 1 \\[.08in]
+\end{array}
+\end{equation*}
+
+All that's left is to derive $L$, which is pretty trivial. We'll solve for $n = 2$.
+
+\begin{equation*}
+\begin{array}{rcl}
+5 & = & L \cdot 3^1 - 1 \\[.0in]
+6 & = & L \cdot 9 \\[.0in]
+\cfrac{2}{3} & = & L \\[.08in]
+\end{array}
+\end{equation*}
+
+And thus we have our final answer:
+
+\begin{equation}
+\begin{array}{rcl}
+a_n & = & \cfrac{2}{3} \cdot 3^n - 1 \\[.08in]
+\end{array}
+\end{equation}
+
+\paragraph{(d)} This problem follows directly from above. $\textit{Given } \mathit{a_1 = 3}$:
+
+\begin{equation*}
+\begin{array}{rcl}
+a_n & = & 3 - a_{n-1} \\[.03in]
+& = & L \cdot (-1)^n + \cfrac{3}{1+1} \\[.08in]
+- \cfrac{3}{2} & = & L \cdot (-1)^n \\[.08in]
+\end{array}
+\end{equation*}
+
+Given that $n=2$:
+
+\begin{equation*}
+\begin{array}{rcl}
+- \cfrac{3}{2} & = & L \cdot (-1)^2 \\[.08in]
+- \cfrac{3}{2} & = & L \\[.08in]
+\end{array}
+\end{equation*}
+
+Thus:
+
+\begin{equation}
+\begin{array}{rcl}
+a_n & = & - \cfrac{3}{2} \cdot (-1)^n + \cfrac{3}{2} \\[.08in]
+\end{array}
+\end{equation}
+
+\subsection*{Problem 5: \textit{8 parts (a), (b) \& (c), pg. 436}} 
+
+\paragraph{(a)} We can represent this situation in the following way:
+
+\begin{equation*}
+\begin{array}{rcl}
+b_n & = & M_{n-1} + 0.10 \cdot M_{n-1}  \\[.08in]
+\end{array}
+\end{equation*}
+
+Given what we have established above, it is possible to characterize this equation in the following closed format:
+
+\begin{equation*}
+\begin{array}{rcl}
+b_n & = & L(1.1)^n \\[.1in]
+\end{array}
+\end{equation*}
+
+Solving for L, we get:
+
+\begin{equation*}
+\begin{array}{rcl}
+L & = & 909090.\overline{90} \\[.08in]
+\end{array}
+\end{equation*}
+
+Which leaves our equation at:
+
+\begin{equation*}
+\begin{array}{rcl}
+b_n & = & 909090.\overline{90} \cdot (1.1)^n \\[.08in]
+\end{array}
+\end{equation*}
+
+Solving for $2,000,000$, we get $\mathbf{n=8.27254}$.
+
+\paragraph{(b)} This equation will be a lot like the other one, the major difference being that we will subtract $50,000$ bacteria each time we update. Let's start with the recursive equation:
+
+\begin{equation*}
+\begin{array}{rcl}
+b_n & = & M_{n-1} + 0.10 \cdot M_{n-1} - 50,000 \\[.08in]
+\end{array}
+\end{equation*}
+
+This corresponds to the following iterative base equation:
+
+\begin{equation*}
+\begin{array}{rcl}
+b_n & = & L \cdot 1.10^n - \cfrac{50,000}{1-1.1 } \\[.15in]
+& = & L \cdot 1.10^n + 500,000 \\[.08in]
+\end{array}
+\end{equation*}
+
+Use this to derive $L$:
+
+\begin{equation*}
+\begin{array}{rcl}
+500,000 & = & L \cdot 1.10^n \\[.08in]
+500,000 & = & L \cdot 1.10^n \\[.08in]
+454545 & = & L \\[.08in]
+\end{array}
+\end{equation*}
+
+Which gives us the full equation:
+
+\begin{equation*}
+\begin{array}{rcl}
+b_n & = & 454545 \cdot (1.1)^n + 500,000 \\[.08in]
+\end{array}
+\end{equation*}
+
+Solving for $2,000,000$, we get $\mathbf{n = 12.5267}$
+
+\paragraph{(c)} This is more or less the same question as before.
+
+\begin{equation*}
+\begin{array}{rcl}
+b_n & = & M_{n-1} + 0.10 \cdot M_{n-1} - 200,000 \\[.08in]
+\end{array}
+\end{equation*}
+
+This leads to the iterative equation:
+
+\begin{equation*}
+\begin{array}{rcl}
+b_n & = & L \cdot 1.10^n - \cfrac{200,000}{1-1.1 } \\[.15in]
+& = & L \cdot 1.10^n + 2,000,000 \\[.08in]
+\end{array}
+\end{equation*}
+
+Use this to derive $L$:
+
+\begin{equation*}
+\begin{array}{rcl}
+-1,000,000 & = & L \cdot 1.10^n \\[.08in]
+-1,00,000 & = & L \cdot 1.10^n \\[.08in]
+-909090.\overline{90} & = & L \\[.08in]
+\end{array}
+\end{equation*}
+
+Which gives us the full equation:
+
+\begin{equation}
+\begin{array}{rcl}
+b_n & = & -909090.\overline{90} \cdot (1.1)^n + 2,000,000 \\[.08in]
+\end{array}
+\end{equation}
+
+$\textbf{The impact is}$ that we deplete to 0 bacteria because the rate at which we take them is faster than the rate by which they populate the culture.
+
+\subsection*{Problem 6: \textit{19 part (b), pg. 436}}
+
+\paragraph{(b)} The given equation $a_n = 2a_{n-1} + 2a_{n-1}$ actually plugs directly into Theorem 4 from the book:
+
+\begin{equation*}
+\begin{array}{rcl}
+x^2 & = & 2x + 2 \\[.08in]
+\end{array}
+\end{equation*}
+
+The solutions to this quadratic are:
+
+\begin{equation*}
+\begin{array}{rcl}
+x & = & \pm \sqrt{3} + 1 \\[.08in]
+\end{array}
+\end{equation*}
+
+Plugging this back in, we get:
+
+\begin{equation}
+\begin{array}{rcl}
+a_n & = & C \cdot (\sqrt{3} + 1)^n + K \cdot (-\sqrt{3} + 1)^n \\[.08in]
+\end{array}
+\end{equation}
+
+\subsection*{Problem 7: \textit{22 part (c), pg. 436}}
+
+We have an equation $a_n = 8a_{n-1} - 16a_{n-2}$ which corresponds to the quadratic $x^2 = 8x-16$. We can trivially find the root here, which is $x=4$. This gives us the final equation:
+
+\begin{equation}
+\begin{array}{rcl}
+a_n & = & (C + K \cdot n) 4^n \\[.08in]
+\end{array}
+\end{equation}
+
+\subsection*{Problem 8:}
+
+So we already know that $A_i$ counts all distributions with at least $i+1$ balls in $i$-th box; this is of course useful for calculating the sets that do $\textit{not}$ fit the criteria delineated by the problem. Thus, we are able to derive (following notes 4.9 and 4.11 almost exactly):
+
+\begin{equation}
+\# \bigcup - (\#A_1 + \#A_2 + \#A_3) + (\#A_1 \cap \#A_2 + \#A_2 \cap \#A_3 + \#A_1 \cap \#A_3) \\
+- (\#A_1 \cap \#A_2 \cap \#A_3)
+\end{equation}
+
+The important thing to note here is that, given the formula $\#A_i = \displaystyle \binom{5-(i+1)+3-1}{3-1}$, we know that the $\#A_1 \cap \#A_2 \cap \#A_3 = 0$, since if we tried to put $i+1$ balls in every single $i$-th container, we'd clearly run out of balls. This holds also for $\#A_1 \cap \#A_3$ and $\#A_2 \cap \#A_3$, but not for $\#A_1 \cap \#A_2$, which is $1$.
+
+Because of this, we can derive our final answer:
+
+\begin{equation}
+\# \overline{\bigcup_{i=1}^3 A_i}  = \displaystyle \binom{5+3-1}{3-1} - \left( \binom{3+3-1}{3-1} + \binom{2+3-1}{3-1} + \binom{1+3-1}{3-1} \right) + (1+0+0) - 0 = 3
+\end{equation}
+
+And when you think about it, that's a lot of work to do to get an answer of $3$.
+
+\subsection*{Problem 9:}
+
+Now the trickier one. $A_1$ should be all the arrangements with ``00"; $A_2$ should be the arrangements with ``11"; $A_3$ should be all arrangements with ``22"; and $A_4$ should thus be all arrangements with ``44".
+
+Given this, and given the notes online, we can say that $\#\bigcup = \cfrac{8!}{(2!)^4}$, $\#A_i = \cfrac{7!}{(2!)^3}$, $\#A_i \cap A_j = \cfrac{6!}{(2!)^2}$, $\#A_i \cap A_j \cap A_k = \cfrac{5!}{2!}$, and $\#A_1 \cap A_2 \cap A_3 \cap A_4 = 4!$.
+
+Even though this question looks a lot more intimidating than the last one, the conclusion follows directly from these terms:
+
+\begin{equation}
+\# \overline{\bigcup_{i=1}^4 A_i}  = \displaystyle \binom{4}{0} \cfrac{8!}{(2!)^4} - \binom{4}{1} \cfrac{7!}{(2!)^3} + \binom{4}{2} \cfrac{6!}{(2!)^2} - \binom{4}{3} \cfrac{5!}{2!} + \binom{4}{4} 4! = 864
+\end{equation}
 
 \end{document}
