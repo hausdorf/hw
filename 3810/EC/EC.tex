@@ -1,0 +1,376 @@
+%Author Alex Clemmer
+%CS 3810 Computer Organization
+%Final Project:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\usepackage{colortbl}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Final Project}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{Analysis of Peter's Design:}
+
+\subsection{Analysis of Clock Period:}
+
+The clock period is $2$ ns $ + $ the clock penalty. Given the penalty definition:
+
+\begin{equation}
+\cfrac{13 \text{ instructions}}{8 \text{ ns}} = 1.625 \text{ ns}
+\end{equation}
+
+Rounding down, this gives us a clock period of $\mathbf{2 + 1 \text{ ns} = 3 \text{ ns}}$.
+
+\subsection{Latencies in cache and I/O:}
+
+We want to make the common case fast. In the case of fetching $\texttt{I-Mem}$ to IR, we want the actual memory access time to be incorporated into the cycle itself. Why? Because it is silly to waste a stall cycle literally every time you fetch an instruction. Besides that, fetching from cache only costs 1 ns, which is very probably small enough to be incorporated the cycle that requests the memory.
+
+Since the common case of fetching data memory is not fundamentally different, and because data access is so heavily used, it makes sense that this reasoning should hold for $\texttt{D-Mem}$ accesses as well.
+
+Cache misses are not that much more complicated: we miss when looking in the cache, and then incur a 1 ns of wait time for the memory controller followed immediately by 10 ns of wait time for the memory access. This gives us 4 cycles of latency.
+
+The spec for the assigned machine says that a miss-to-I/O ends up going through cache to the memory controller and then to I/O. The memory controller costs 1 ns. The spec also says that, "once activated", the I/O will supply the message in 5 ns. So I/O read will cost 1 + 5 ns, or 6 ns, which is 2 full cycles.
+
+The write-I/O should work the same way. It should go from cache miss to memory controller to I/O write, which would take 5 ns. Once again, this would give us 2 full cycles.
+
+Waiting for device writes is, yes, crucial. If we didn't, if instead, we simply gave it 1 cycle of latency, we would not get to actually write all the data. Important to note is that the whole word is written or read at the end of the 5 ns, though, so it is not necessary to wait beyond the decided 6 ns total for these things to complete.
+
+\subsection{Instruction Analysis:}
+
+Important notes and extended discussion:
+
+Much of the processors work is transparent at the level of the assembly programming. I -- and programmers in general -- will not have to worry about microdelays like latch times, at least not for the purposes here.
+
+What we will have to worry about is parsing out what exactly is meant in several places in this assignment, which I try to do with a dose of pragmatism, cost balancing, intuition, and occasionally, high-level discussions with people who know a lot about that particular area. Two particular things that worried me on the outset were:
+
+$\textbf{(1)}$ Initially there was some concern about the effect of a cache hit on a memory cycle. Does it stall? Or does it fit inside the clock cycle? Most of our work has taken a pretty naive view of memory, and so it is easy to make mistakes here.
+
+Generally we want to keep the common case fast, so I did decide that a cache hit will fit inside the cycles. The reasons I decided this are, first, that fetching from $\texttt{I-Mem}$ should not cause a delay cycle every time (that would be ridiculous), and second, that the cache hits take 1 ns which is really manageable inside of one cycle.
+
+$\textbf{(2)}$ Are we using write-backs, or write-through? Intuitively, write-backs seems like the right answer, but this answer is not given explicitly. It is not, for our purposes, hugely important, but it is not irrelevant, either.
+
+$\textbf{(3)}$ I am assuming we never miss to I/O for the instructions. I am assuming they get loaded into memory at device start and never get overwritten after that.
+
+$\textbf{(4)}$ I am glomming cycles into groups that have the same possible stall patterns. For example, $\texttt{loada}$ and $\texttt{storea}$ can both miss for data, and also miss-goto-I/O; these things are not always possible for all instructions.
+
+\subsubsection{\large seta, deci, flush, tai, tbi, tia, tib:}
+
+These are instructions that have 3 segments: 1 for fetching instruction to IR, 1 for incrementing the PC, and 1 for performing the operation.
+
+The only data hazard here is in the instruction fetch stage, which is the first stage. The other two segments are highly stable.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Status} & \textbf{C1} & \textbf{C2} & \textbf{C3} & \textbf{Total} \\
+\hline
+\hline
+Hit & 1 cycle & 1 cycle & 1 cycle & 3 cycles \\
+\hline
+Miss & 1 cycle + 4 cycles stall & 1 cycle & 1 cycle & 7 cycles \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{\large loada, loadai, storea, storeai, cmpai:}
+
+These instructions also tri-segmented, with the added twist of being able to have two misses, and, on the second one, two $\textit{types}$ of miss.
+
+The first opportunity to miss, again, is the instruction fetch segment, which is the first segment. The second opportunity to miss is the third segment, and in addition, it can miss to I/O, which causes additional penalties. The middle segment is stable.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Status} & \textbf{C1} & \textbf{C2} & \textbf{C3} & \textbf{Total} \\
+\hline
+\hline
+H + H & 1 cycle & 1 cycle & 1 cycle & 3 cycles \\
+\hline
+M + H & 1 cycle + 4 cycle stall & 1 cycle & 1 cycle & 7 cycles \\
+\hline
+H + M & 1 cycle & 1 cycle & 1 cycle + 4 cycle stall & 7 cycles \\
+\hline
+M + M & 1 cycle + 4 cycle stall & 1 cycle & 1 cycle + 4 cycle stall &11 cycles \\
+\hline
+H + I/OM & 1 cycle & 1 cycle & 1 cycle + (1 ns + 5 ns) & 5 cycles \\
+\hline
+M + I/OM & 1 cycle + 4 cycle stall & 1 cycle & 1 cycle + (1 ns + 5 ns) & 9 cycles \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{\large bge, blt:}
+
+These instructions take 2 cycles to complete plus memory stalls. The second cycle is stable, and thus the first cycle is the only one which may miss:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Status} & \textbf{C1} & \textbf{C2} & \textbf{Total} \\
+\hline
+\hline
+Hit & 1 cycle & 1 cycle & 2 cycle \\
+\hline
+Miss & 1 cycle + 4 cycles stall & 1 cycle & 6 cycles \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Running time of algorithm}
+
+Here's the really tricky part. The (rather large) table that contains all the information on the instructions, how many times they get executed, and so on, occurs on the next page, along with a key that shows by color how many times each statement in particular gets executed.
+
+\pagebreak[4]
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\multicolumn{2}{|c|}{Key} \\
+\hline
+\cellcolor{red} & executes $n$ times \\
+\hline
+\cellcolor{green} & executes $\cfrac{n(n-1)}{4}$ times \\
+\hline
+\cellcolor{yellow} & executes $\cfrac{n(n-1)}{2}$ times \\
+\hline
+\cellcolor{black} & executes 1 time \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|l|c|c|c|c|c|}
+\hline
+& & & & Mem & Label & Tag \underline{Index} Offset & Assoc. \# & Instruction & IH & IM & DH & DM & I/O \\
+\hline
+\hline
+\cellcolor{black} & & & & 100 & Start & 01100 \underline{10} 0 & 1 & $\texttt{seta}$ &  & IM &  &  &  \\
+\hline
+\cellcolor{black} & & & & 101 & & 01100 \underline{10} 1 & 1 & $\texttt{tai}$ & IH &  &  &  &  \\
+\hline
+& & & \cellcolor{red} & 102 & InLoop & 01100 \underline{11} 0 & 1 & $\texttt{flush}$ &  & IM &  &  &  \\
+\hline
+& & & \cellcolor{red} & 103 & & 01100 \underline{11} 1 & 1 & $\texttt{loada}$ & IH &  &  &  & I/O \\
+\hline
+& & & \cellcolor{red} & 104 & & 01101 \underline{00} 0 & 1 & $\texttt{storeai}$ &  & IM &  &  &  \\
+\hline
+& & & \cellcolor{red} & 105 & & 01101 \underline{00} 1 & 1 & $\texttt{deci}$ & IH &  &  &  &  \\
+\hline
+& & & \cellcolor{red} & 106 & & 01101 \underline{01} 0 & 1 & $\texttt{bge}$ &  & IM &  &  &  \\
+\hline
+\cellcolor{black} & & & & 107 & Sort & 01101 \underline{01} 1 & 1 & $\texttt{seta}$ & IH &  &  &  &  \\
+\hline
+\cellcolor{black} & & & & 108 &  & 01101 \underline{10} 0 & 2 & $\texttt{storea}$ & & IM &  & DM &  \\
+\hline
+\cellcolor{black} & & & & 109 &  & 01101 \underline{10} 1 & 2 & $\texttt{tai}$ & IH &  &  &  &  \\
+\hline
+& & & \cellcolor{red} & 110 & Outer & 01101 \underline{11} 0 & 2 & $\texttt{loadai}$ &  & IM &  & DM &  \\
+\hline
+& & & \cellcolor{red} & 111 &  & 01101 \underline{11} 1 & 2 & $\texttt{storea}$ & IH &  & DH &  &  \\
+\hline
+& & & \cellcolor{red} & 112 &  & 01110 \underline{00} 0 & 2 & $\texttt{tib}$ &  & IM &  &  &  \\
+\hline
+& & \cellcolor{green} & & 113 & Keep & 01110 \underline{00} 1 & 2 & $\texttt{loadai}$ & IH &  & DH &  &  \\
+\hline
+& \cellcolor{yellow} & & & 114 & Inner & 01110 \underline{01} 0 & 2 & $\texttt{deci}$ &  & IM &  &  &  \\
+\hline
+& \cellcolor{yellow} & & & 115 &  & 01110 \underline{01} 1 & 2 & $\texttt{blt}$ & IH &  &  &  &  \\
+\hline
+& \cellcolor{yellow} & & & 116 &  & 01110 \underline{10} 0 & 1 & $\texttt{cmpai}$ &  & IM & DH &  &  \\
+\hline
+& \cellcolor{yellow} & & & 117 &  & 01110 \underline{10} 1 & 1 & $\texttt{blt}$ & IH &  &  &  &  \\
+\hline
+& & \cellcolor{green} & & 118 & Better & 01110 \underline{11} 0 & 1 & $\texttt{tib}$ &  & IM &  &  &  \\
+\hline
+& & \cellcolor{green} & & 119 &  & 01110 \underline{11} 1 & 1 & $\texttt{bge}$ & IH &  &  &  &  \\
+\hline
+& & \cellcolor{green} & & 120 & NoBetter & 01111 \underline{00} 0 & 1 & $\texttt{cmpai}$ &  & IM & DH &  &  \\
+\hline
+& & \cellcolor{green} & & 121 &  & 01111 \underline{00} 1 & 1 & $\texttt{bge}$ & IH &  &  &  &  \\
+\hline
+& & \cellcolor{green} & & 122 &  & 01111 \underline{01} 0 & 1 & $\texttt{blt}$ &  & IM &  &  &  \\
+\hline
+& & & \cellcolor{red} & 123 & Swap & 01111 \underline{01} 1 & 1 & $\texttt{storea}$ & IH &  &  & DM &  \\
+\hline
+& & & \cellcolor{red} & 124 &  & 01111 \underline{10} 0 & 2 & $\texttt{loada}$ &  & IM &  & DM &  \\
+\hline
+& & & \cellcolor{red} & 125 &  & 01111 \underline{10} 1 & 2 & $\texttt{tbi}$ & IH &  &  &  &  \\
+\hline
+& & & \cellcolor{red} & 126 &  & 01111 \underline{11} 0 & 2 & $\texttt{storeai}$ &  & IM &  & undef &  \\
+\hline
+& & & \cellcolor{red} & 127 &  & 01111 \underline{11} 1 & 2 & $\texttt{loada}$ & IH &  & DH &  &  \\
+\hline
+& & & \cellcolor{red} & 128 &  & 10000 \underline{00} 0 & 2 & $\texttt{tai}$ &  & IM &  &  &  \\
+\hline
+& & & \cellcolor{red} & 129 &  & 10000 \underline{00} 1 & 2 & $\texttt{loada}$ & IH &  &  &  &  \\
+\hline
+& & & \cellcolor{red} & 130 &  & 10000 \underline{01} 0 & 2 & $\texttt{storeai}$ &  & IM & DH &  &  \\
+\hline
+& & & \cellcolor{red} & 131 &  & 10000 \underline{01} 1 & 2 & $\texttt{deci}$ & IH &  &  & most &  \\
+\hline
+& & & \cellcolor{red} & 132 &  & 10000 \underline{10} 0 & 1 & $\texttt{tia}$ &  & IM &  &  &  \\
+\hline
+& & & \cellcolor{red} & 133 &  & 10000 \underline{10} 1 & 1 & $\texttt{storea}$ & IH &  &  & DM &  \\
+\hline
+& & & \cellcolor{red} & 134 &  & 10000 \underline{11} 0 & 1 & $\texttt{bge}$ &  & IM &  &  &  \\
+\hline
+\cellcolor{black} & & & & 135 &  & 10000 \underline{11} 1 & 1 & $\texttt{seta}$ & IH &  &  &  &  \\
+\hline
+\cellcolor{black} & & & & 136 &  & 10001 \underline{00} 0 & 1 & $\texttt{tai}$ &  & IM &  &  &  \\
+\hline
+& & & \cellcolor{red} & 137 & OutLoop & 10001 \underline{00} 1 & 1 & $\texttt{loadai}$ & IH &  & $\frac{1}{2}$ & $\frac{1}{2}$ &  \\
+\hline
+& & & \cellcolor{red} & 138 &  & 10001 \underline{01} 0 & 1 & $\texttt{storea}$ & & IM &  &  & I/O \\
+\hline
+& & & \cellcolor{red} & 139 &  & 10001 \underline{01} 1 & 1 & $\texttt{deci}$ & IH &  &  &  &  \\
+\hline
+& & & \cellcolor{red} & 140 &  & 10001 \underline{10} 0 & 1 & $\texttt{bge}$ &  & IM &  &  &  \\
+\hline
+\cellcolor{black} & & & & 141 &  & 10001 \underline{10} 1 & 1 & $\texttt{blt}$ & IH &  &  &  &  \\
+\hline
+\end{tabular}
+\end{center}
+
+\pagebreak[4]
+
+\subsection*{Instruction analysis} The breakdown of each instruction should be as follows (organized by memory number):\\
+
+\begin{tabular}{|c|c|}
+\hline
+\cellcolor{black} & executes 1 time \\
+\hline
+\end{tabular}
+
+These instructions are executed a total of once. For example, the first two are really for initialization purposes more than anything else, and never get looped back to.
+
+\textbf{100} seta IM 7 cycles, executed once.
+
+\textbf{101} tai IH 3 cycles, executed once.
+
+\textbf{107} seta IH 3 cycles, executed once.
+
+\textbf{108} storea IM 7 cycles, executed once.
+
+\textbf{109} tai IH 3 cycles, executed once.
+
+\textbf{135} seta IH 3 cycles, executed once.
+
+\textbf{136} tai IM 7 cycles, executed once.
+
+\textbf{141} blt IH 2 cycles, executed once. \\
+
+\begin{tabular}{|c|c|}
+\hline
+\cellcolor{red} & executes $n$ times \\
+\hline
+\end{tabular}
+
+Instructions 102-106 get executed 100 times in total, and after the first time, they will be IH (instruction hit). 103 is always an I/O read, and therefore will always incur this penalty. 104 is in the trick position of having every alternating data read be a hit; this is because when we cache a word, we end up pulling two into the cache, and so the next one is a hit.
+
+\textbf{102} flush IM 7 cycles, executed once + IH 3 cycles executed 99 times. Total $\mathbf{304}$ cycles.
+
+\textbf{103} loada IH I/O $5 \cdot 100  = \mathbf{500}$ cycles.
+
+\textbf{104} storeai 1 IM DM + 49 IH DM + 50 IH DH = 11 cycles + 343 cycles + 150 cycles = $\mathbf{603}$ cycles.
+
+\textbf{105} deci 100 IH, or $100 \cdot (3) = \mathbf{300}$ cycles.
+
+\textbf{106} bge 1 IM + 99 IH, or $6 + 99 \cdot (3) = \mathbf{303}$ cycles. \\
+
+Instructions 110-112 and 123-134 are part of the ``Outer" loop, which you can sort of see in the above diagram (they are the massive blocks of red, straddling the inner loop). Unlike previously, the instruction cache is not large enough to preserve all the instructions, so they get overwritten. That means we have to pay the hit cost on the instructions that miss on every single loop iteration.
+
+It should be noted that you can actually get a data hit on 126 under very specific circumstances, but we will assume that it misses here, because it happens a lot more often.
+
+\textbf{110} loadai 100 IM DM, or $100 \cdot (11) = \mathbf{1100}$ cycles.
+
+\textbf{111} storea 100 IH DH, or $100 \cdot (11) = \mathbf{1100}$ cycles.
+
+\textbf{112} tib 100 IM, or $100 \cdot (7) = \mathbf{700}$ cycles.
+
+\textbf{123} storea 100 IH DM, or $100 \cdot (7) = \mathbf{700}$ cycles.
+
+\textbf{124} loada 100 IM DM, or $100 \cdot (11) = \mathbf{1100}$ cycles.
+
+\textbf{125} tbi 100 IH, or $100 \cdot (3) = \mathbf{300}$ cycles.
+
+\textbf{126} storea 100 IM DM, or $100 \cdot (11) = \mathbf{1100}$ cycles.
+
+\textbf{127} loada 100 IH DH, or $100 \cdot (3) = \mathbf{300}$ cycles.
+
+\textbf{128} tai 100 IM, or $100 \cdot (7) = \mathbf{700}$ cycles.
+
+\textbf{129} loada 100 IH DH, or $100 \cdot (3) = \mathbf{300}$ cycles.
+
+\textbf{130} storeai 100 IM DM, or $100 \cdot (11) = \mathbf{1100}$ cycles.
+
+\textbf{131} deci 100 IH, or $100 \cdot (3) = \mathbf{300}$ cycles.
+
+\textbf{132} tia 100 IH, or $100 \cdot (7) = \mathbf{700}$ cycles.
+
+\textbf{133} storea 100 IH DH, or $100 \cdot (3) = \mathbf{300}$ cycles.
+
+\textbf{134} bge 100 IM, or $100 \cdot (6) = \mathbf{600}$ cycles. \\
+
+Finally, the loop that sends all the data to the I/O device should take 100 times also. Like the ``input" loop above, after the first time, all the instructions will be cached, and thus, will never again incur an IM.
+
+Also like above, data for 137 will miss half the time, because when it does miss, it will pull two words into cache, so the next one will actually hit. Also, 138 clearly is another miss-to-I/O, and since there's no way to avoid it, this will happen every single time.
+
+\textbf{137} loadai 50 IH DH + 50 IH DM, or $50 \cdot (3) + 50 \cdot (7) = \mathbf{500}$ cycles.
+
+\textbf{138} storea 1 IM I/OM + 99 IH I/OM, or $1 \cdot (9) + 99 \cdot (5) = \mathbf{504}$ cycles.
+
+\textbf{139} deci 100 IH, or $100 \cdot (3) = \mathbf{300}$ cycles.
+
+\textbf{140} bge 1 IM + 99 IH, or $1 \cdot (6) + 99 \cdot (2) = \mathbf{204}$ cycles. \\
+
+\begin{tabular}{|c|c|}
+\hline
+\cellcolor{green} & executes $\cfrac{n(n-1)}{4}$ times \\
+\hline
+\end{tabular}
+
+I confess I had a hard time determining how many times the inner loop runs, but then a friend of mine tipped me off to it being an expression of the standard geometric series (which made me feel stupid for having forgotten). So it (the inner loop) ends up getting executed ${100(100-1) \over 2}$ or 4950 times. I will assume for simplicity that $\texttt{Better}$ and $\texttt{NoBetter}$ will be executed each half of this amount because, although that's not technically correct, it doesn't matter on a great scale in this case. Thus the green squares will get executed ${4950 \over 2} = 2475$ times.
+
+Here's the tricky part. We must remember that, for 100 of those, the instructions will have to be re-cached because the loop has restarted.
+
+\textbf{113} loadai 2475 IH DH, or $\mathbf{7425}$ cycles.
+
+\textbf{118} tib 2425 IH + 50 IM, or $2425 \cdot (3) + 50 \cdot (7) = \mathbf{7625}$ cycles.
+
+\textbf{119} bge 2475 IH, or $\mathbf{4950}$ cycles.
+
+\textbf{120} cmpai 1 IM DH + 2475 IH DH, or $7 \cdot (1) + 2475 \cdot (3) = \mathbf{7432}$ cycles.
+
+\textbf{121} bge 2475 IH, or $2475 \cdot (2) = \mathbf{4950}$ cycles.
+
+\textbf{122} blt 1 IM + 2474 IH, or $1 \cdot (6) + 2474 \cdot (2) = \mathbf{4954}$ cycles. \\
+
+\begin{tabular}{|c|c|}
+\hline
+\cellcolor{yellow} & executes $\cfrac{n(n-1)}{2}$ times \\
+\hline
+\end{tabular}
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
