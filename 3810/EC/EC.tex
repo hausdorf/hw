@@ -40,7 +40,7 @@ Since the common case of fetching data memory is not fundamentally different, an
 
 Cache misses are not that much more complicated: we miss when looking in the cache, and then incur a 1 ns of wait time for the memory controller followed immediately by 10 ns of wait time for the memory access. This gives us 4 cycles of latency.
 
-The spec for the assigned machine says that a miss-to-I/O ends up going through cache to the memory controller and then to I/O. The memory controller costs 1 ns. The spec also says that, "once activated", the I/O will supply the message in 5 ns. So I/O read will cost 1 + 5 ns, or 6 ns, which is 2 full cycles.
+The spec for the assigned machine says that a miss-to-I/O ends up going through cache to the memory controller and then to I/O. The memory controller costs 1 ns. The spec also says that, ``once activated", the I/O will supply the message in 5 ns. So I/O read will cost 1 + 5 ns, or 6 ns, which is 2 full cycles.
 
 The write-I/O should work the same way. It should go from cache miss to memory controller to I/O write, which would take 5 ns. Once again, this would give us 2 full cycles.
 
@@ -50,7 +50,7 @@ Waiting for device writes is, yes, crucial. If we didn't, if instead, we simply 
 
 Important notes and extended discussion:
 
-Much of the processors work is transparent at the level of the assembly programming. I -- and programmers in general -- will not have to worry about microdelays like latch times, at least not for the purposes here.
+Much of the processor's work is transparent at the level of the assembly programming. I -- and programmers in general -- will not have to worry about microdelays like latch times, at least not for the purposes here.
 
 What we will have to worry about is parsing out what exactly is meant in several places in this assignment, which I try to do with a dose of pragmatism, cost balancing, intuition, and occasionally, high-level discussions with people who know a lot about that particular area. Two particular things that worried me on the outset were:
 
@@ -60,7 +60,7 @@ Generally we want to keep the common case fast, so I did decide that a cache hit
 
 $\textbf{(2)}$ Are we using write-backs, or write-through? Intuitively, write-backs seems like the right answer, but this answer is not given explicitly. It is not, for our purposes, hugely important, but it is not irrelevant, either.
 
-$\textbf{(3)}$ I am assuming we never miss to I/O for the instructions. I am assuming they get loaded into memory at device start and never get overwritten after that.
+$\textbf{(3)}$ I am assuming they get loaded into memory at device start and never get overwritten after that. In other words, I am assuming we never miss to I/O for the instructions. This probably doesn't need to be said, but I am saying it anyway.
 
 $\textbf{(4)}$ I am glomming cycles into groups that have the same possible stall patterns. For example, $\texttt{loada}$ and $\texttt{storea}$ can both miss for data, and also miss-goto-I/O; these things are not always possible for all instructions.
 
@@ -276,7 +276,7 @@ These instructions are executed a total of once. For example, the first two are 
 \hline
 \end{tabular}
 
-Instructions 102-106 get executed 100 times in total, and after the first time, they will be IH (instruction hit). 103 is always an I/O read, and therefore will always incur this penalty. 104 is in the trick position of having every alternating data read be a hit; this is because when we cache a word, we end up pulling two into the cache, and so the next one is a hit.
+Instructions 102-106 read data from I/O. They get executed 100 times in total, and after the first time, they will be IH (instruction hit). 103 is always an I/O read, and therefore will always incur this penalty. 104 is in the trick position of having every alternating data read be a hit; this is because when we cache a word, we end up pulling two into the cache, and so the next one is a hit.
 
 \textbf{102} flush IM 7 cycles, executed once + IH 3 cycles executed 99 times. Total $\mathbf{304}$ cycles.
 
@@ -336,15 +336,35 @@ Also like above, data for 137 will miss half the time, because when it does miss
 
 \begin{tabular}{|c|c|}
 \hline
+\cellcolor{yellow} & executes $\cfrac{n(n-1)}{2}$ times \\
+\hline
+\end{tabular}
+
+This section corresponds to the inner loop. I confess I had a hard time determining how many times the inner loop runs, but then a friend of mine tipped me off to it being an expression of the standard geometric series (which made me feel stupid for having forgotten). So it (the inner loop) ends up getting executed ${100(100-1) \over 2}$ or 4950 times.
+
+Other than the fact that the inner loop has two control paths ($\texttt{Better}$ and $\texttt{NoBetter}$), the execution time ends up being pretty straightforward: the first time through, all IMs take effect, but the second time through, the instruction is cached, and it ends up being a hit.
+
+\textbf{114} deci 100 IM + 4850 IH, or $100 \cdot (7) + 4850 \cdot (3) = \mathbf{15250}$ cycles.
+
+\textbf{115} blt 4950 IH, or $4950 \cdot (2) = \mathbf{9900}$ cycles.
+
+\textbf{116} cmpai 50 IM DH + 2425 IH DM + 50 IM DM + 2425 IH DH, or $50 \cdot (7) + 2425 \cdot (7) + 50 \cdot (11) + 2425 \cdot (3) = \mathbf{20300}$ cycles.
+
+\textbf{117} blt 4950 IH, or $1 \cdot (6) + 2474 \cdot (2) = \mathbf{4954}$ cycles. \\
+
+\begin{tabular}{|c|c|}
+\hline
 \cellcolor{green} & executes $\cfrac{n(n-1)}{4}$ times \\
 \hline
 \end{tabular}
 
-I confess I had a hard time determining how many times the inner loop runs, but then a friend of mine tipped me off to it being an expression of the standard geometric series (which made me feel stupid for having forgotten). So it (the inner loop) ends up getting executed ${100(100-1) \over 2}$ or 4950 times. I will assume for simplicity that $\texttt{Better}$ and $\texttt{NoBetter}$ will be executed each half of this amount because, although that's not technically correct, it doesn't matter on a great scale in this case. Thus the green squares will get executed ${4950 \over 2} = 2475$ times.
+This section corresponds to the $\texttt{Better}$ and $\texttt{NoBetter}$ control paths inside the inner loop. I will assume for simplicity that $\texttt{Better}$ and $\texttt{NoBetter}$ will be executed each half of the amount that the inner loop gets executed because, although that's not technically correct, it doesn't matter on a great scale in this case. Thus the green squares will get executed ${4950 \over 2} = 2475$ times.
 
-Here's the tricky part. We must remember that, for 100 of those, the instructions will have to be re-cached because the loop has restarted.
+One thing that is interesting is that they are both the same amount of instructions long, so if the runtime is shorter because one is taken more often than the other, it is not $\textit{that}$ much shorter.
 
-\textbf{113} loadai 2475 IH DH, or $\mathbf{7425}$ cycles.
+There's only one ``tricky" part. We must remember that, for 100 of those, the instructions will have to be re-cached because the loop has restarted.
+
+\textbf{113} loadai 2475 IH DH, or $2475 \cdot (3) \mathbf{7425}$ cycles.
 
 \textbf{118} tib 2425 IH + 50 IM, or $2425 \cdot (3) + 50 \cdot (7) = \mathbf{7625}$ cycles.
 
@@ -356,18 +376,23 @@ Here's the tricky part. We must remember that, for 100 of those, the instruction
 
 \textbf{122} blt 1 IM + 2474 IH, or $1 \cdot (6) + 2474 \cdot (2) = \mathbf{4954}$ cycles. \\
 
-\begin{tabular}{|c|c|}
-\hline
-\cellcolor{yellow} & executes $\cfrac{n(n-1)}{2}$ times \\
-\hline
-\end{tabular}
+\subsubsection{\large Totals}
 
+When you add all these cycles together you get $\textbf{101,693}$ cycles in total. Each cycle lasts 3 ns, thus the total time to sort 100 16-bit integers is 305,079 ns, or 0.000305 seconds. That means we can do 3277.84 sorts in a second.
 
+\subsection{How can it be better?}
 
+\subsubsection{The algorithm}
 
+The first thing to look at when optimizing is obviously the algorithm. And it turns out that this tree is ripe for the picking: most of our cycles are wasted on the inner loop, and in particular, comparing numbers. Insertion sort is $O(n^2)$, so this can almost certainly be improved. Mergesort is probably too big, quicksort is not constant, and radix might also be too big. We may not be able to implement a really, really efficient algorithm, but we can certainly do better than this. It is clear that we do not need to perform 2500 comparisons per 100 instructions.
 
+\subsubsection{Get rid of clock penalty}
 
+One third of all nanoseconds are wasted on the clock penalty. This does not need to be the case. Even if we incur heavy penalties from decreasing instructions, we will still be saving a third of all nanoseconds spent. This is clearly well worth it.
 
+\subsubsection{The cache}
+
+We spend enough time waiting on stalled data in the inner loop that it's a problem, and as we shrink the runtime, this will increase in proportion. We, first, need more of it (as much as possible), and we need to organize it better. So the solution (at least $\textit{prima facie}$) would be to shrink the instructions needed to do this stuff. Part of that is designing a better algorithm, of course. As for organizing the cache, I think it would be worth it to trade the timing penalties to make it a lot more associative, but this may be up for discussion.
 
 
 
