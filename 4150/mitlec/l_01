@@ -1,0 +1,59 @@
+ANALYSIS OF ALGORITHMS
+- The theoretical study of computer-program performance and resource usage.
+	Particular emphasis on performance, but other factors (communication, memory, etc.)
+
+WHAT IS MORE IMPORTANT THAN PERFORMANCE?
+- Correctness! (Yes!)
+- Simplicity?
+- Maintainability
+- Programmer time
+- Stability
+- Features
+- Security
+- User friendliness
+
+So a lot of times it's much more important that something be one of these things, rather than high-performing. SO WHY STUDY PERFORMANCE? It's true that you don't get exponential improvements in usability and so on, and it's true that sometimes there are, e.g., real-time constraints. But there are a few main reasons:
+
+- Performance often divides the infeasable from the feasible. Implementing things from 10 years ago is rarely difficult, even if it was difficult to figure out, but on the other hand, things that haven't been done yet usually haven't been done because the algorithms are too time- or compute-intensive (or whatever).
+- Algorithms give you a LANGUAGE for talking about program behavior.
+- Algorithms are like MONEY: if you have a stack of $100-bills, that's pretty useless. Wouldn't you rather have water, food, or shelter? You use performance to pay for, e.g., user friendliness, or working in a higher-level language.
+- Generates a basis for talking about everything.
+
+SORTING!!
+- Input sequence <a_1, ... , a_n>. Output: permuataion <a'_1, ... , a'_2> $ a'_1 <= ... <= a'_n
+
+What does running time depend on?
+- Contents and relationship of input parameters
+- Input SIZE
+	- We tend to parameterize based on the input, mostly
+
+Why use upper bounds in analysis?
+- Guarantees to user, gives you information that's valuable in where you can/want to use it.
+
+So how do you make a guarantee?
+- Look at the worse case. i.e., look at the worst possible input sequence.
+
+What is the worst case?
+- The worst possible situation given some input size.
+
+What is average case?
+- The expected time of input of a certain size. We take the probabilistic weighted average of the inputs, which is the probability times the input. In order to make this statement, we need to know the distrubtion, etc.
+
+What is best case?
+- Bullshit!
+
+Why is best case useless?
+- NOT because it never happens. Most sorting is actually already mostly sorted.
+- Because it makes no statements about how the algorithm operates in the wild. Really, it only says something about 1 particular case. For example, the best-case is really only meaningful for a sorting algorithm when compred to the average case.
+
+BIG IDEA:
+What is the point of algorithms?
+- The real reason why companies like Google, Amazon, and Akamai are successful at all is our ability to take massive and messy systems and reduce them to, basically, some mathematics.
+
+How do we analyze performance?
+- We use asymptotic notation, which is describes how *fast* the runtime grows compared to input. We ignore machine constants, for example, to show how an algorithm responds generally. For example, a \theta(n^2) algorithm will ALWAYS eventually run faster than a \theta(n^3). Even if it's running on a much slower computer. This is why we're much more interested in the large-order terms than the smaller ones.
+
+- Sometimes from an engineering perspective, though, it's sometimes better to have an asympotically slower algorithm that happens to be faster for smaller-order input size.
+
+Theta notation is so loose. Manipulating it often gives us shaky results. What gives?
+- Theta notation is really more of a descriptive notation than it is a manipulative notation. The idea is to convey an idea, rather than to give us that ability to invoke, say, Leibniz or something.

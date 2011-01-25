@@ -1,0 +1,12 @@
+Big O is not symmetric!
+- f(n) = O(g(n)) there are c>0, n_0>0 : 0<=f(n)<g(n) for all n>=n_0
+- The notation tends to be 2n^2 = O(n), but the truth of the situation is that O(g(x)) = {f(n) : there are constants c>0, n_0 $ 0<=f(n)<=c \cdot g(n) for all n>=n_0}
+	 + Thus, we mean to see 2n^2 \in O(n^3) instead
+
+Can't we induct that O(1) = O(n)?
+- No! The idea is that f(1) = O(1), and we can induct that f(n-1) = O(n-1) + 1 = O(1). This is true for a finite, non-arbitrary number of constants, but if you have an infinite number of constants, it changes the game.
+
+\omega(g(n)) = {f(n) : there exists constants c>0, n_0>0 $ 0<=c*g(n)<=f(n) for all n>=n_0}
+sqrt(n) = \omega(lg n)
+
+The critical difference between little-o and little-omega is that the "little" counterparts are strict inequalities (e.g., '<' for little-o and '>' for little-omega). That is, for all n_0, there is a constant n for which this statement is true.

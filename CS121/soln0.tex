@@ -1,0 +1,113 @@
+\documentclass[solution]{cs121}
+\begin{document}
+\header{0}{}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{}
+Describe the following sets using formal set notation:
+\subproblem $A$  is the set containing the empty set.
+\subproblem $B$  is the set containing the empty string.
+\subproblem $C$  is the set containing all non-negative, integral powers of 2.
+\subproblem $D$  is the set containing all strings over $\Sigma=\{a,b\}$ whose length is a non-negative, integral power of 2.
+
+\solution
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 1
+
+\problem{}
+Let $A$ be the set $\{ x,y,z \}$ and $B$ be the set $\{ x, z \}$.  Let
+$\mathcal{P}(S)$ denote the power set of any set $S$ (i.e. the set of subsets of $S$). You need not justify your answers.
+
+\subproblem Is $P(B)$ a subset of $P(A)$?
+\subproblem What is $A \cup B$?
+\subproblem What is $A \times B$?
+\subproblem Is $\emptyset \in \mathcal{P}(A)$?
+\subproblem Is $\emptyset \subset \mathcal{P}(A)$?
+
+\solution
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{}
+ Let $\mathbb{N} = \{0, 1,2,\ldots\}$ be the set of natural numbers. For each of the following functions, $f: \mathbb{N}
+\longrightarrow \mathbb{N}$, state whether $f$ is (i) one-to-one,
+(ii) onto, and/or (iii) bijective. Briefly justify each of your answers.\\
+\subproblem $f(x) = x^2$
+\subproblem $f(x)$ =  $x$ mod 3
+\subproblem $f(x) = x!$
+\subproblem $f(x) = \begin{cases} x+1 & \text{if $x$ is even} \\
+x-1 & \text{if $x$ is odd}\end{cases}$
+
+\solution
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{}
+Consider the binary relation $\sim$ on sets defined by $A\sim B$ if and only if there exists a function $f:A\rightarrow B$ such that $f$ is bijective.
+
+\subproblem Give examples of two finite sets $A,B$ such that $A\sim B$, as well as sets $C,D$ such that $C\not\sim D$.
+
+\subproblem Prove that $\sim$ is an equivalence relation. (Your proof should work for infinite sets as well as finite ones.  Indeed, this relation is how one defines what it means for two infinite sets to have the same “cardinality.”  Later in the course, we will see that not all infinite sets have the same cardinality, i.e. the infinite sets yield multiple equivalence classes under this relation.) 
+
+\subproblem Now consider the  relation $\lesssim$ defined by $A \lesssim B$ if there exists a one-to-one function $f : A \rightarrow B$.  Is $\lesssim$ reflexive? symmetric? transitive? Justify your answers.
+
+\solution
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{}
+Joe the painter has 2010 cans of paint. Show that at least one of the following statements is true about Joe's paint collection: 
+\begin{enumerate}
+ \item Among the cans, there are at least 42 different colors of paint.
+ \item Among the cans, there are at least 50 of them with the same color.
+\end{enumerate}
+(Hint: prove by contradiction)
+
+\solution
+% Your answer goes here
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{}
+Define the Fibonacci numbers as follows:
+\[ F_0 = 0 \]
+\[ F_1 = 1 \]
+\[ F_n = F_{n-1} + F_{n-2} \text{ for all $n \geq 2$} \]
+Prove the following statements by induction:
+
+\subproblem
+For $n\geq 2$, $F_n$ equals the number of strings of length $n-2$ over 
+alphabet $\Sigma=\{a,b\}$ that do not contain two consecutive $a$'s.
+
+\subproblem
+\[F_n =
+        \frac{1}{\sqrt{5}}\left(\frac{1+\sqrt{5}}{2}\right)^{n}-\text{  }
+        \frac{1}{\sqrt{5}}\left(\frac{1-\sqrt{5}}{2}\right)^{n} 
+\]
+
+\solution
+\subproblem % Your answer goes here
+\subproblem % Your answer goes here
+
+
+\end{document}

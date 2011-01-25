@@ -1,0 +1,109 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 02:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 02}
+Alex Clemmer\\
+Student number: u0458675
+
+\section*{Problem 1}
+
+If all of the array is reversed except the first element (which is the 0 at the beginning), then for any element in position $n$ in the array, it will take $n$ comparisons to tell which place it should be in.
+
+In other words, since every number is less than the one before it, to tell where it goes, you have to sequentially go backwards through the array and compare it to every element on the way. Note that the first element will require one comparison to order (because even though they're already ordered, we don't know this until they're compared)
+
+Thus, for some array of length $n$, the series representing the total comparisons is:
+
+\begin{equation*}
+(n-1)+(n-2) + \dots + 0
+\end{equation*}
+
+When we apply a linear regression here, we get the equation (in terms of $n$):
+
+\begin{equation}
+f(n) = \cfrac{n \cdot (n+2)}{2}
+\end{equation}
+
+\section*{Problem 2}
+
+This one is just a subset of the last problem. The problem for $n=8$ looks something like this:
+
+\begin{verbatim}
+row:  1   2   3   4   5   6   7   8
+     0-8 8-1 8-7 8-2 8-6 8-3 8-5 8-4
+         0-1 1-7 7-2 7-6 7-3 7-5 7-4
+                 1-2 2-6 6-3 6-5 6-4 
+                         2-3 3-5 5-4
+                                 3-4
+\end{verbatim}
+
+If we had written it out, the last problem would have created a staircase much like this one. The main difference was that steps were one row wide, where in this problem they're two ($\textit{e.g.}$, notice that rows 2 and 3 are the same height).
+
+Fortunately, we can break this problem into two smaller staircases and evaluate it just like we did the last problem. For reference, here's an example of one of the staircases we could have build from the example above (skipping even rows):
+
+\begin{verbatim}
+row:  1   3   5   7
+     0-8 8-7 8-6 8-5
+         1-7 7-6 7-5
+             2-6 6-5
+                 3-5
+\end{verbatim}
+
+Using the regression tactics from the first problem, our regression would therefore be:
+
+\begin{equation*}
+\cfrac{\frac{n}{2} \cdot (\frac{n}{2} + 1)}{2} + \cfrac{(\frac{n}{2} + 1) \cdot (\frac{n}{2} + 2)}{2}
+\end{equation*}
+
+Simplifying, we get:
+
+\begin{equation}
+\cfrac{n(n+2)}{8} + \cfrac{(n+2)(n+4)}{8}
+\end{equation}
+
+\section*{Problem 3}
+
+Not much harder. Let's look at the example set for $n = 8$:
+
+\begin{verbatim}
+0-2 2-4 4-6 6-8 8-1 8-3 8-5 8-7
+                6-1 6-3 6-5 6-7
+                4-1 4-3 4-5
+                2-1 2-3
+                0-1
+\end{verbatim}
+
+As we can see, the first half is just $\frac{n}{2}$ comparisons, and the second half is really just like the first two problems. The first column is $n+1$ rows tall; for convenience, I will ignore this column and just add that in manually. This makes our staircase effectively identical to the first two, so our regression is:
+
+\begin{equation*}
+\cfrac{n(n+2)}{8} - 1
+\end{equation*}
+
+Note the minus one at the end is because we are missing the last element at the very end that would make this a complete staircase.
+
+Adding that together with the terms that account for the first half of the elements and the longest column, respectively:
+
+\begin{equation*}
+\cfrac{n}{2} + \cfrac{n}{2} + 1 + \cfrac{n(n+2)}{8} - 1
+\end{equation*}
+
+A little simplification, and we get our final answer:
+
+\begin{equation}
+n + \cfrac{n(n+2)}{8}
+\end{equation}
+
+\end{document}

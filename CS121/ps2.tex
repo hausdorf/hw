@@ -1,0 +1,108 @@
+\documentclass[letterpaper, ps]{cs121}
+\usepackage{amsmath, amsfonts, graphicx}
+\begin{document}
+\header{2}{Friday, October 1, 2010}{Monday, October 4, 2010}{20}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% !!!!! Write your name here !!!!! %
+\vspace{3mm}
+\begin{center} \bf{Name} \end{center}
+\studentName{!!! Your Name Here !!!}
+\collaboratorNames{!!! Collaborators' names here !!!!}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem {2+2+2+2}
+Translate the following languages over $\Sigma=\{a,b\}$ from English description to regular expressions, or vice versa.
+\subproblem $L = \{w\in\Sigma^*:$ the second letter of $w$ is the same as the last letter, $|w| \geq 2 \}$
+\subproblem $L = \{w\in\Sigma^*:$ every $a$ is followed by an odd number of $b$'s$\}$
+\subproblem $(a(a\cup b)^*b) \cup (b(a\cup b)^*a)$
+\subproblem $(b^*abbb^*) \cup (b^*bbab^*) \cup (b^*babb^*) \cup (bbb^*)$
+
+%% \subsolution <Your answer goes here>
+%% \subsolution <Your answer goes here>
+%% \subsolution <Your answer goes here>
+%% \subsolution <Your answer goes here>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{4+4}
+\subproblem Construct a DFA for $L = \{w \in \{0,1\}^* : \text{the number represented in binary notation by } w \text{ is equal to $1$ mod $3$}\}$.  That is, when we interpret $w$ as a number written in binary and divide by $3$, we get a remainder of $1$. Briefly explain why your DFA works.
+
+Note: for this problem, we ignore leading zeros, so that $0111=7 \in L$.
+
+\subproblem Convert your DFA for $L$ to a regular expression, using the GNFA construction described in lecture.  Show the full GNFA at each step of the construction.
+
+%% \subsolution <Your answer goes here>
+%% \subsolution <Your answer goes here>
+
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{12} Let $\Sigma$ and $\Delta$ be alphabets. Consider a
+function $\varphi: \Sigma \rightarrow \Delta^*$. Extend $\varphi$ to
+a function from $\Sigma^* \rightarrow \Delta^*$ such that:
+\begin{eqnarray*}
+\varphi(\varepsilon) & = & \varepsilon \\
+\varphi(w\sigma ) & = & \varphi(w)\varphi(\sigma ), \textrm{ for any }
+w \in  \Sigma ^*, \sigma  \in  \Sigma
+\end{eqnarray*}
+For example, if $\Sigma = \Delta = \{a,b\},~\varphi(a) = ab,$ and
+$\varphi(b) = aab,$ then
+$\varphi(aab)=\varphi(aa)\varphi(b)=\varphi(a)\varphi(a)\varphi(b)=ababaab$.
+ Notice how $\varphi$ operates on each input symbol individually. Any
+function $\varphi:\Sigma^* \rightarrow \Delta^*$ defined in this way
+from a function $\varphi: \Sigma \rightarrow \Delta^*$ is called a
+{\bf
+homomorphism}.\\\\
+Prove that the set of regular languages is closed under
+homomorphism.  Specifically, prove by induction on the length of $R$
+that $\varphi[L(R)]$ is regular for any regular expression $R$ and
+any homomorphism $\varphi$.  (In other words, prove that, if $L$ is
+regular, then $\varphi[L]$ is also regular, for any homomorphism
+$\varphi$.)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{12}
+Let $\mathprob{SUBSTRINGS}(L,A) = \{w \in L : \text{every substring of } w \text{ is in A}\}$. Prove that if $L$ and $A$ are regular, then so is $\mathprob{SUBSTRINGS}(L,A)$. Hint: can you make use of any closure properties we already know?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{4+4+4+4}
+\subproblem    Define the $\lesssim$ relation on nonempty sets by $S\lesssim T$ if 
+there is an onto map from $T$ to $S$. \footnote{Students of logic may notice that the domain of this 
+relation would be the set of all sets, which cannot be defined without 
+leading to paradoxes.  The way around this is to talk about a relation on 
+the `class' of all sets, but the distinction between the notions of a 
+`class' and a `set' is beyond the scope of CS121.} Show that $S\lesssim T$ if and only if 
+there is a one-to-one map from $S$ to $T$, so this relation is in fact the same as the one
+that was defined in Problem Set 0.
+\subproblem Show that for every set $S$, $S \lesssim P(S)$.
+\subproblem   Show that for every nonempty set $S$, $P(S) \not\lesssim S$.
+(Hint: The diagonalization technique does not require enumerating the set in question.) 
+\subproblem Conclude that there are infinitely many different equivalence classes
+under the relation $\sim$ defined in Problem Set 0, i.e. infinitely many different ``infinite cardinalities".
+
+%% \subsolution <Your answer goes here>
+%% \subsolution <Your answer goes here>
+%% \subsolution <Your answer goes here>
+%% \subsolution <Your answer goes here>
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{Challenge! 2+1}
+\subproblem Let $L/A = \{ x : \text{$wx \in A$ for some $w \in L$} \}$. Show that if $A$ is regular and $L$ is \emph{any} language, then~$L/A$ is regular.
+\subproblem Suppose $L = \{a^n : n \text { is greater than 2, is even, and cannot be expressed as the sum of two primes}\}$, and $A = \Sigma^*$. Why doesn't this contradict your proof?
+
+%% \subsolution <Your answer goes here>
+%% \subsolution <Your answer goes here>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}

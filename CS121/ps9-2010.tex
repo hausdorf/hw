@@ -1,0 +1,103 @@
+\documentclass[ps, letterpaper]{cs121}
+\usepackage{amsmath, amsfonts}
+
+\setlength{\parindent}{0in}
+\setlength\parskip{2mm}
+
+\begin{document}
+\header{9}{Tuesday, December 7, 2010}{NO LATE DAYS}{20}
+
+% !!!!! Write your name here !!!!! %
+\vspace{3mm}
+\begin{center} \bf{Name} \end{center}
+\studentName{!!! Your Name Here !!!}
+\collaboratorNames{!!! Collaborators' names here !!!!}
+
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+
+\renewcommand{\P}{\mathrm{P}}
+\renewcommand{\NP}{\mathrm{NP}}
+\newcommand{\NST}{\mathrm{NST}}
+\newcommand{\CoNP}{\mathrm{\text{Co-}NP}}
+\newcommand{\NPC}{\mathrm{NP}\text{-complete}}
+\newcommand{\PSPACE}{\mathrm{PSPACE}}
+\newcommand{\NPSPACE}{\mathrm{NPSPACE}}
+\newcommand{\DSPACE}{\mathrm{DSPACE}}
+\newcommand{\DoubleSAT}{\textsc{Double-Sat}}
+\newcommand{\Primes}{\textsc{Primes}}
+%\newcommand{\SATsearch}{\textsc{SATSearch}}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+
+\setlength\parskip{2mm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 1 - 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\problem{5 + 5} %2005
+\subproblem
+Let $\DoubleSAT= \{\<\phi\>: \text{$\phi$ is a boolean formula with at least two satisfying assignments }\}$. Show that $\DoubleSAT$ is $\NPC$.
+
+\subproblem
+Let $k$ be a natural number, and let ${\cal C}$ be a finite collection of finite sets. Then ${\cal C}$ is said to be a $k$-{\sc Hitting Set} if there is a set $H$ of size at most $k$ that intersects every member of ${\cal C}$. That is, a finite collection $C$ of finite sets is  a $k$-{\sc Hitting Set} if there exists a set $H$ of size at most $k$ such that $S\cap H\neq\emptyset$ for every $S \in {\cal C}$. Prove deciding $k$-{\sc Hitting Set} is $\NP$-complete.  [\emph{Hint}: Reduce from {\sc Vertex Cover}.]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 2 - Prove NP-Complete harder
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\problem{5+5+2} %2007
+Consider the following two languages:
+
+$$A=\{\left<D\right>\text{ : $D$ is a DFA and $D$ accepts at least one string}\}$$
+$$B=\{\left<D_1,D_2,...,D_k\right>\text{ : Each $D_i$ is a DFA and all of the $D_i$ accept at least one string in common} \}$$
+
+\subproblem Show that $A \in \P$.
+
+\subproblem Show that $B$ is $\NP$-complete by giving a reduction from 3-SAT to $B$.
+
+\subproblem We can convert an instance of $B$ into an instance of $A$ by applying the product construction (See p.45-46 of {\em Sipser}) $k-1$ times in succession. Does this show that $\P=\NP$? Why or why not?
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 3 - Co-NP
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\problem{5+2} %2007
+
+Recall that $\CoNP = \{ L: \b{L} \in \NP \}$.  It is unknown whether or not $\NP = \CoNP$. Note that $\NP = \CoNP$ if and only if $\NP$ is closed under complement.
+
+\subproblem
+Prove that if $\NP \neq \CoNP$, then $\P \neq \NP$. (Aside: Nonetheless, we can't rule out the possibility that $\NP = \CoNP$ and yet $\P \neq \NP$.)
+
+\subproblem
+To prove that $\NP = \CoNP$, it would suffice to show that for every $L \in \NP$, $\b{L} \in \NP$.  Suppose $L \in \NP$.  Then there exists a nondeterministic Turing machine $M$ that decides $L$ in polynomial time.  Consider the new Turing machine $M^\prime$, which is identical to $M$ except that its accept and  reject states are reversed.
+
+What language does $M^\prime$ decide?  Explain \emph{briefly}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 4 - NP-Search
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\problem{5+5+10} 
+
+A {\em search problem} is a mapping $S : \Sigma^* \rightarrow P(\Delta^*)$ from strings (``instances'') to sets of strings (``valid solutions''). An algorithm $M$ {\em solves} a search problem $S$ if for every input $x\in \Sigma^*$ such that $S(x)\neq \emptyset$, $M$ outputs some solution in $S(x)$.
+
+An {\em $\NP$ search problem} is one for which there exists a polynomial $p$ and a polynomial-time algorithm $V$ such that for every $x$ and $y$
+
+\begin{enumerate}\addtolength{\itemsep}{-0.3\baselineskip} 
+\item $y\in S(x) \Rightarrow |y|\leq p(|x|)$, and 
+\item $y\in S(x) \Leftrightarrow V$ accepts $\langle x,y\rangle$.
+\end{enumerate}
+
+Informally, these conditions say that valid solutions are short and can be verified efficiently.
+
+\subproblem Show that the $\SATsearch$ problem ``given a satisfiable boolean formula $\varphi$, find a satisfying assignment'' is an $\NP$ search problem
+
+\subproblem Prove that $\SAT\in\P$ if and only if the $\SATsearch$ problem can be solved in polynomial time.
+
+\subproblem Prove that $\P=\NP$ if and only if every $\NP$ search problem can be solved in polynomial time.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 5 - Space and (nondeterministic) time
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\problem{BONUS +1}
+A language is in  $\NST(S,T)$ if it is accepted by a nondeterministic Turing Machine that runs simultaneously in space $S(n)$ and time $T(n)$. Show that $\NST(S(n),T(n)) \subseteq \DSPACE(S(n) \log T(n))$. Then show that actually $\NST(S(n),T(n)) \subseteq \DSPACE(S(n) \log (T(n)/S(n)))$ (an improvement, for example, if $T(n) = S(n)\log S(n)$).
+
+\end{document}

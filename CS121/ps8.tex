@@ -1,0 +1,71 @@
+\documentclass[letterpaper, ps]{cs121}
+\usepackage{amsmath, amsfonts, graphicx}
+\begin{document}
+
+
+\header{8}{Tuesday, November 23, 2010}{NONE}{20}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% !!!!! Write your name here !!!!! %
+\vspace{3mm}
+\begin{center} \bf{Name} \end{center}
+\studentName{!!! Your Name Here !!!}
+\collaboratorNames{!!! Collaborators' names here !!!!}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{3+3+3+3} For each of the following statements, state whether it is true or false, and prove your assertion. 
+For parts A-C, if the statement is true, you should state what the actual parameters $n_0$ and $c$ are, and why.
+
+\subproblem $4n^3+2n^2=O(n^3+n)$.
+\subproblem $\log_2 n = \Theta(\log_{10} n^2)$.
+\subproblem $2^{n/2} = \Omega(2^n)$.
+\subproblem $n^{100001}=o(1.00001^n)$. (\emph{Hint:} you may want to recall  l'H\^opital's rule.)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{10} Throughout the class we have focused on computability
+properties of \emph{languages}.  But often we want to understand
+computational problems that are not YES/NO problems, for example
+computing a function.  In this problem we will see how such
+problems can be translated into ``equivalent'' languages (so
+focusing on languages is not a big restriction). \\
+\\Given any function $f: \Sigma^* \rightarrow
+\Delta^*$, show how to define a language $L_f$ such that (a) any
+algorithm to compute $f$ can be computably transformed into an
+algorithm that decides $L_f$, and (b)~conversely, any algorithm
+that decides $L_f$ can be transformed into an algorithm that
+computes $f$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{8+12}
+Prove that the class $P$ is closed under
+\subproblem Concatenation.
+\subproblem Kleene star. (\emph{Hint:} Use dynamic programming.  Look at the algorithm we gave in class for recognizing context-free languages via Chomsky Normal Form.)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{10}
+Show that there is a polynomial time algorithm which, given an NFA $N$ and string $w$, determines whether $N$ accepts $w$. Assume a multitape TM model of computation and analyze the degree of the polynomial as a function of both $|\langle N\rangle|$ and $|w|$.
+
+Note that converting $N$ to a DFA won't do the trick, because that step alone would be exponential in $|\langle N \rangle|$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{10} Prove that $\textsc{ALL}_\textsc{DFA} = \{\langle D
+\rangle : D$ is a DFA and $L(D)=\Sigma^*\}$ is in $\mathsc{P}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{Challenge!! 3} It is known (though not trivial) that testing whether a binary number represents a prime number is in $\mathsc{P}$. However, it is currently unknown whether or not a number (given in binary) can be \textit{factored} in polynomial time. Explicitly construct a TM $M$ that factors numbers such that $M$ runs in polynomial time iff there exists a TM that factors numbers in polynomial time. We want you to give us a correspondence between existence and construction. $M$ should factor a number no matter what, but do it in polynomial time if in fact there exists \emph{some} TM that factors numbers in polynomial time. $M$ should take a binary number $n$ as input and then halt with the (unique) prime factorization of $n$ written on its tape.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
+
+

@@ -1,0 +1,23 @@
+NLP tends to explore some new idea or approach; surprisingly, though, the systems we use tend to stay the same.
+
+Suppose we equip machines to learn and speak about very specific, very simple topics (e.g., how fast a car is going, or how much something costs). Suppose we also try to constrict the complexity of sentences and words. What are the limits of what we can acheive?
+
+If we translate a document by taking each word in it and replacing it with the first word in the dictionary when we look it up, can we get good results? What if we look at the sentence and "check" it to make sure it makes sense?
+
+Considering phrases like "Ban on Nude Dancing on Governor's Desk", which seem to be more "ambiguous", do they follow a pattern? Given a set of sentences, can I tell which ones are like this one, which would need to be parsed differently than matter-of-fact statements? Another example is "Iraqi Head Seeks Arms".
+
+In the case of "Iraqi Head Seeks Arms", we would not expect all people to be able to "get" this sentence. My step sister wouldn't, and probably homeless people wouldn't either. Why do we expect all machines to "get" this? It seems like NLU is as much a problem of deriving meaning as it is data management. So what are the limits to improvement? Perhaps the field should from here out focus mainly on just interesting questions.
+
+Question: is it the case that some people require more, or certain, prompting to answer questions? How are these promptings distributed? Does the excellent test-taker "get" all the nuance that the smart but "bad" test-taker gets? Does the bad test-taker need simply need to spend lots of time on tests?
+
+What are all the things that define context? There's prior knowledge, but what are the rest? Can we infer what we need to know to understand something and/or link concepts together?
+
+Translation seems to be based a lot on finding words that statistically map to words in other languages. Is this an accurate rendition of things? When we map one translation to another, *what* are the relevant factors that go into that decision? Are we simply counting up facts? Is it sentiment? Emotional impact? Can we just get the gist of a document, translate the words we can, and then fill in the blanks?
+
+And how do you measure which translations are the most correct? What is our metric?
+
+Maybe the most "important" words are the ones that are stuck at the intersection of a lot of tricky rules. Or is it the ones that carry the most emotional "weight"? Can we use this measure of importance of words to find sentences that are similar to each other? And therefore derive statistical meaning?
+
+Is answering natural language questions hard because people embed hints about things like what sof person you are, and what they expect in an answer back and other social cues in the question? Isn't it true that they often don't even know what the real question is?
+
+Isn't disambiguation in a lot of cases just thinking about what *you* would have said? That is, if we can look at a sentence and tell whether it makes sense, can't we figure out if we have the right translation? Because if a sentence doesn't make sense, clearly that's teh wrong meaning. And doesn't the same thing roughly hold for coreference resolution too? If we could tell if one interpretation made sense, couldn't we decide if that interpretation was correct?

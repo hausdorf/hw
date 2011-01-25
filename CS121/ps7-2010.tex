@@ -1,0 +1,124 @@
+\documentclass[ps, letterpaper]{cs121}
+\setlength{\parindent}{0in}
+\begin{document}
+\header{7}{Friday, November 12, 2009}{Monday, November 15, 2009}{20}
+
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 1 - 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\problem{10} %997A
+Let $L_1 = \{\langle M \rangle : M  \mbox{ accepts } \langle M \rangle\}$ and
+$L_2 = \{\langle M \rangle: M \mbox{ rejects } \langle M \rangle \}$. Prove that there is no recursive language $R$ such that $L_1 \subseteq R$ and $L_2 \subseteq \overline{R}$. (Hint: Suppose there were, and think about the TM that supposedly decides $\overline{R}$.)
+
+%% \subsolution <your answer here>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 2 - 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\problem{10}
+Let $L_1$ be a language. Prove that $L_1$ is r.e.~if and only if there exists some recursive language $L_2$ such that $L_1 =\{x:$ there exists $y$ such that $\left<x,y\right> \in L_2 \}$. (Hint: Imagine $y$ gives you some information about an accepting computation on $x$, if one exists.)
+
+%% \subsolution <your answer here>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 3 - 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\problem{10} %%947
+\vspace{-6pt}
+A function $f:\Sigma^* \rightarrow \Sigma^*$ is {\it computable} if
+there exists a Turing Machine $M$ that, when given $s \in \Sigma^*$ as input,
+halts with $f(s)$ written on the tape. The \emph{range} of $f$ is $\{f(x):
+  x \in \Sigma^*\}$. Prove that a nonempty language is r.e.~if and only if 
+  it is the range of a computable function. 
+ \vspace{-6pt}
+
+%% \subsolution <your answer here>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 4 - 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\problem{5+10+10}
+In this problem you will define a function that grows faster than any computable function. Thus you will prove the existence of an uncomputable function directly, without relying on Turing's diagonalization argument. 
+The {\bf busy-beaver function}
+$\beta(n)$ is the
+the largest number of $a$'s that can be printed by any $n$-state, two-symbol Turing machine that eventually halts when started from the empty tape.
+\iffalse Formally, for each $n \in \Nat$, $\beta(n)$ is defined to be the largest $m$
+such that, for some
+one-tape Turing machine $M$ with alphabet $\{\sqcup, a\}$
+and with exactly $n$
+states,
+$$(s,\triangleright \underline{\sqcup}) \vdash_M^*
+  (h,\triangleright \underline{\sqcup} a^m).$$
+\fi
+  \subproblem
+  Show that adding more states increases the number of $a$'s that can be
+  written. Specifically, show that there is a constant $t$ such that, for all natural numbers $n$ and
+  $m$,
+  $$ \mbox{if } n \geq m +t \mbox{, then } \beta(n) > \beta(m).$$
+  \vskip-4pt
+  \subproblem
+  Show that if $f:\Nat\rightarrow\Nat$ is computable, then there exists
+  some constant $k_f$ such that
+  $\beta(n+k_f)\geq f(n)$
+  for all $n$.  In other words, there is an $(n+k_f)$-state Turing machine $M_n$
+  that writes at least $f(n)$ $a$'s on a blank tape before
+  halting.  ({\it Hint:}  First recall that any TM can be simulated by one with a two-symbol alphabet. Show that, for each $n$, there is an $(n+c)$-state TM
+  $N_n$ that write $n$ $a$'s, where $c$ is
+  a small positive constant independent of $n$.  Combine
+  such a TM with the fixed two-tape-symbol machine $F$ which computes $f$.  The overall constant $k_f$ will represent
+  the number of ``extra'' states $c$ required to construct $N_n$ plus
+  the number of states of $F$.)
+  \vskip4pt
+
+  \subproblem
+  % 
+  % N.B. We removed the gamma(n) = beta(2n) hint this year
+  % (see last year's problem set) and that was probably
+  % a mistake.  People seemed to need that kick.
+  %
+  % What might be even more helpful is to explain in English the
+  % ramifications of parts A and B so that students really get 
+  % what's going on.  Something like
+  %
+  % A: Thus allowing only a constant number of additional states
+  % is guaranteed to increase beta.
+  %
+  % B: Thus beta grows as fast or faster than _every_ computable
+  % function.
+  %
+  Show that $\beta$ is not computable.  \iffalse For purposes of this problem, you may assume the
+  following lemma: Any recursive function from numbers to numbers is
+  computed by some Turing machine with alphabet $\{\sqcup,a \}$.\fi
+
+%% \subsolution <your answer here>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 5 - 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\problem{5 + 5} %%947
+\vspace{-6pt}
+
+In the near future you're working as an engineer at Google/Microsoft/Facebook when your manager asks you to write the following two programs. Is this a problem? Why or why not?
+
+\subproblem Take another program's code as input and decide if that program is implemented in the fewest possible lines of code.
+
+\subproblem Take another program's code and remove all inaccessible (dead) code from it.
+
+%% \subsolution <your answer here>
+%% \subsolution <your answer here>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PROBLEM 6 - Challenge
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{\textbf{Challenge}  + 1}
+Given a particular method of encoding a Turing machine $M$ into a string $\<M\>$, define $T_w$ to be the Turing machine encoded by the string $w$, or if $w$ is not a proper encoding of any Turing machine, then define $T_w$ to be an arbitrary fixed Turing machine. \iffalse That is, $$ T_w = \begin{cases} M & \text{ if $w = \<M\>$ for some TM $M$ } \\ 
+         \text{The TM that always accepts} & \text{ otherwise} \end{cases} $$\fi
+Prove that if $f$ is any computable function, then there exists some string $x$ such that $L(T_x) = L(T_{f(x)})$.
+
+%% \subsolution <your answer here>
+
+\end{document}

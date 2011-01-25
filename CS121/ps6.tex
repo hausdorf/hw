@@ -1,0 +1,109 @@
+\documentclass[letterpaper, ps]{cs121}
+\usepackage{amsmath, amsfonts, graphicx}
+\begin{document}
+\header{6}{Friday, November 5, 2010}{Monday, November 8, 2010}{20}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% !!!!! Write your name here !!!!! %
+\vspace{3mm}
+\begin{center} \bf{Name} \end{center}
+\studentName{!!! Your Name Here !!!}
+\collaboratorNames{!!! Collaborators' names here !!!!}
+
+Note that recursive is another word for Turing-decidable, and recursively enumerable (r.e.) is another term for Turing-recognizable.
+
+      There are several possible levels of formalism for describing Turing
+      machines:
+
+      \textbf{Formal description}: You can write out a formal 7-tuple
+        representation and use either a state diagram or a table to
+        describe the transition function, as done in Sipser~3.9.
+
+      \textbf{Implementation description}: You can describe
+        \emph{clearly} how the tape and head of the TM
+        work without specifying the states or the transition function,
+        as done in Sipser~3.11 and 3.12.
+
+      \textbf{High-level description}: You can give a still higher level description, as done in
+        Sipser~3.23.
+\vspace{3mm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{}
+
+% 2009
+\subproblem Write a general grammar that generates $\left\{ww:w \in \{a,b\}^*\right\}$. Explain in words what each rule in  your grammar does.
+\subproblem Demonstrate a derivation of this grammar for the string $abbabb$.
+
+%\subsolution % Your solution here
+%\subsolution % Your solution here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{}
+
+For this problem, give an implementation-level description for any Turing machine you construct.
+
+% 2009
+Define $\mathprob{Prefix}(L) = \{x:xy\in L$ for some $y\in \Sigma^*\}$. \par \vspace{2mm}
+Show that if $L$ is r.e., then $\mathprob{Prefix}(L)$ is r.e.
+
+%\subsolution % Your solution here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{}
+
+% 2009
+Show that every infinite r.e.~language has an infinite recursive subset. (\emph{Hint:} apply an ordering to $\Sigma^*$.)
+
+%\subsolution % Your solution here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{}
+
+From this point on, give a high-level description for any Turing machine you construct.
+
+% 2009
+\subproblem Let $L=\{\langle D,k\rangle:D$ is a DFA that accepts exactly $k$ strings, where $k\in\mathbb{N}\cup\{\infty\}\}$. Show that L is recursive.
+
+(\emph{Hint:} Show how to find a $p$ such that if $D$ accepts any string of length at least $p$, then $D$ accepts infinitely many strings.)
+% 2006
+\subproblem Let $L=\{\langle M\rangle:M$ is a TM and $L(M)$ contains a string with no $a$'s$\}$. Show that $L$ is r.e.
+
+%\subsolution % Your solution here
+%\subsolution % Your solution here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\problem{}
+
+% 2008
+Consider $L=\{\langle M\rangle:M$ is a TM that accepts no strings shorter than $42$ characters in length$\}$.
+
+\subproblem Prove that $L$ is not recursive.
+\subproblem Prove that $L$ is not r.e. (\emph{Hint:} use the result of part A.)
+
+%\subsolution % Your solution here
+%\subsolution % Your solution here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\problem{Challenge!! 3}
+
+Show that there is an infinite co-r.e.~set that has no infinite r.e.~subset. Recall that a language $L$ is co-r.e.~if its complement is r.e.
+
+%\subsolution % Your solution here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
+
+
