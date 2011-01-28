@@ -4,8 +4,8 @@ import java.util.Timer;
 
 class Timing {
 	public static void main(String[] args) {
-		timeStaticArray();
-		//timeDynamicArray();
+		//timeStaticArray();
+		timeDynamicArray();
 	}
 
 	public static void timeDynamicArray() {
@@ -20,10 +20,9 @@ class Timing {
 		long loop = timeLoop(100);
 
 		for(int offs = 1; offs < 10; offs++) {
-			long go = System.nanoTime();
-			dynarr.add(1);
-			for(int i = 0; System.nanoTime() < 5000000000L+go; i++) {
-				dynarr.get(0);
+			dynarr = new ArrayList<Integer>();
+			for(int i = 0; i < 100000; i++) {
+				dynarr.add(6);
 			}
 
 			start = System.nanoTime();
@@ -31,8 +30,8 @@ class Timing {
 				dynarr.add(6);
 			}
 			end = System.nanoTime();
-
-			System.out.println(100*offs + "\t" + (end - start - (loop*offs)) + "\t" + ((end-start - (loop*offs)))/(100.0*offs));
+			long average = end - start;
+			System.out.println((100*offs) + "\t" + average + "\t" + (average/(100*offs)));
 		}
 	}
 
