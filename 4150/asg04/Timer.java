@@ -4,8 +4,8 @@ import java.util.Timer;
 
 class Timing {
 	public static void main(String[] args) {
-		//timeStaticArray();
-		timeDynamicArray();
+		timeStaticArray();
+		//timeDynamicArray();
 	}
 
 	public static void timeDynamicArray() {
@@ -50,23 +50,24 @@ class Timing {
 		}
 
 		startloop = System.nanoTime();
-		for(int i = 0; i < 10000000; i++) {
+		for(int i = 0; i < 100; i++) {
 		}
 		endloop = System.nanoTime();
 		long loop = endloop - startloop;
+		System.out.println(loop);
 
-		for(int offs = 1; offs < 10; offs++) {
-			for(int i = 0; i < 2000000000; i++) {
+		for(int offs = 1; offs < 20; offs++) {
+			for(int i = 0; i < 1000000000L; i++) {
 				staticarr[i % staticarr.length] = 6;
 			}
 
 			start = System.nanoTime();
-			for(int i = 0; i < 10000000*offs; i++) {
+			for(int i = 0; i < 100*offs; i++) {
 				staticarr[i % staticarr.length] = 6;
 			}
 			end = System.nanoTime();
-
-			System.out.println(10000000*offs + "\t" + (end - start - (loop*offs)) + "\t" + ((end-start - (loop*offs)))/(10000000.0*offs));
+			long average = end - start;
+			System.out.println((100*offs) + "\t" + average + "\t" + average/(100*offs));
 		}
 	}
 
