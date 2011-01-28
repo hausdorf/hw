@@ -1,0 +1,37 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 03:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 03}
+Alex Clemmer\\
+Student number: u0458675
+
+\section*{Problem 1}
+
+Given $f(n) = an^3 + bn^2$, for any arbitrary constant $a$ that you can pick, we can pick a much larger one ($\textit{e.g.}$, $a^2$). This means that for any constant $a$ there will be some other constant (let's call it $c$) such that $f(n) \le c \cdot g(n)$, where $g(n)$ has at least one term of order $n^3$. Thus we say that $f(n) \in O(n^3)$.
+
+Small note: if you were wondering whether the smaller-order terms here affect this assertion, the answer is that they do not. In fact, we can actually ignore them for pretty much the same reason as above. That is, even if we have some function $t(n) = qn^2$ for some very, very, $\textit{very}$ large $q$, literally all functions we could pick with even one term $n^3$ will eventually get bigger than our ``large" quadratic.
+
+Technically, all these other ``smaller" terms would also thus be $\in O(n^3)$, although mathematicians would probably prefer to say, in this case, that they're $\in O(n^2)$, because that is a much more specific statement. Either way, they are irrelevant for our purposes, and we thus ignore them.
+
+\section*{Problem 2}
+
+If $f(n) \le c \cdot g(n)$ for some $c$, then any function may be added to both sides of the equation. That is, if $f(n) \le 100 \cdot g(n)$, then it must also be true, for example, that $(n^2 + 10) \cdot f(n) \le c \cdot g(n) \cdot (n^2 + 10)$.
+
+This is true of any function. So, $f(n)h(n) \le c \cdot g(n)h(n)$. Since this is the definition of $O()$ notation, it is also true that $f(n)h(n) \in O(g(n)h(n))$.
+
+
+\end{document}
