@@ -13,25 +13,33 @@ class Timing {
 		long end;
 		long startloop;
 		long endloop;
+		final int SIZE = 1000;
+		long pos;
 		Runtime r = Runtime.getRuntime();
 		ArrayList<Integer> dynarr = new ArrayList<Integer>();
 		ArrayList<Integer> tmp = new ArrayList<Integer>();
 
-		long loop = timeLoop(100);
+		long loop = timeLoop(SIZE);
 
 		for(int offs = 1; offs < 10; offs++) {
-			dynarr = new ArrayList<Integer>();
-			for(int i = 0; i < 100000; i++) {
+			pos = System.nanoTime();
+			for(int i = 0; System.nanoTime() < 1000000000L+pos; i++) {
+				if(i >= 100000) {
+					dynarr = new ArrayList<Integer>();
+					r.gc();
+				}
 				dynarr.add(6);
 			}
 
+			dynarr = new ArrayList<Integer>();
+
 			start = System.nanoTime();
-			for(int i = 0; i < 100*offs; i++) {
+			for(int i = 0; i < SIZE*offs; i++) {
 				dynarr.add(6);
 			}
 			end = System.nanoTime();
 			long average = end - start;
-			System.out.println((100*offs) + "\t" + average + "\t" + (average/(100*offs)));
+			System.out.println((SIZE*offs) + "\t" + average + "\t" + (average/(SIZE*offs)));
 		}
 	}
 
@@ -41,6 +49,7 @@ class Timing {
 		long end;
 		long startloop;
 		long endloop;
+		final int SIZE = 1000;
 		Integer[] staticarr = new Integer[100000];
 		Integer[] tmp;
 
@@ -49,7 +58,7 @@ class Timing {
 		}
 
 		startloop = System.nanoTime();
-		for(int i = 0; i < 100; i++) {
+		for(int i = 0; i < SIZE; i++) {
 		}
 		endloop = System.nanoTime();
 		long loop = endloop - startloop;
@@ -61,12 +70,12 @@ class Timing {
 			}
 
 			start = System.nanoTime();
-			for(int i = 0; i < 100*offs; i++) {
+			for(int i = 0; i < SIZE*offs; i++) {
 				staticarr[i % staticarr.length] = 6;
 			}
 			end = System.nanoTime();
 			long average = end - start;
-			System.out.println((100*offs) + "\t" + average + "\t" + average/(100*offs));
+			System.out.println((SIZE*offs) + "\t" + average + "\t" + average/(SIZE*offs));
 		}
 	}
 

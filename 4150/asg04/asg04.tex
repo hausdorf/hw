@@ -21,6 +21,20 @@ Student number: u0458675
 
 \section*{Hypothesis}
 
+The assignments give us that adding elements into a static array is $O(k)$. This ``suggests" that the runtime for appending to a dynamic array would be ``the cost of doing 3k store operations" on some static array. We want to create and experiment to analyze this claim.
 
+\section*{Procedure}
+
+\subsubsection*{Foreward} One of the main weaknesses of my last assignment is that I did not have a systematic approach for creating the timing suite. This time, I did.
+
+I started by just timing how long it took to allocate things to the array. Then I added code that spun the method for a few seconds before. Then I added code to time the loop itself, and subtract it from the total running time. At each point, I stopped and ran the program. If my code brought me closer to what I expected, I continued. If not, I fixed it.
+
+The big insight here is that in my last assignment, I really just threw code onto the canvas. By incrementally developing the timing patterns, I was able to see in real time what did and did not work. This made my timing development both smoother and (probably) more correct.
+
+\subsubsection*{How it works}
+
+First, there were a couple of things that I found had no discernible effect on timing. First, it did not seem to matter whether I allocated one particular integer, or a lot of random integers. It also did not seem to matter, surprisingly enough, whether the integer was a variable or a literal.
+
+One thing that did matter, a lot, was whether I used $\texttt{int}$ or $\texttt{Integer}$. I used the latter, but this may not have been the best choice. Either way, when I switched my static array from primitives to boxed primitives, the gap between their running time diminished from 9 times to ~2-3 times.
 
 \end{document}
