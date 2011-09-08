@@ -1,0 +1,78 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 35:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 35}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+Right out of the box, suppose we have an undirected, weighted graph with 3 vertices:
+
+\begin{verbatim}
+a   b
+o---o
+ \  |
+   o
+   c
+weight(a, b) = 1
+weight(b, c) = 2
+weight(a, c) = 3
+\end{verbatim}
+
+So if we partition the graph such that $G_1$ has the set of vertices $\{b\}$ and $G_2$ has the set of vertices $\{a, c\}$, then we would have to accept $(a, c) \in E$, which is an edge with a weight of 3. There are no self-loops in undirected graphs, so there is no edge $(b, b) \in E$. This leaves us with the bridging edge from $G_1$ to $G_2$. In this case it would be $(a,b) \in E$, which has a weight of 1. This gives us the following MST:
+
+\begin{verbatim}
+a   b
+o---o
+ \  
+  o
+   c
+weight(a, b) = 1
+weight(a, c) = 3
+\end{verbatim}
+
+But the actual MST should be:
+
+\begin{verbatim}
+a   b
+o---o
+    |
+    o
+   c
+weight(a, b) = 1
+weight(b, c) = 2
+\end{verbatim}
+
+\section{}
+
+The cut property relies on the use of all vertices. If you establish the MST for two components they do not necessarily correspond to the MST of the entire tree.
+
+\section{}
+
+The recurrence relation is $T(n) = 2T(n/4) + O(n)$. This gives us $O(n)$. Even though the inner loop runs at ~$O(7n)$, what really matters is that each subproblem is 1/4th the size of its superproblem, that the work is done twice, and that the zip-up time is $O(n)$.
+
+
+
+
+
+
+
+
+
+\end{document}

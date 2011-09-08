@@ -1,0 +1,51 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 26:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 26}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+First find $\phi(N)$: $(p-1)(q-1) = 504$. This is the Euler Totient Function; we'll call it $n$ for short. Given that $e = 5$. The smallest $x$ such that $5x \equiv 1 (\mbox{mod } 504)$ is $x=101$. Thus $\mathbf{d = 101}$. Pretty simple.
+
+\section{}
+
+Encrypting 55 is pretty straightforward. Given $m^e (\mbox{mod } n)$, we have $55^5 (\mbox{mod } 504) = 55$. If that doesn't seem right, we can reverse it given $m^d  (\mbox{mod } 504)$: $55^{101}  (\mbox{mod } 504) = 55$.
+
+\section{}
+
+Given the above, this is super simple. $189^101 (\mbox{mod } 504) = 189$. We can confirm this odd result by $189^{5}  (\mbox{mod } 504) = 189$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

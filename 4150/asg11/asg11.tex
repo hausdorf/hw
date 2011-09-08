@@ -1,0 +1,68 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 11:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 11}
+Alex Clemmer\\
+Student number: u0458675
+
+\section*{}
+
+The assertion that $\mbox{log}(n!) \in \Omega(n \mbox{ log } n)$ is true essentially because the square of half of $n$ will always be less than $n!$. The assertion that is provided statement taking the ``hint" in a very literal sense.
+
+To prove this, we are essentially showing that $\exists c : \mbox{log }(n!) \ge c \cdot (n \mbox{ log } n)$ where $n >$ some $n_0$. This is more intimidating than it sounds. Another way of writing it is that $n \ge p^p, \forall n : n \ge n_0, n = 2p$. To illustrate the given claim, we start with some $n_0 = 6$:
+
+\begin{equation*}
+\begin{array}{rcl}
+n_0! & \ge & p^p \\
+6 \cdot 5 \cdot 4 \cdot 3 \cdot 2 \cdot 1 & \ge & 3^3 \\
+720 & \ge & 27 \\
+\end{array}
+\end{equation*}
+
+This is the basis. The intuition is that this will always be the case, for any $n$. But is it true?
+
+Yes it is. First, consider that $n!$ is always a series of $n$ terms, while $p^p$ is a series of $n/2$ terms ($\textit{e.g.}$ for $n = 6, n! = 6 \cdot 5 \cdot 4 \cdot 3 \cdot 2 \cdot 1$, while $p^p = 3 \cdot 3 \cdot 3$). More importantly, however, is that $n/2$ of these terms are $\textit{always}$ bigger than all the terms in $p^p$.  So in the example above, $p^p = 3 \cdot 3 \cdot 3$, and the first 3 terms of $n!$ are $6 \cdot 5 \cdot 4$. So, even if we just had the first $n/2$ terms of $n!$, it would $\textit{still}$ be larger than $p^p, \forall p$.
+
+Just like before, transforming this logic into the form of the assertion is trivial. Both are monotonically increasing, so the inequality will remain intact by log-ing both sides:
+
+\begin{equation*}
+\begin{array}{rcll}
+n! & \ge & p^p & , \forall n > n_0, n = 2p \\
+\mbox{ log }(n!) & \ge & p \mbox{ log } p & , \forall n > n_0, n = 2p \\
+\end{array}
+\end{equation*}
+
+This is the definition of $\mbox{ log }(n!) \in \Omega(n \mbox{ log } n)$. Therefore $\mbox{ log }(n!) \in \Theta(n \mbox{ log } n)$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

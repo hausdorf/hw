@@ -1,0 +1,47 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 28:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 28}
+Alex Clemmer\\
+Student number: u0458675
+
+\section*{}
+
+We'll examine the simplest algorithm I could think of. Given $r = a^{b^c} (\mbox{mod } p)$: obviously $b^c$ is $c$ multiplications of $b$ ($\textit{e.g.}$, $b^3 = b \cdot b \cdot b$). So right there, in our simplest possible algorithm, we have $c$ operations. We take the result of this, let's call it $j$, and then we perform $j$ multiplications of $a$. So if $j=3$, then we multiply $a$ 3 times: $a \cdot a \cdot a$. Our result is is then modded by $p$, giving us $r = a^j (\mbox{mod } p)$.
+
+The running time should be $O(n^2 \cdot n)$: multiplication of the grade-school variety requires $O(n^2)$ time and we're doing it a variable number (say $t$) times. Since we know that we do first $c$ multiplications, and then $j$ multiplications, and since we know that $c, j, a < p$, we know that in the worst case this is bounded by the length of $p$.
+
+If we dealt with arbitrary-length integers, we may be in trouble. Since we're not, it should take $O(n^3)$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

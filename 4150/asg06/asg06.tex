@@ -1,0 +1,42 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 06:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 06}
+Alex Clemmer\\
+Student number: u0458675
+
+\section*{}
+
+We begin by defining the problem. The base case is where $n < 3$, in which case there is one comparison and one possible swap. These are the constant factors. Unlike mergesort, there is no merging, and therefore the combinatorial factor is constant. That is, this sort takes place in-place, and therefore the overhead to combine them is the same for all operations. Therefore, given 
+
+\begin{equation*}
+T(n) = aT(\lceil n/b \rceil) + O(n^d)
+\end{equation*}
+
+where the last term represents the constant factors, $d = 0$.
+
+Here $n/b$ represents the subproblems and $a$ is the number of times it happens. In this case, therefore, $T(n) = 3T(\lceil (2n)/3 \rceil) + O(1)$.
+
+In this case, from $d < log_b a$, we get $0 < log_{3/2}3$. This means that our equation runs at
+
+\begin{equation}
+O(n^{log_{3/2} 3})
+\end{equation}
+
+This follows directly from the given master theorem.
+
+\end{document}

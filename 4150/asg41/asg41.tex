@@ -1,0 +1,48 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 41:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 41}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+In order to confirm whether or not there are $n$ independent vertices in undirected graph $G$, we must, at the very least, have encountered and counted $n$ vertices. We can transform this into a search problem by recording the vertices instead of only counting them. The constant of recording the vertices as you count them should not asymptotically affect the time it takes to run the algorithm, so it should still work in polynomial time.
+
+\section{}
+
+Since the assignment didn't say specifically what the running time of the decision function is polynomial to, I will assume that it is polynomial to $n$, the number of vertices we're looking for. This makes the case simple: in order to run this as an optimization problem, all we need to do is to run the decision version $n$ times, because all things equal, the worst case running time should grow proportionately to $n$. That is, for some sufficiently large graph, (and assuming this graph stays the same size throughout the problem) the real determining factor in run time should be $n$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

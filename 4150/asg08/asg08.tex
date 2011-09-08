@@ -1,0 +1,32 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 08:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 08}
+Alex Clemmer\\
+Student number: u0458675
+
+\section*{}
+
+The array indices are going up by one starting at 0, and the values are going down. We want to find the intersection, if any. So the answer is a binary search, more or less. The comparator basically operates by comparing the index $\texttt{i}$ to the value at $\texttt{A[i]}$.
+
+This problem is made simply by the fact that $\texttt{i}$ and $\texttt{A[x]}$ are both in ascending order, and that $\texttt{i}$ is sequential. This means that if $\texttt{A[i]}$ is larger than $\texttt{i}$, then $\texttt{i}$ will never catch up, ever. Thus, if $\texttt{A[i]}$  > $\texttt{i}$, we have gone too far in the array (assuming it's there), and if $\texttt{A[i]}$ < $\texttt{i}$, we have not gone far enough (again assuming it's there). In other words, this is the crucial feature that allows us to build the comparator.
+
+This allows us to build a binary search. We split array. If the midpoint is $\texttt{A[i]}$ > $\texttt{i}$, we split the left part; if $\texttt{A[i]}$ < $\texttt{i}$, we split to the right. By repeatedly doing this as we did in the last assignment, we can find the place where $\texttt{A[i]}$ = $\texttt{i}$. If the $\texttt{low}$ - $\texttt{high}$ < 1, we did not find the element.
+
+Why is this log $n$? Simple: each time we get rid of half the array. How many times does it take to partition an array of $n$ elements? log$_n A = B$ is $n^B = A$. So it takes roughly log$_2 n$ tries. Hence ($O$ log $n$). If we don't know the length of the array to begin with, the last assignment showed that finding the end is log $n$, and 2 log $n$ is still $O($log $n)$.
+
+\end{document}

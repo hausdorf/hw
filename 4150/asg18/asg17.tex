@@ -1,0 +1,51 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 18:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 18}
+Alex Clemmer\\
+Student number: u0458675
+
+\section*{}
+
+Basically you apply Dijkstra's twice. You apply it once from $u \rightarrow x$, and then $x \rightarrow v$. Then you combine the paths. Assuming we have the roots, and that all the pre-work is done for us ($\textit{e.g.}$, topological sorting), this turns out to be extremely simple:
+
+First, you set the distance of all nodes to infinity. Then you start at $u$ and begin traversing the graph in a breadth-first fashion. You basically update the distance for each child node if and $\textit{only}$ if your current distance is less than the distance at that node. You then move to each next node and update the distance of all their children, with the same rules.
+
+At the end of this, we have spent roughly $O(|V| + |E|)$. Repeat this from $x$ to $v$, and you should have the shortest path going through these three points. This turns out to be asymptotically linear because we always perform this search twice, and each search is linear itself. This means that our constant is 2, which is asymptotically insignificant.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

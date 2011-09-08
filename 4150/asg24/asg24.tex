@@ -1,0 +1,61 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 24:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 24}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+The expression $\texttt{z = (z * x) mod N}$ occurs in $O(n^2)$. Since $N$ is an $n$-bit number, and since $x$ and $y$ are strictly less than $N$, the worst possible case is that $x$ and $y$ both have a value of $2^n-2$.
+
+This means that the $O(n^2)$ statement, which easily dominates the inner part of the loop, gets iterated $2^n-2$ times. That gives us:
+
+\begin{equation}
+O(2^n \cdot n^2)
+\end{equation}
+
+Gross!
+
+\section{}
+
+So $\texttt{z = x * y}$ should be $O(n^2)$, depending on the algorithm you use. $N$ is an $n$-bit number, which means its worst case value is $2^n-1$, which means that the loop ends up iterating $2^n$ times asymptotically. The statement inside the loop is only slightly trickier: $\texttt{z-N}$ is linear, and allocating the result into $\text{z}$ is also linear. So either way, the loop takes $O(2^n)$, and the loop itself should take $O(n)$ time. So that gives us $O(n^2) + O(n \cdot 2^n)$, which is really just:
+
+\begin{equation}
+O(n \cdot 2^n)
+\end{equation}
+
+Better, but still horrible.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

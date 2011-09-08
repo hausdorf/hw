@@ -1,0 +1,49 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 33:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 33}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+The idea is to go as far as possible before stopping for gas. Since you can easily calculate how far your car will go before it runs out of gas, you know exactly between which gas stations this will happen. You want to fill up the gas station immediately before this happens.
+
+In order for it to be untrue, there must at least one locally suboptimal point we can stop at that will cause us to make one fewer stop later.
+
+Assuming we start with a full tank of gas, and that it's possible to get from the beginning node to the end node, a graph with 3 or fewer nodes is trivially solvable. There's no where to go with 1 node, with 2 nodes, we never must stop for refueling, and with 3 nodes, we either must stop at node 2 or we don't have to.
+
+With 4 nodes, this is similarly the case: in order for this proposition to be untrue, then filling up at node 2 must ultimately cause fewer stops getting to node 4 than when we fill up at node 3 to get to node 4. But we can clearly see that if we must stop at either 2 or 3, we must still stop, so there is no real win here.
+
+With 5 nodes, this is again the case, but more generally so. If we can get to any point by either 2 or 3, then stopping at one or the other must be interchangeable: there is no advantage to picking one or the other. The only exception to this case is if we can only reach some point by one and not the other. Obviously if we can reach a node from node 2, we can also reach it for node 3, so the only way this is possible is if for the node to be unreachable for 2 but reachable for 3, which clearly can never produces a counter example to our original question.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

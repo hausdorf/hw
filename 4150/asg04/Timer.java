@@ -26,7 +26,7 @@ class Timing {
 			for(int i = 0; System.nanoTime() < 1000000000L+pos; i++) {
 				if(i >= 100000) {
 					dynarr = new ArrayList<Integer>();
-					r.gc();
+					//r.gc();
 				}
 				dynarr.add(6);
 			}

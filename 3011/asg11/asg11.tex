@@ -1,0 +1,68 @@
+%Author Alex Clemmer
+%CS 3011 Algorithms
+%Assignment 11:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 11}
+Alex Clemmer \\
+Student number: u0458675
+
+\subsubsection*{Robert Wipfel---Fusion-io}
+
+Technology is an interesting sector to be in these days because there are loads of disruptive products floating around. I think that's in a lot of ways because the cost of failure even for hardware is increasingly cheap, which makes the industry in general more open to, and tolerant of, failure, and noticeably more so than they have been in the past. Consider, for example, the difference between IBM in the 60's, and Facebook today.
+
+This is one of the reasons why it's interesting to hear a talk from someone whose job is, at a fundamental level, to disrupt technology and annoy other companies with inconvenient solutions. Mr Wipfel is the equivalent of a Senior Engineer on a product that is designed to make disk IO cheaper.
+
+One significant challenge for new technology is to convince people that their solution is not optimal, even though they've been doing it that way for 20 years. It's one thing to have an interesting alternative to a significant problem, and it's another thing entirely to convince people to use it. In the case of something like IO, you may actually have to convince people that they have a problem to begin with.
+
+This is particularly odd for a product like ioDrive, because we all know that disk IO is the major bottleneck in computation---you computer will spend lots of time just waiting for the hard drive to respond, which is clearly not optimal. People have traditionally expected that better solutions will be better hard drives, but ioDrive is compelling evidence that it may not.
+
+I'm not a hardware person, so the tradeoffs between using a device like ioDrive versus a hard drive are still more or less opaque to me. But it is sort of telling that this device tends to be used in the context of large data. Particularly it seems to be useful in cases where fast data reads from disk are mission-critical. It may or may not be useful in the common case of home computers, but convincing nerds at a data center to switch technology is probably easier than convincing people at Dell to switch technology that is seen by millions of consumers directly.
+
+That, of course, assumes that these drives are appropriate for consumer technology, which may or may not be the case. I gather that they are, but I actually wish that Mr Wipfel had given more press not just to the technology itself, but also to the barriers they have in replacing old technology, what markets it's good for, and why it may or may not replace, say, disk drives. Particularly useful would have been some sort of use case summary that helps describes where it is and is not effective. From a technical perspective, he gave a reasonably good description, but either I'm too slow or not knowledgable enough to know which things are important in an accurate picture of how they're used.
+
+One thing that is conspicuously absent from my understanding of the talk is the fact that I really have no idea why, specifically, this option is faster than SSDs. Is it the sort of bus they use? The physical locality? The sort of technology they're using? To what extent can the technology in an ioDrive be integrated into something like a hard drive? Maybe I only have these questions because I'm a software person.
+
+Something that is important the Mr Wipfel didn't mention is that changes in access times for data dramatically affect core code of things like database engines. MySQL, for example, structures all of computations based on how long it takes to seek for the data on the hard disk. The advent of SSDs creates a significant problem for these ``traditional" databases, and is the reason that companies like RethinkDB exist at all.
+
+The problem, of course, doesn't stop there. There is a similar problem for job dispatching in operating systems, and really anything that must consistently interact with data on a hard disk. I am more than a little curious to see how a dramatic decrease in access time affects these (very important) problems, all the more because this is yet another barrier to entry for this new technology. It seems like Fusion-io would be more or less invested in promoting companies and products that help optimize for their specific hardware, and it makes me wonder if perhaps there is a stronger software component than the presentation led me to believe.
+
+I'm looking at their products list now, and notice that almost all of their material is geared towards the large-data clientele. In a lot of ways, that makes sense---that segment of the total consumership spends a ton on devices like this. They seem to be doing well for themselves --- Steve Wozniak is the Chief Scientist --- but as with all disruptive technology, I think they may be underestimating just how much of an impact large-scale adoption of their product would have.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

@@ -1,0 +1,58 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 30:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 30}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+Our MST will connect to all vertices, with each vertex having at most one parent. This means that if the tree changes, it will be by substituting one edge for another edge specifically. Since all edges have increased in weight by one, the best choice will not have changed. In order for the tree to change, it would have to be possible that adding 1 to two nonnegative numbers would change which was greater and which was less.
+
+\section{}
+
+Suppose we have some graph $G$:
+
+\begin{verbatim}
+              1  B
+o---o---o---o---o
+|              /
+o---o-o-o---o-o
+A
+\end{verbatim}
+
+Suppose that all unlabeled edges are weighted 0. Node a is in the bottom left corner and node B is in the top right. The only weighted edge is in the top right next to B.
+
+Note that increasing all the edges by 1 gives us the path from A to B on the left a weight of 6, where it's 6 on the right. Increasing all edges by 1 again gives us a weight of 11 on the left and 12 on the right. So there does exist some graph for which it is the case that increasing the weight changes the shortest path.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

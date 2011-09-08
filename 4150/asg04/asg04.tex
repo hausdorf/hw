@@ -37,4 +37,32 @@ First, there were a couple of things that I found had no discernible effect on t
 
 One thing that did matter, a lot, was whether I used $\texttt{int}$ or $\texttt{Integer}$. I used the latter, but this may not have been the best choice. Either way, when I switched my static array from primitives to boxed primitives, the gap between their running time diminished from 9 times to ~2-3 times.
 
+Whether we spun the allocation for a couple of seconds before actually running the experiment made our results much less erratic. In the case of the dynamic array, running add repeatedly caused the array to expand, so it was necessary to allocate a new $\texttt{ArrayList}$ just before the actual experiment. When I did not, the gap between the runtime of the dynamic array versus the static array was a $\textit{lot}$ smaller.
+
+Another thing that was important for the dynamic array was to call the garbage collector. Oddly even though $\textit{not}$ calling the garbage collector did not actually cause a memory overflow error, it did make the results much less erratic.
+
+The last, and most important thing, was size. Larger sizes were universally erratic and unpredictable. Smaller sizes were the only manageable data. I was informed of this by another student, and it seems that Joe said this in class.
+
+\subsubsection*{Also important}
+
+To actually time the operations, we stuck the actual allocation operation inside a loop. All the things listed before were important, but this was the actual testing mechanism. In order to do this, we just bookended the timing operations around the loop, and the timed the dry loop and subtracted that from the time.
+
+\section*{Results}
+
+The first graph below show both the time taken to execute one allocation operation as a function of the total number of operations executed. The second shows the total execution time of $x$ amount of operations. The data they are based on are below.
+
+\includegraphics{avg_op_time.png}
+
+\includegraphics{total_runtime.png}
+
+\includegraphics{dynarr_data.png}
+
+\includegraphics{statarr_data.png}
+
+\section*{Analysis}
+
+Strangely, the prediction is almost correct: the total coefficient is really almost right. The average for our dataset shows that the dynamic array takes about $\textbf{2.37}$ times more time per allocation operation than the static array. I bet for larger data sets this would even out to somewhere between 2.5 and 3.
+
+The cleanliness of these results was really difficult to get, I should note. I took a lot of experimenting and smoothing, and I understand that while it is smooth, I assure you it is authentic. You said not to include the file, so I won't, but if you question the veracity of my claims, I will happily provide the java file.
+
 \end{document}

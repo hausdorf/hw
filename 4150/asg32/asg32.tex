@@ -1,0 +1,66 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 33:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 33}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+False. If there are at least $|V|$ edges, then there may be $\textit{exactly}$ $|V|$ edges, in which case if the heaviest edge is the only way to reach that particular node, then it must be included. This could be the case in any graph where $|E| < |V|^2$.
+
+\section{}
+
+True. For a cycle, the MST will have one edge less than the number of vertices, and therefore the heavy one gets dropped.
+
+\section{}
+
+True. All nodes are reachable in an MST, which means that all edges are trivially accessible. So what it comes down to is preference: if some edge is the lightest, then some other node was chosen to get to some vertex instead. In the case of an MST, it was chosen because the other edge cost either as much, or more than the lightest node. Therefore we can construct another MST using that particular node instead.
+
+\section{}
+
+True. Since an MST measures the lightest tree that connects to all nodes, the uniquely lightest edge of some graph must be the best choice to get to some node. This is because, in the case where there is more than one edge leading to some node, you have the option to include either that node or some other node which is heavier.
+
+\section{}
+
+True. If we have an empty $X$, then any edge we pick satisfies the cut property for some cut we pick.
+
+\section{}
+
+True. We would remove the heaviest edge in a cycle, and if e is the uniquely lightest edge, we would never remove it.
+
+\section{}
+
+False. If we have a graph that is just one big cycle with the heaviest edge connected to the origin, then (depending on the specific weights) Dijkstra's will add it to the tree as soon as the other edges' totals add up to more than its own total. So it clearly doesn't behave the same.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

@@ -1,0 +1,65 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 14:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 14}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+\subsection{}
+
+The first implementation of $\texttt{explore()}$ calls $\texttt{postvisit()}$ before the children nodes are visited. This has the obvious effect of breaking the exploration of the dfs: note that in the book $\texttt{explore()}$ is called recursively on the child nodes before $\texttt{postvisit()}$ is called upon the final traversal of that particular node.
+
+\section{}
+\subsection{}
+
+No it does not. It searches depth-first via the rightmost node. The book clearly goes from the leftmost node to the rightmost.
+
+\subsection{}
+
+In the second implementation of $\texttt{explore()}$, we only call $\texttt{postvisit()}$ in the event that we've pushed $\texttt{-v}$ to the stack for some $\texttt{v}$ we just visited. Before we actually pop that element, though, we will have pushed all that node's children to the stack, and all $\textit{that}$ node's children, and so on, until the first leaf. Only then can we recurse back and call that method, as only then will can we encounter a $\texttt{-v}$ on the stack.
+
+\subsection{}
+
+The worst case is $\Theta(|V|^2)$. If all the nodes are connected, then we will add every node for every node in the list. There is no alternative worst case, so this gives us not just $O(|V|^2)$, but also $\Theta(|V|^2)$.
+
+Just like any $O(n)$ vs. $O(n^2)$ relationship, the $O(n^2)$ could represent an improvement over the linear algorithm if the linear algorithms constants are sufficiently high. In our case, for example, if the stack frames caused a prohibitive overhead, it may be some time before the $O(n^2)$ algorithm fell behind.
+
+\subsection{}
+
+Asymptotically, no. In a fully-connected graph, if we don't add elements that are visited, then each iteration will give us only one less than the previous total. This is a well-known relation: $\sum_{j} (n-j) = \frac{n(n-1)}{4}$, which is very clearly $O(n^2)$ So the end result is pretty much the same.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

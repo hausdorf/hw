@@ -1,0 +1,48 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 42:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 42}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+Say we have some search problem $\Pi$ with input size $n$. Since every search problem in NP can be expressed as a series of decision problems, the worst case is that we have have to examine both possible answers (``yes" and ``no") for every single input $\in [0,n]$. So there are somewhere around $2^n$ subproblems.
+
+If it's nondeterministically solvable in polynomial time (that is, given a machine that can explore an arbitrary number of solutions simultaneously---the definition of NP), all these subproblems themselves must be also solvable in polynomial time, let's say specifically $p(n)$.
+
+So each problem costs at most $p(n)$ for some polynomial function $p$. If there are $2^n$ subproblems at worst, then the total cost for all problems in NP must be $O(2^{p(n)})$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

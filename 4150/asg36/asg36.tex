@@ -1,0 +1,49 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 36:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 36}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+Greedily picking the odd number closest an even number will do just fine.
+
+On a very small scale, this is easy to see: say $\texttt{\{1,2\}}$, the distance will always just be 1.
+
+The next largest sequence would be digits [1,4], $\textit{e.g.}$, $\texttt{\{1,3,2,4\}}$. This particular sequence is actually the worst case, with a total distance of 4. We could also have something like $\texttt{\{1,2,3,4\}}$, with a total distance of 2.
+
+The reason this works mainly because there are an equal number of even and odd numbers. So for some set of numbers, for every number that has a distance of $n$ from its closest correspondent, there will be another with the same distance $n$. This means that picking any choice balances out the corresponding choice if it's not optimal.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

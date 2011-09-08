@@ -1,0 +1,101 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 31:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 31}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+Does not work. Consider that if we have a meeting that starts at 9 and ends at 5, it would probably be picked first. But it takes all day, and if there are any number of non-overlapping meetings that could occur during that time, this heuristic will fail.
+
+\section{}
+
+Does work. Let's assume for sake of argument that selecting the next earliest ending time does $\textit{not}$ give us the optimal solution. That means that we ended up $\textit{not}$ scheduling at least one meeting that we could have gotten if we'd selected a different meeting instead. That is, if one meeting disqualifies only one other meeting, this is not a net loss: only in the case that scheduling one meeting disallows scheduling another meeting that we could have otherwise scheduled in the optimal solution, do we incur net loss.
+
+But in order for that to be the case, the meeting we've selected must overlap with at least $\textit{2}$ meetings that would be able to be scheduled if we had not scheduled this meeting. That last clause is critical: we want to find a situation where scheduling this meeting destroys our change to schedule at least 2 other meetings, so they can't overlap. For example, this following is invalid:
+
+\begin{verbatim}
+|------|       meeting 1
+   |-----|     meeting 2
+    |------|   meeting 3
+\end{verbatim}
+
+Since we're selecting by the next-earliest ending time, we obviously know that any other meeting we could select must end afterwards. Yet, for the initial proposition to be true we $\textit{must}$ block 2 or more other meetings. But for that to be true, $\textit{at least}$ one must end before our current meeting:
+
+\begin{verbatim}
+|--------|   meeting 1
+ |--|        meeting 2
+     |--|    meeting 3
+\end{verbatim}
+
+Note that it doesn't matter when the first meeting begins, what's critical is that, to block both meetings that could otherwise be scheduled, one must end before the one we've selected.
+
+This is a contradiction. Thus this proposition can't ever work.
+
+\section{}
+
+Doesn't work. Again, the invariant here is that it must be possible for one meeting to block at least 2 meetings that otherwise could have been scheduled. This is a distinct possibility here:
+
+\begin{verbatim}
+   |--|       meeting 1
+|---|         meeting 2
+     |----|   meeting 3
+\end{verbatim}
+
+Note that in this case, we would select meeting 1, which subsequently would make it impossible to select both meeting 2 and meeting 3, which could otherwise have been scheduled. If these are the only three meetings that are available, then we have just failed to be optimal.
+
+\section{}
+
+Absolutely doesn't work. If the biggest meeting takes from 9 to 5, then if there are even 2 other meetings, we have just failed because we scheduled 1 when we could schedule 2.
+
+\section{}
+
+Does work. Let's assume we've picked a meeting that has the smallest number of conflicts, but that blocks more than 2 meetings that otherwise could have been scheduled (that is, as noted before, these meetings do not conflict with each other).
+
+In order for this to be true, each of those meetings that are blocked must have more conflicts than the one we selected:
+
+\begin{verbatim}
+     |----|        meeting 1
+ |----|            meeting 2
+         |----|    meeting 3
+|---|              meeting 4
+|---|              meeting 5
+|---|              meeting 6
+             |-|   meeting 7
+             |-|   meeting 8
+             |-|   meeting 9
+             |-|   meeting 10
+\end{verbatim}
+
+So in this case, meeting 1 would be selected, as it has 2 conflicts. But clearly the optimal schedule would be to schedule two of the other meetings that do not conflict AND the middle meeting. But this selection model actually accounts for this: the next smallest number of conflicts is meeting 4, 5, or 6, and we would selected.
+
+So in the only case where it would be possible for this to be false, we actually do get a solution.
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

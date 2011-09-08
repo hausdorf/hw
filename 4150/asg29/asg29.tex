@@ -1,0 +1,58 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 29:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 29}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+Transforming $x^p \equiv x (\mbox{mod }p)$ into a more familiar format is really simple. We start with prime identity given by the book, $x^{p-1} \equiv 1(\mbox{mod } p)$. Multiplying both sides by $x$, we get $x^p \equiv x(\mbox{mod } p)$. We know that we can do this because $x$ is obviously relatively prime to $x$.
+
+\section{}
+
+Transforming some $x^{k(p-1)+1} \equiv x (\mbox{mod } p)$ also begins with the familiar identity that $x^{p-1} \equiv 1(\mbox{mod } p)$. By raising both sides to the power of $k$ we get $x^{k(p-1)} \equiv 1(\mbox{mod } p)$. Remember that this is intuitively satisfying because we mod intuitively at every point we multiply a number by itself when raising it to some power. So if a number is congruent $\mbox{mod } p$, it should be congruent for all powers $k$ that it is raised to.
+
+There's no black magic in the last step: we simply multiply both sides by $x$. This gives us our final solution, $x^{k(p-1)+1} \equiv x (\mbox{mod } p)$.
+
+\section{}
+
+$e$ and $p-1$ are relatively prime, so we can use Extended Euclid's algorithm to give $fe + b(p-1) = 1$. Mod-ing both sides by $p-1$ gives us $fe \equiv 1(\mbox{mod }p-1)$.
+
+\section{}
+
+For some message $y$ in $y \equiv x^e (\mbox{mod } p)$: we've found $f$ in the previous part, so our equivalence relation becomes $y^f \equiv x^{ef} (\mbox{mod }p)$. The totient function $\phi(p) = p-1$, so by Euler's we can $y^f \equiv x^{ef (\mbox{mod }p-1)} (\mbox{mod } p)$, which is then $y^f \equiv x(\mbox{mod } p)$.
+
+Decrypting is simple: find $f$ then use $x \equiv y^f (\mbox{mod } p)$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

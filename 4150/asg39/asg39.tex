@@ -1,0 +1,47 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 39:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 39}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+
+
+One key insight here is that simply recursively finding all expressions that evaluate to $b$ will actually leave some solutions out over arbitrary problem-space, because other expressions, ($\textit{e.g.}$, $a \cdot a$) also evaluate to $b$.
+
+So the real task at hand is to find a substructure to build the recurrence relation on. If we notice that multiplication in general is really a problem of tree associations, then this becomes easier. Say $M_x(i,j)$ yields a list of possible products of $i$ and $j$. Then $M_x(i,i) = s[i]$, and $M_x(i,i+1)$ is always deterministically one particular character from the given set of possibilities (in this case, $\{a, b, c\}$). And every subsequent problem is an expression of this. So $\textit{e.g.}, M_x(i, i+3)$ would be some combination of the above.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

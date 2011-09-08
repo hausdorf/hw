@@ -1,0 +1,54 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 34:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 34}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+The case that $e \not \in E'$ and $\hat w(e) > w(e)$ requires no change to the tree.
+
+\section{}
+
+The case that $e \not \in E'$ and $\hat w(e) < w(e)$ may actually require a change to the tree, and is really the trickiest case. Fortunately, because MSTs do not require evaluation of the shortest path, only the shortest tree overall. And because the graph is connected, the change of one edge really only means we have to evaluate the branches that it could replace; this would maintain its connected nature, and is all that is required to evaluate the tree. So what we really want to look for is the edge $\in E$ and $\not \in E'$ that has the smallest weight and bridges the cut.
+
+We do this by deleting $e$ from $E'$ and then looking through the tree for edges $\in E$ and $\not \in E'$ that bridge that cut. To find those edges, we perform a breadth-first search. The smallest of these is the edge we want to make the new $e$. These should both be in $O(V+E)$.
+
+\section{}
+
+The case that $e \in E'$ and $\hat w(e) < w(e)$ requires no change to the tree.
+
+\section{}
+
+We start by deleting $e$ from $E'$ and then look at all edges that bridge the cut $\in E$ but $\not \in E'$. This happens pretty much like above. This operation is linear over $O(V+E)$. The smallest edge satisfying these conditions should be the new edge.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

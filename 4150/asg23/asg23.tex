@@ -1,0 +1,50 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 23:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 23}
+Alex Clemmer\\
+Student number: u0458675
+
+\section*{}
+
+We exclude negative cycles, because they are not well-defined for the shortest path problem.
+
+That in mind, if all negative edges originate at origin $s$, then Dijkstra's should actually work. Consider what we would have to do if we happened to encounter a negative edge in some graph: to correct this, we would have to backtrack to make sure we weren't trampling over the $\textit{real}$ shortest path. This is because the path cost of a node that's already visited will change.
+
+Note that if we can encounter this negative edge only at the very beginning, we never ever have to backtrack: the negative cost will change the cost of nodes that do not exist. Thus Dijkstra's should work if all negative edges originate from $s$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

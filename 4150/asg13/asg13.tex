@@ -1,0 +1,51 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 12:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 12}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+In the worst case, you have no more than 2 choices per comparison. That is: something comes before or after another element, or it is the same. This gives us two children per node. This makes the situation roughly equivalent to the binary tree example in class.
+
+The fact that it's sorted means that it is equivalent to a balanced BST. A balanced BST has no more than log $n$ levels, because each level has at most 2 children per node, except leaf nodes and on potential node with one child.
+
+This is the upper bound for comparison search.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

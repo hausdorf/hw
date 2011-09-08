@@ -1,0 +1,48 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 40:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 40}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+Assuming we already have the matrix $\delta$, the problem breaks down into one of a few subproblems. Either the end of the two strings matches or it doesn't, just like in the book. In the case that it doesn't match, either string can have a space. Since we don't know which is which, we'll say that it can be any of these three. From there, it's a simple matrix lookup.
+
+\begin{equation}
+A(i,j) = \mbox{argmax}_c(\delta(A(i-1,j) + 1, \delta(A(i, j-1), \delta(A(i-1,j-1))
+\end{equation}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

@@ -1,0 +1,51 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 38:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 38}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+Given some $a_i$, what we want to do is to find some $a_t \in a_i...a_n$ such that the distance between $a_i$ and $a_n$ is as close to 200 as possible. So for example, if we are given $a_3$, our job is to find the $a_t$ that occurs after $a_3$ such that dist($a_t ) - $ dist($a_3$) that is closest to 200.
+
+This gives us a simple recursive relation:
+
+\begin{equation}
+H(i) = \mbox{min}(|200-(a_t \in a_i ... a_n) - a_{i-1})|)
+\end{equation}
+
+This of course suggests a quick algorithm: examine every element in the range $a_i...a_n$, keeping track of how close the distance between your current element (call it $a_t$) and $a_{i-1}$ (your previous element) are; the instant this distance begins $\textit{growing}$ again, stop---it's not going to get smaller ever again.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

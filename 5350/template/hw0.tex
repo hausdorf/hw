@@ -1,0 +1,128 @@
+\documentclass[fleqn]{article}
+
+\usepackage{mydefs}
+\usepackage{notes}
+\usepackage{url}
+
+\begin{document}
+\lecture{Machine Learning}{HW0: Survey and basic concepts}{Alex Clemmer, u0458675}
+
+% IF YOU ARE USING THIS .TEX FILE AS A TEMPLATE, PLEASE REPLACE
+% "CS5350, Fall 2011" WITH YOUR NAME AND UID.
+
+Use the handin system to submit your assignments. Remember that only 
+PDF submissions are accepted.  We encourage using
+\LaTeX\ to produce your writeups.  See \verb+hw0.tex+ for an example
+of how to do so.  You can make a \verb+.pdf+ out of the \verb+.tex+ by
+running ``\verb+pdflatex hw0.tex+''. \textbf{Due: Aug 30}
+
+\section{Student Survey}
+
+Please note the following information on your assignment:
+
+\bee
+\i Which of the following courses have you taken:
+     Differential calculus;
+     Integral calculus;
+     Multivariate calculus;
+     Linear algebra;
+     Probability and statistics;
+     Artificial intelligence;
+     Algorithms;
+     Computer vision;
+     Image processing;
+     Natural language processing;
+     Robotics;
+     Optimization (linear, quadratic, convex, etc.)
+
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+% \begin{solution}
+%   Blah..
+% \end{solution}
+
+\i List a few (research/CS/math/whatever) topics that interest you.
+
+% \begin{solution}
+%   I am interested in ..
+% \end{solution}
+
+\i How would you rate your programming skills (1-10, 10 best)?  How would you rate your math skills?
+
+% \begin{solution}
+%   Programming: 8
+% 
+%   Math: 10
+% \end{solution}
+
+\i What are your goals in this class?
+
+% \begin{solution}
+%   Blah..
+% \end{solution}
+
+\i Please provide a 4-8 character identifier that we can use to post
+grades only pseudo-anonymously.  Use only alpha-numerics (no spaces).
+
+% \begin{solution}
+%   Blah..
+% \end{solution}
+
+\i Please be sure that you have subscribed to the class mailing list.
+
+\ene
+
+\section{Written Problems}
+
+Answer the following questions in 50-100 words each:
+\bee
+\i What is the difference between supervised, unsupervised and reinforcement learning?
+% \begin{solution}
+%   Blah..
+% \end{solution}
+\i List at least two real-world problems (other than those discussed in class) for each of the categories:
+  supervised, unsupervised and reinforcement. For one of the supervised problems, what is the form
+  of the output and what might be a reasonably input? For the reinforcement learning problem, what
+  might be the state space, action space and reward function?
+% \begin{solution}
+%   Blah..
+% \end{solution}
+\i What is overfitting? What is underfitting? How is overfitting controlled?
+% \begin{solution}
+%   Blah..
+% \end{solution}
+\i Getting labeled data for supervised learning is expensive. What are some of the 
+   approaches to deal with this problem?
+% \begin{solution}
+%   Blah..
+% \end{solution}
+
+\ene
+
+\section{Additional Exercises}
+
+
+The following are true/false questions.  You don't need to answer the
+questions.  Just tell us which ones you can't answer confidently in
+less than one minute.  (You won't be graded on this.)  If you can't
+answer at least $6$, you should probably spend some extra time outside
+of class beefing up on elementary math.  
+
+\bee
+\i $\log x + \log y = \log (xy)$
+\i $\log [ab^c] = \log a + (\log b) (\log c)$
+\i $\ddx [5x^2 + 3x] = 10x + 3$
+\i $\ddx \log x = - \frac 1 x$
+\i $p(a \| b) = p(a,b) / p(b)$
+\i $p(x \| y,z) = p(x \| y) p(x \| z)$
+\i $\norm{\al \vec u + \vec v}^2 = \al^2 \norm{\vec u}^2 + \norm{\vec v}^2$, where $\norm{\cdot}$ denotes Euclidean norm, $\al$ is a scalar and $\vec u$ and $\vec v$ are vectors
+\i $\ab{\vec u\T\vec v} \geq \norm{\vec u} \times \norm{\vec v}$, where $\ab{\cdot}$ denotes absolute value and $\vec u\T\vec v$ is the dot product of $\vec u$ and $\vec v$
+\i $\int_{-\infty}^{\infty} \ud x \exp[-(\pi/2) x^2] = \sqrt{2}$
+\ene
+
+% \begin{solution}
+%   I think I can answer them all!
+% \end{solution}
+
+\end{document}

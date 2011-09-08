@@ -1,0 +1,55 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 20:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+
+\section*{Assignment 20}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+Cycles that have net negative weight screw up algorithms because you can indefinitely make the cost of your path smaller. Making all paths positive, however, changes your best path: the reason is that if you have negative weights, you can take some paths and they actually bring your total down, where if they're all positive, you wouldn't take these paths at all, because all positive weight $\textit{contributes}$ to your total path length.
+
+\section{}
+
+Suppose you have a graph with two paths; one of them is composed of 2 edges with a weight of 10, and one with a weight of -30. Now suppose the other path has, say, 12 edges, each with a weight of -1.
+
+Increasing the weight of all edges by $w$, in this case, clearly gives all 12 edges in the second branch a weight of 29 each, compared to the 2 edges in the first branch which will have a weight of 40 each. This $\textit{clearly}$ fails to find the shortest acyclic path.
+
+\section{}
+
+Suppose you have a graph with two negative cycles; start as one cycle, then branch into two cycles, then merge back into the same cycle again. Suppose also that these two branches have different negative weights. Now suppose that at the point of merge, you have an exit. In this case, removing the back edge will cause one of the paths to no longer lead to the sink. If this is excluded path is the more efficient path, then you have just ruined your result.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

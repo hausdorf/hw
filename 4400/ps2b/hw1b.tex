@@ -1,0 +1,70 @@
+\documentclass[fleqn]{article}
+
+\usepackage{mydefs}
+\usepackage{notes}
+\usepackage{url}
+
+\begin{document}
+\lecture{CS4400}{Lecture 4 Problem Set}{Alex Clemmer, u0458675}
+
+\section*{Problem 2.86}
+
+\bee
+\i Give a correct implementation using only left and right shifts along with 1 subtraction.
+
+ \begin{solution}
+ 	\begin{tabular}{ l c r }
+  		1 & 2 & 3 \\
+  		4 & 5 & 6 \\
+  		7 & 8 & 9 \\
+	\end{tabular}
+ \end{solution}
+
+\ene
+
+\section*{Problem 2.88}
+
+\bee
+\i \texttt{(float) x == (float) dx}
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+ True. Rounding may cause problems in the general case, but \texttt{float} is well-defined for the range this deals with. (I verified this experimentally.)
+ \end{solution}
+
+\i \texttt{dx - dy == (double) (x - y)}
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+ True. \texttt{double} is well-defined over the range of \texttt{int}, so there is no chance of a rounding error. We're dealing in integers, so decimal rounding errors are out. There is also no way to cause ambiguous 0 comparisons.
+ \end{solution}
+
+\i \texttt{(dx + dy) + dz == dx + (dy + dz)}
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+ True. Not true in the general case, as floating-point arithmetic is not associative or distributive, but \texttt{double} encapsulates all numbers possible in \texttt{int}, and therefore is well defined for these conditions.
+ \end{solution}
+
+\i \texttt{(dx * dy) * dz == dx * (dy * dz)}
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   False. Distributed 
+ \end{solution}
+
+\i \texttt{dx / dx == dz / dz}
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   False. If \texttt{dx} or \texttt{dz} is \texttt{0} while the other isn't, then they will have different results.
+ \end{solution}
+
+\ene
+
+\end{document}

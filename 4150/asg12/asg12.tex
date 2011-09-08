@@ -1,0 +1,72 @@
+%Author Alex Clemmer
+%CS 4150 Algorithms
+%Assignment 12:
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{-.05in}
+	\addtolength{\evensidemargin}{-.05in}
+	\addtolength{\textwidth}{.25in}
+
+	\addtolength{\textheight}{.25in}
+\begin{document}
+
+\section*{Assignment 12}
+Alex Clemmer\\
+Student number: u0458675
+
+\section{}
+
+We can describe this specific case of merge sort with the recurrence relation $T(n) = 2T(n/2) + O(1)$. Since $2 > 2^0$, we know that $O(n^{log_2 2}) = O(n^1)$. Note that I used a generalization of the Master Theorem here.
+
+\section{}
+
+We have $n$ sequential elements for some arbitrarily large $n$. Since we are representing them in bits, the comparisons will take $O(n \mbox{ log } n)$ comparisons, because representing a number takes log$_2$ bits, and you must compare each bit in the worst case for every $n$.
+
+Unfortunately, this gives us an equation that doesn't really fit with the master theorem. What we do know is that $d > 1$. Since log$_2 2 = 1$, and $d > 1$, we know that $O(n^{d})$ for some $d > 1$.
+
+\section{}
+
+What we want to do is find a quadratic (much like Gauss's example) whose terms cancel out and leave us with only the product we seek. This turns out to be extremely simple:
+
+\begin{equation*}
+\begin{array}{rcl}
+0 & = & (x+y)^2 - (x-y)^2 \\
+0 & = & x^2 + 2xy + y^2 - x^2 + 2xy - y^2 \\
+0 & = & 2xy + 2xy \\
+\end{array}
+\end{equation*}
+
+That turns out to be too much by a factor of 4. So our final equation will be the above divided by 4:
+
+\begin{equation}
+\cfrac{(x+y)^2 - (x-y)^2}{4} \\
+\end{equation}
+
+See? Simple.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

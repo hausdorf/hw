@@ -1,0 +1,122 @@
+\documentclass[fleqn]{article}
+
+\usepackage{mydefs}
+\usepackage{notes}
+\usepackage{url}
+
+\begin{document}
+\lecture{CS4400}{Lecture 3 Problem Set}{Alex Clemmer, u0458675}
+
+\section*{Problem 2.71}
+
+\bee
+\i What is wrong with this code?
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   This function guarantees in a lot of cases that the sign extension is not kept when we mask with 0xFF.
+ \end{solution}
+
+\i Give a correct implementation using only left and right shifts along with 1 subtraction.
+
+ \begin{solution}
+ 	\begin{verbatim}
+ 	int xbyte(packed_t word, int bytenum)
+ 	{
+        /* Shift all the way to the right */
+        int t = (3 - bytenum) << 3;
+ 			
+        /* Shift back all the way to the left */
+        int32_t res = (word << ti) >> 24;
+ 	}
+ 	\end{verbatim}
+ \end{solution}
+
+\ene
+
+\section*{Problem 2.76}
+
+NOTE: I'll assume that the variable we're multiplying is called \texttt{x}.
+
+\bee
+\i K = 17
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   \texttt{x = (x << 4) + x}
+ \end{solution}
+
+\i K = -7
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   \texttt{x = x - (x << 3)}
+ \end{solution}
+
+\i K = 60
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   \texttt{x = (x << 6) - (x << 2)}
+ \end{solution}
+
+\i K = -112
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   \texttt{x = (x << 4) - (x << 7)}
+ \end{solution}
+
+\ene
+
+\section*{Problem 2.81}
+
+\bee
+\i \texttt{(x<y) == (-x>-y)}
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   Signed range is asymmetric, so supplying \texttt{x = INT\_MIN} (or equivalent minimum value) and almost anything for \texttt{y} will probably break this system, as negating \texttt{INT\_MIN} gives us \texttt{INT\_MIN}, and nothing is strictly smaller than \texttt{INT\_MIN}, which is required for the righthand expression to be true.
+ \end{solution}
+
+\i \texttt{((x+y)<<4) + y-x == 17*y+15*x}
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   True. \texttt{16*(x+y)+y-x == 16x-x+16y+y == 17y+15x}. There are no corner cases like there were in the last one.
+ \end{solution}
+
+\i \texttt{$\sim$x+$\sim$y+1 == $\sim$(x+y)}
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   True. First, \texttt{$\sim$x+$\sim$y+1 == -x-1+($\sim$y) == -x-1-y}. Then, \texttt{$\sim$(x+y) == -(x+y)-1 == -x-y-1}. So they are equivalent. 
+ \end{solution}
+
+\i \texttt{(ux-uy) == -(unsigned)(y-x)}
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   False. If \texttt{x = -10} and \texttt{y = -1}, then \texttt{10-1 == 9} and \texttt{-(unsigned)(-10-(-1)) == }
+ \end{solution}
+ 
+ \i \texttt{((x >> 2) << 2) <= x}
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   True. The binary representation of a number increases monotonically as the number itself increases even in the case of negative numbers (\textit{i.e.}, for any number $n$, the binary representation of $n+1$ is larger than $n$ was) and therefore when you divide by two and multiply by a power of 2 (\textit{e.g.}, $x = x/n * 2^n$), you will at best end up with the same number, and at worst, a smaller number.
+ \end{solution}
+
+\ene
+
+\end{document}
