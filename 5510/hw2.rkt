@@ -1,5 +1,10 @@
 #lang plai
 
+;; Alex Clemmer u0458675
+;; CS5510 Fall '11
+;;
+;;
+
 (define-type FunDef
   [fundef (fun-name symbol?)
     ;(arg-name symbol?)
@@ -79,17 +84,17 @@
     ;;(second (second input))
     ;;(parse (third input))))
 
-(test (parse-defn '{deffun {x y} y})
-      (fundef 'x '(y) (id 'y)))
+;(test (parse-defn '{deffun {x y} y})
+;      (fundef 'x '(y) (id 'y)))
 
-(test (parse '1) (num 1))
-(test (parse '{+ 1 2}) (add (num 1) (num 2)))
-(test (parse '{+ {- 5 2} {+ 2 1}}) (add (sub (num 5) (num 2))
-                                        (add (num 2) (num 1))))
-(test (parse 'x) (id 'x))
-(test (parse '{with {x {+ 1 2}} {- x 8}})
-      (with 'x (add (num 1) (num 2))
-        (sub (id 'x) (num 8))))
+;(test (parse '1) (num 1))
+;(test (parse '{+ 1 2}) (add (num 1) (num 2)))
+;(test (parse '{+ {- 5 2} {+ 2 1}}) (add (sub (num 5) (num 2))
+;                                        (add (num 2) (num 1))))
+;(test (parse 'x) (id 'x))
+;(test (parse '{with {x {+ 1 2}} {- x 8}})
+;      (with 'x (add (num 1) (num 2))
+;        (sub (id 'x) (num 8))))
 
 ;; interp : F1WAE list-of-FunDef -> num
 ;;
@@ -106,13 +111,37 @@
                      (interp named-expr fundefs))
               fundefs)]
     [id (name) (error 'interp "free variable")]
-    [app (fun-name arg) 
+    [app (fun-name arg)
          (local [(define fun (lookup-fundef fun-name fundefs))
-                 (define arg-val (interp arg fundefs))]
+                 (define arg-vals (interp-args (list arg)
+                                               (fundef-arg-name fun)
+                                               fundefs))]
+           ;;(print arg-vals)
            (interp (subst (fundef-body fun)
                           (fundef-arg-name fun)
-                          arg-val)
+                          arg-vals)
                    fundefs))]))
+
+;; Turns arguments into a list of args and their values
+(define (interp-args vals params fundefs)
+  ;;(print params)
+  ;;(print vals)
+  (cond
+    [(empty? params) '()]
+    [(cons? params) (cons (list (first params) (first vals))
+                        (interp-args (rest params)
+                                     (rest vals)
+                                     fundefs))]))
+
+;; Find a value 
+(define (find-arg-val needle haystack)
+  ;(print needle)
+  (print haystack)
+  (cond
+    [(empty? haystack) '()] ;(error 'find-arg-val "list of arg/val pairs is empty!")]
+    [(cons? haystack) (if (symbol=? needle (first (first haystack)))
+                      (second (first haystack))
+                      (find-arg-val needle (rest haystack)))]))
 
 ;; lookup-fundef : symbol list-of-FunDef -> FunDef
 ;;
@@ -125,12 +154,12 @@
          (first fundefs)
          (lookup-fundef name (rest fundefs)))]))
 
-(test/exn (lookup-fundef 'f (list)) "cannot find")
-(test (lookup-fundef 'f (list (parse-defn '{deffun {f x} x})))
-      (parse-defn '{deffun {f x} x}))
-(test (lookup-fundef 'f (list (parse-defn '{deffun {g y} y})
-                              (parse-defn '{deffun {f x} x})))
-      (parse-defn '{deffun {f x} x}))
+;(test/exn (lookup-fundef 'f (list)) "cannot find")
+;(test (lookup-fundef 'f (list (parse-defn '{deffun {f x} x})))
+;      (parse-defn '{deffun {f x} x}))
+;(test (lookup-fundef 'f (list (parse-defn '{deffun {g y} y})
+;                              (parse-defn '{deffun {f x} x})))
+;      (parse-defn '{deffun {f x} x}))
 
 ;; subst : F1WAE symbol number -> F1WAE
 ;;
@@ -148,52 +177,60 @@
         (if (symbol=? bound-id sub-id)
             body-expr
             (subst body-expr sub-id val)))]
-    [id (name) (if (symbol=? name sub-id)
-                   (num val)
-                   a-wae)]
+    [id (name) (if (num? (find-arg-val name val))
+                   (find-arg-val name val)
+                   (if (and (symbol? name) (symbol=? name sub-id))
+                       (num val)
+                       a-wae))]
+    ;;[id (name) (if (symbol=? name sub-id)
+    ;;               (num val)
+    ;;               a-wae)]
     [app (fun-name arg)
          (app fun-name (subst arg sub-id val))]))
 
-(test (subst (parse '{+ 1 {f x}}) 'x 19)
-      (parse '{+ 1 {f 19}}))
-(test (subst (add (num 1) (id 'x)) 'x 10)
-      (add (num 1) (num 10)))
-(test (subst (id 'x) 'x 10)
-      (num 10))
-(test (subst (id 'y) 'x 10)
-      (id 'y))
-(test (subst (sub (id 'x) (num 1)) 'y 10)
-      (sub (id 'x) (num 1)))
+;(test (subst (parse '{+ 1 {f x}}) '(x) (list (list 'x (num 19))))
+;      (parse '{+ 1 {f 19}}))
+;(test (subst (add (num 1) (id 'x)) '(x) (list (list 'x (num 10))))
+;      (add (num 1) (num 10)))
+;(test (subst (id 'x) '(x) (list (list 'x (num 10))))
+;      (num 10))
+;(test (subst (id 'y) '(x) (list (list 'x (num 10))))
+;      (id 'y))
+;(test (subst (sub (id 'x) (num 1)) 'y 10)
+;      (sub (id 'x) (num 1)))
 
-(test (subst (with 'y (num 17) (id 'x)) 'x 10)
-      (with 'y (num 17) (num 10)))
-(test (subst (with 'y (id 'x) (id 'y)) 'x 10)
-      (with 'y (num 10) (id 'y)))
-(test (subst (with 'x (id 'y) (id 'x)) 'x 10)
-      (with 'x (id 'y) (id 'x)))
-(test (subst (parse '{with {x y} x}) 'x 10)
-      (parse '{with {x y} x}))
+;(test (subst (with 'y (num 17) (id 'x)) 'x 10)
+;      (with 'y (num 17) (num 10)))
+;(test (subst (with 'y (id 'x) (id 'y)) 'x 10)
+;      (with 'y (num 10) (id 'y)))
+;(test (subst (with 'x (id 'y) (id 'x)) 'x 10)
+;      (with 'x (id 'y) (id 'x)))
+;(test (subst (parse '{with {x y} x}) 'x 10)
+;      (parse '{with {x y} x}))
 
-(test (interp (num 5) (list))
-      5)
-(test (interp (add (num 8) (num 9)) (list))
-      17)
-(test (interp (sub (num 9) (num 8)) (list))
-      1)
-(test (interp (with 'x (add (num 1) (num 17))
-                (add (id 'x) (num 12)))
-              (list))
-      30)
-(test/exn (interp (id 'x) (list)) "free variable")
+;(test (interp (num 5) (list))
+;      5)
+;(test (interp (add (num 8) (num 9)) (list))
+;      17)
+;(test (interp (sub (num 9) (num 8)) (list))
+;      1)
+;(test (interp (with 'x (add (num 1) (num 17))
+;                (add (id 'x) (num 12)))
+;              (list))
+;      30)
+;(test/exn (interp (id 'x) (list)) "free variable")
+;(test (interp (parse '{f 10})
+;              (list (parse-defn '{deffun {f x} {+ x x}})))
+;      20)
 (test (interp (parse '{f {+ 5 5}})
               (list (parse-defn '{deffun {f x} {+ x x}})))
       20)
 
 ;; Step through this example:
 "Tracing:"
-(require racket/trace)
-(trace interp subst)
-(interp (with 'x (add (num 1) (num 17))
-          (add (id 'x) (num 12)))
-        (list))
-(untrace interp)
+;;(require racket/trace)
+;;(trace interp subst)
+;;(interp (with 'x (add (num 1) (num 17))
+;;          (add (id 'x) (num 12)))
+;;        (list))
+;;(untrace interp)
