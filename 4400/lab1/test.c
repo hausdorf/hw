@@ -27,7 +27,6 @@ int doit(unsigned x)
 
 int main()
 {
-	printf("x\tx\ta\tb\tc\tc&d\n");
 	float s = -1.0;
 	//doit(0.0);
 	//doit(1.0);
