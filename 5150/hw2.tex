@@ -1,0 +1,125 @@
+\documentclass[addpoints]{exam}
+\usepackage{url}
+\usepackage{amsmath,amsthm,enumitem}
+\usepackage[pdftex]{hyperref}
+\usepackage[usenames,dvipsnames]{color}
+\shadedsolutions
+\definecolor{SolutionColor}{rgb}{1,.8,.9}
+
+% \usepackage[charter]{mathdesign}
+% \usepackage{tikz}
+% \usetikzlibrary{arrows,automata,shadows}
+\author{Bethany Azuma}
+\newtheorem*{claim}{Claim}
+\title{CS 5150/6150: Assignment 2 \\ Due: Sep 12, 2011}
+\date{}
+\begin{document}
+\maketitle
+\begin{center}
+\fbox{\fbox{\parbox{5.5in}{\centering
+This assignment has \numquestions\ questions, for a total of \numpoints\
+points and \numbonuspoints\ bonus points.  Unless otherwise specified, complete and reasoned arguments will be expected for all answers. }}}
+\end{center}
+
+\qformat{Question \thequestion: \thequestiontitle\dotfill \textbf{[\totalpoints]}}
+\pointname{}
+\bonuspointname{}
+\pointformat{[\bfseries\thepoints]}
+
+\printanswers
+\begin{questions}
+
+\titledquestion{Recurrences}
+
+Solve each of the following recurrences. You may use any method you like, but please show your work. In each recurrence, you may assume convenient starting values for $T(0)$ or $T(1)$ unless otherwise specified. Note that $c$ is an undetermined constant. 
+
+Solving a recurrence means that you provide a bound of the form $T(n) = O(f(n))$ for a specific $f$. Tight bounds get full credit: for example, if the recurrence is $T(n) = 2T(n/2) + cn$, the answer $T(n) = O(n^2)$ is correct but not precise enough, and you will not get full credit for it. 
+
+\begin{parts}
+\part[4] $T(n) = 3T(n/2) + cn$
+\begin{solution} 
+Here each node has 3 children so on the $i$th level there are $3^i$ nodes each of size $c\frac{n}{2^i}$. Hence at each level the sum is $c\left(\frac{3}{2}\right)^i$. This gives the level-by-level sum 
+\[T(n)=\sum_{i=0}^L\left(\frac{3}{2}\right)^i cn\]
+This geometric series is dominated by its last term $\left(\frac{3}{2}\right)^i cn$. Assuming each leaf contributes $1$, the final term is equal to the number of leaves. The tree has $\log_2 n$ levels the tree has $3^{\log_2 n}=n^{\log_2 3}$ leaves. Hence
+\[T(n)=\Theta\left(n^{\log_2 3}\right).\]
+\end{solution}
+\part[4] $T(n) = 4T(n/4) + n\log n$
+\begin{solution}
+Here the $i$th level has $4^i$ nodes each with a value of 
+\[\frac{n}{4^i}\lg \frac{n}{4^i}=\frac{n}{4^i}(\lg n -\lg 4^i)=\frac{n}{4^i}(\lg(n)-2i)\]
+The tree has $L=\log_4 n=\frac{\lg n}{2}$ levels which gives a level by level sum of
+\[T(n)=\sum_{i=0}^L n(\lg n-2i)=\sum_{i=0}^{\frac{\lg 2}{n}}n(\lg n-2i)\]
+It follows that,
+\begin{align*}
+T(n)&=\frac{\lg n}{2} n\lg n-2\sum_{i=0}^{\frac{\lg n}{2}} i\\
+&=\frac{\lg n}{2} n\lg n-\frac{\lg n}{2}\left(\frac{\lg n}{2}+1\right)\\
+&=O(n(\lg n)^2)
+\end{align*}
+\end{solution}
+\part[4] $T(n) = 5T(n/8) + \sqrt{n}$
+\begin{solution}
+Here the recurrence fits the Akra-Bazzi form of the master theorem. In particular, $a=5$, $b=8$ and $c=\frac{1}{2}$ because
+\[\frac{1}{2} <\log_8 5\approx 0.773976\]
+$T(n)=\Theta\left(n^{\log_b a}\right)$ so
+\[T(n)=\Theta\left(n^{\log_8 5}\right)\]
+\end{solution}
+\part[4]$T(n) = 2T(n/2) + \frac{n}{\log n}$
+\begin{solution}
+Here the sum of the nodes on the $i$th level is 
+\[\frac{n}{\lg n-i}\]
+and the depth is at most $\lg n -1$. So,
+\[T(n)=\sum_{i=0}^{\lg n-1}\frac{n}{\lg n-i}=\sum_{j=1}^{\lg n} \frac{n}{j}=nH_{\lg n}\]
+where $H_n=\sum_{i=0}^n\frac{1}{i}$. Because $H_n=\Theta(\lg n)$, 
+\[T(n)=\Theta(n\lg\lg n)\]
+\end{solution}
+\part[4] $T(n) = \frac{T(n-1)}{T(n-2)}$, $T(0) = 1, T(1) = 2$. 
+\begin{solution}
+\[1\leq T(n)\leq 2\]
+\end{solution}
+\end{parts}
+  
+
+\titledquestion{Finding a local minimum}[10]
+Suppose we are given an array $A[1..n]$ with the special property that $A[1]\geq A[2]$ and $A[n-1]\leq A[n]$. We say that an element $A[x]$ is a \textit{local minimum} if it is less than or equal to both its neighbors, or more formally, if $A[x-1]\geq A[x]$ and $A[x]\leq A[x+1]$. For example, there are six local minimums ifn the following array
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+9 & \textbf{7} & 7 & 2 & \textbf{1} & 3 & 7 & 5 & \textbf{4} & 7 & \textbf{3} & \textbf{3} & 4 & 8 & \textbf{6} & 9\\
+\hline
+\end{tabular} 
+\end{center}
+ We can obviously find a local minimum in $O(n)$ time by scanning through the array. Describe and analyze an algorithm in $O(\log n)$ time. \textit{[Hint: with the given boundary conditions, the array \textbf{must} have have at least one local minimum. Why?]}
+
+\titledquestion{Searching for a target sum}[10]
+
+Given an array $S$ of $n$ numbers and a query $x$, design an algorithm that determines whether there exist two elements of $S$ that sum to $x$. 
+
+\titledquestion{Hidden Surface Removal}[15]
+
+You are given $n$ \emph{nonvertical} lines in the plane, with the $i^{\text{th}}$ line specified by the equation $y = a_i x + b_i$. Assume that no three lines meet at a single point. A line $\ell_i$ is \emph{uppermost} at some $x$-coordinate $x_0$ if $a_i x_0 + b_i > a_j x_0 + b_j$ for all $j \ne i$. Intuitively, a line is uppermost at $x_0$ if you can ``see'' it from above (looking down from $(x_0,\infty)$. 
+
+A line is \emph{visible} if there is some $x_0$ for which it is uppermost. Output the set of visible lines as efficiently as possible. 
+
+
+\titledquestion{Selection}[25]
+\begin{parts}
+  \part[10] Suppose we are given two sorted arrays $A[1..n]$ and $B[1..n]$ and an integer $k$. Describe and algorithm to find the $k$th smalles element in the union of $A$ and $B$ in $\Theta(\log n)$ time. For example, if $k=1$, your algorithm should return the smallest element of $A\cup B$; if $k=n$, your algorithm should return the median $A\cup B$. You can assume that the arrays contain no duplicate elements. \textit{[Hint: First solve the special case $k=n$.]}
+  \part[5] Now suppose we are given \textit{three} sorted arrays $A[1..n]$, $B[1..n]$, and $C[1..n]$ and an integer $k$. Describe an algorithm fo find the $k$th smallest element in $A\cup B\cup C$ in $O(\log n)$ time.
+  \part[10] Finally, suppose we are given a two dimensional array $A[1..m][1..n]$ in which every row $A[i][]$ is sorted, and an integer $k$. Describe an algorithm to find the $k$th smallest element in $A$ as quickly as possible. How does the running time of your algorithm depend $m$? \\
+  \textit{[Hint: use the linear time \textsc{select} algorithm as a subroutine.]}
+\end{parts}
+
+
+
+\titledquestion{Implementing a high quality selection routine}[20]
+
+There is often a gap between the theory and practice of algorithm design. We're going to explore that gap with the help of the selection problem. Our goal will be, given input set of numbers $S$ and a parameter $k$, to compute the $k^{\text{th}}$ largest number in $S$. Note that the median corresponds to $k = n/2$. 
+
+\begin{parts}
+  \part Implement an algorithm for $k$-selection. 
+  \part Experiment with different choices for finding a pivot. Specifically, use different groupings of the input and report on how this affects the performance
+  \part How does this algorithm compare to sorting and then taking the $k^{\text{th}}$ element in practice ? Provide concrete empirical evidence in support of your answer. 
+  \part How do random pivots compare to computing deterministic pivots ? Again, experiment with different random pivots and provide concrete empirical evidence in support of your answer. 
+\end{parts}
+\end{questions}
+\end{document}

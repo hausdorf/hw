@@ -1,0 +1,74 @@
+\documentclass[fleqn]{article}
+
+\usepackage{mydefs}
+\usepackage{notes}
+\usepackage{url}
+
+\begin{document}
+\lecture{CS4400}{Lecture 5 Problem Set}{Alex Clemmer, u0458675}
+
+\section*{Problem 1}
+
+Match each of the three IA32 assembly-code routines on the left with the equivalent C function on the right.
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+ \begin{solution}
+   \texttt{bar1} matches to \texttt{foo6}. \texttt{bar2} matches to \texttt{foo1}. \texttt{bar3} matches to \texttt{foo5}.
+ \end{solution}
+
+\section*{Problem 3.55}
+
+ \begin{solution}
+ \begin{verbatim}
+ int foo(int x, y, z)
+ {
+     int ret;
+     y = y - z;
+     ret = y;
+     ret = ret << 31;
+     ret = ret >> 31;
+     y = y * x;
+     ret = ret ^ y;
+     
+     return ret;
+ }
+ \end{verbatim}
+ \end{solution}
+ 
+ \section*{Problem 3}
+ 
+ \begin{solution}
+ \begin{verbatim}
+ int foo(int *ptr, int a, short b, char c)
+ {
+     *ptr += a >> c;
+     return -*ptr & b;
+ }
+ \end{verbatim}
+ 
+ translates to:
+ 
+ \begin{verbatim}
+  ptr at %ebp+8, a at %ebp+12, b at %ebp+16, c at %ebp+20
+ foo:
+     pushl %ebp
+     movl %esp, %ebp
+     
+     movl 12(%ebp), %eax   ; put a in register %eax
+     sarl 20(%ebp), %eax   ; shift a arithmetic right by c
+     movl 8(%ebp), %ecx    ; put address ptr in %ecx
+     movl (%ecx), %edx     ; put value at ptr in %edx
+     addl %eax, %edx       ; add ptr and the shifted amount
+     movl %edx, (%ecx)     ; write value change to ptr
+     negl %edx             ; negate ptr
+     movswl 16(%ebp), %eax ; pull b out of memory
+     andl %edx, %eax       ; and ptr and b; return
+     
+     leave
+     ret
+ \end{verbatim}
+ 
+ \end{solution}
+
+\end{document}
