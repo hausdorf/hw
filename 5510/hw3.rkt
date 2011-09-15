@@ -48,7 +48,14 @@
     (body F1WAE?)]
   [id (name symbol?)]
   [app (fun-name symbol?)
-       (arg F1WAE?)])
+       (arg F1WAE?)]
+  ;; ---------------------
+  ;; NEW CODE
+  ;; ++ Definition of if0
+  ;; ---------------------
+  [if0 (condi F1WAE?)
+       (if-true F1WAE?)
+       (if-false F1WAE?)])
 
 ;; --------------------------------------------------
 ;; Parser
@@ -81,6 +88,16 @@
           (symbol? (first input)))
      (app (first input)
           (parse (second input)))]
+    ;; '{if0 <F1WAE> <F1WAE> <F1WAE>}
+    ;; ------------------------------
+    ;; NEW CODE
+    ;; ++ Parsing if0
+    ;; ------------------------------
+    [(and (= 4 (length input))
+          (symbol? (first input)))
+     (if0 (parse (second input))
+          (parse (third input))
+          (parse (fourth input)))]
     [else (error 'parse "bad syntax: ~a" input)]))
 
 ;; parse-defn : s-expr -> FunDef
@@ -125,7 +142,16 @@
                    fundefs
                    (aSub (fundef-arg-name fun)
                          arg-val
-                         (mtSub))))]))
+                         (mtSub))))]
+    ;; ------------------
+    ;; NEW CODE
+    ;; ++ Interpreting if0
+    ;; ------------------
+    [if0 (condi if-true if-false)
+         (if (= 0 (interp condi fundefs ds))
+             (interp if-true fundefs ds)
+             (interp if-false fundefs ds))]))
+
 
 ;; lookup-fundef : symbol list-of-FunDef -> FunDef
 (define (lookup-fundef name fundefs)
@@ -185,7 +211,14 @@
          (body CF1WAE?)]
   [cat (pos number?)]
   [capp (fun-name symbol?)
-        (arg CF1WAE?)])
+        (arg CF1WAE?)]
+  ;; ---------------
+  ;; NEW CODE
+  ;; ++ Compiled if0
+  ;; ---------------
+  [cif0 (condi CF1WAE?)
+        (if-true CF1WAE?)
+        (if-false CF1WAE?)])
 
 (define-type CSub
   [mtCSub]
@@ -220,7 +253,15 @@
     [id (name) (cat (locate name cs))]
     [app (fun-name arg) 
          (capp fun-name
-               (compile arg cs))]))
+               (compile arg cs))]
+    ;; -----------------
+    ;; NEW CODE
+    ;; ++ Defs for compiling F1WAEs
+    ;; -----------------
+    [if0 (condi if-true if-false)
+         (cif0 (compile condi cs)
+               (compile if-true cs)
+               (compile if-false cs))]))
 
 (test (compile (num 10) (mtCSub)) (cnum 10))
 (test (compile (add (num 4) (num 10)) (mtCSub)) (cadd (cnum 4) (cnum 10)))
@@ -252,7 +293,15 @@
                   (define arg-val (cinterp arg cfundefs s))]
            (cinterp (cfundef-body fun)
                     cfundefs
-                    (cons arg-val empty)))]))
+                    (cons arg-val empty)))]
+    ;; ---------------------
+    ;; NEW CODE
+    ;; ++ Defs for interpreting compiled code
+    ;; ---------------------
+    [cif0 (condi if-true if-false)
+          (if (= 0 (cinterp condi cfundefs s))
+              (cinterp if-true cfundefs s)
+              (cinterp if-false cfundefs s))]))
 
 ;; lookup-cfundef : symbol list-of-CFunDef -> CFunDef
 (define (lookup-cfundef name cfundefs)
@@ -323,3 +372,25 @@
                          (app 'f (num 10)))
                    (list (fundef 'f 'x (add (id 'x) (id 'y)))))
           "free variable")
+
+
+
+;; ---------------
+;; NEW CODE
+;; ++ Testing for parse/interpret of if0
+;; ---------------
+(test (interp (parse '{if0 0 1 2})
+              (list)
+              (mtSub))
+      1)
+(test (interp (parse '{if0 1 1 2})
+              (list)
+              (mtSub))
+      2)
+(test (interp (parse '{if0 {f 5} 1 2})
+              (list (parse-defn '{deffun {f x} {- x 5}}))
+              (mtSub))
+      1)
+(test (interp* (parse '{if0 {f 5} 1 2})
+               (list (parse-defn '{deffun {f x} {- x 5}})))
+      1)
