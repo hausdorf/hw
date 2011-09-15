@@ -1,5 +1,10 @@
 #lang plai
 
+;; ALEX CLEMMER
+;; u0458675
+;; CS 5510 -- Fall 2011
+;; Homework 3
+
 ;; --------------------------------------------------
 ;; DefrdSub
 
@@ -210,7 +215,11 @@
   [cwith (named-expr CF1WAE?)
          (body CF1WAE?)]
   [cat (pos number?)]
-  [capp (fun-name symbol?)
+  ;; ---------------
+  ;; CHANGED CODE
+  ;; ++ Uses function index rather than function name
+  ;; ---------------
+  [capp (fun-index number?)
         (arg CF1WAE?)]
   ;; ---------------
   ;; NEW CODE
@@ -241,81 +250,96 @@
 (test (locate 'x (aCSub 'x (aCSub 'x (mtCSub)))) 0)
 
 ;; compile : F1WAE CSub -> CF1WAE
-(define (compile a-wae cs)
+(define (compile a-wae cs funcs)
   (type-case F1WAE a-wae
     [num (n) (cnum n)]
-    [add (l r) (cadd (compile l cs) (compile r cs))]
-    [sub (l r) (csub (compile l cs) (compile r cs))]
+    [add (l r) (cadd (compile l cs funcs) (compile r cs funcs))]
+    [sub (l r) (csub (compile l cs funcs) (compile r cs funcs))]
     [with (bound-id named-expr body-expr)
-      (cwith (compile named-expr cs)
+      (cwith (compile named-expr cs funcs)
              (compile body-expr
-                      (aCSub bound-id cs)))]
+                      (aCSub bound-id cs)
+                      funcs))]
     [id (name) (cat (locate name cs))]
+    ;; -----------------
+    ;; CHANGED CODE
+    ;; ++ Change fun name to index
+    ;; -----------------
     [app (fun-name arg) 
-         (capp fun-name
-               (compile arg cs))]
+         (capp (length funcs)
+               (compile arg cs funcs))]
     ;; -----------------
     ;; NEW CODE
     ;; ++ Defs for compiling F1WAEs
     ;; -----------------
     [if0 (condi if-true if-false)
-         (cif0 (compile condi cs)
-               (compile if-true cs)
-               (compile if-false cs))]))
+         (cif0 (compile condi cs funcs)
+               (compile if-true cs funcs)
+               (compile if-false cs funcs))]))
 
-(test (compile (num 10) (mtCSub)) (cnum 10))
-(test (compile (add (num 4) (num 10)) (mtCSub)) (cadd (cnum 4) (cnum 10)))
-(test (compile (sub (num 4) (num 10)) (mtCSub)) (csub (cnum 4) (cnum 10)))
-(test (compile (with 'x (num 4) (id 'x)) (mtCSub)) (cwith (cnum 4) (cat 0)))
-(test (compile (with 'y (num 8) (with 'x (num 4) (id 'y))) (mtCSub)) 
+(test (compile (num 10) (mtCSub) (list)) (cnum 10))
+(test (compile (add (num 4) (num 10)) (mtCSub) (list)) (cadd (cnum 4) (cnum 10)))
+(test (compile (sub (num 4) (num 10)) (mtCSub) (list)) (csub (cnum 4) (cnum 10)))
+(test (compile (with 'x (num 4) (id 'x)) (mtCSub) (list)) (cwith (cnum 4) (cat 0)))
+(test (compile (with 'y (num 8) (with 'x (num 4) (id 'y))) (mtCSub) (list)) 
       (cwith (cnum 8) (cwith (cnum 4) (cat 1))))
-(test (compile (id 'x) (aCSub 'x (mtCSub))) (cat 0))
-(test/exn (compile (id 'y) (aCSub 'x (mtCSub))) "free variable")
-(test (compile (app 'f (num 10)) (mtCSub)) (capp 'f (cnum 10)))
+(test (compile (id 'x) (aCSub 'x (mtCSub)) (list)) (cat 0))
+(test/exn (compile (id 'y) (aCSub 'x (mtCSub)) (list)) "free variable")
+(test (compile (app 'f (num 10)) (mtCSub) (list)) (capp 0 (cnum 10)))
 
 ;; --------------------------------------------------
 ;; Interpreter of compiled expressions
 
 ;; cinterp : F1WAE list-of-CFunDef list-of-num -> num
-(define (cinterp a-cwae cfundefs s)
+(define (cinterp a-cwae funlist s)
   (type-case CF1WAE a-cwae
     [cnum (n) n]
-    [cadd (l r) (+ (cinterp l cfundefs s) (cinterp r cfundefs s))]
-    [csub (l r) (- (cinterp l cfundefs s) (cinterp r cfundefs s))]
+    [cadd (l r) (+ (cinterp l funlist s) (cinterp r funlist s))]
+    [csub (l r) (- (cinterp l funlist s) (cinterp r funlist s))]
     [cwith (named-expr body-expr)
            (cinterp body-expr
-                    cfundefs
-                    (cons (cinterp named-expr cfundefs s)
+                    funlist
+                    (cons (cinterp named-expr funlist s)
                           s))]
     [cat (pos) (list-ref s pos)]
-    [capp (fun-name arg) 
-          (local [(define fun (lookup-cfundef fun-name cfundefs))
-                  (define arg-val (cinterp arg cfundefs s))]
-           (cinterp (cfundef-body fun)
-                    cfundefs
+    ;; ---------------------
+    ;; CODE CHANGE
+    ;; Changes names to offsets
+    ;; ---------------------
+    [capp (fun-index arg) 
+          (local [(define fun (lookup-cfundef fun-index funlist))
+                  (define arg-val (cinterp arg funlist s))]
+           (cinterp fun
+                    funlist
                     (cons arg-val empty)))]
     ;; ---------------------
     ;; NEW CODE
     ;; ++ Defs for interpreting compiled code
     ;; ---------------------
     [cif0 (condi if-true if-false)
-          (if (= 0 (cinterp condi cfundefs s))
-              (cinterp if-true cfundefs s)
-              (cinterp if-false cfundefs s))]))
+          (if (= 0 (cinterp condi funlist s))
+              (cinterp if-true funlist s)
+              (cinterp if-false funlist s))]))
 
 ;; lookup-cfundef : symbol list-of-CFunDef -> CFunDef
-(define (lookup-cfundef name cfundefs)
-  (cond
-    [(empty? cfundefs) (error 'cinterp "cannot find function: ~e" name)]
-    [(cons? cfundefs)
-     (if (symbol=? name (cfundef-fun-name (first cfundefs)))
-         (first cfundefs)
-         (lookup-cfundef name (rest cfundefs)))]))
+;; ------------
+;; OVERHAULED CODE
+;; ++ Changed, doesn't make senes to look for names
+;; ------------
+(define (lookup-cfundef index cfundefs)
+  (define (lookup-index index cfundefs curr)
+    (cond
+      [(empty? cfundefs) (error 'cinterp "cannot find function: ~e" index)]
+      [(cons? cfundefs)
+       (if (= curr index)
+           (first cfundefs)
+           (lookup-index index (rest cfundefs) (+ curr 1)))]))
+  (lookup-index index cfundefs 0))
 
 (test/exn (lookup-cfundef 'f (list)) "cannot find")
-(test (lookup-cfundef 'f (list (cfundef 'f (cat 0))))
+(test (lookup-cfundef 0 (list (cfundef 'f (cat 0))))
       (cfundef 'f (cat 0)))
-(test (lookup-cfundef 'f (list (cfundef 'g (cat 0))
+(test (lookup-cfundef 1 (list (cfundef 'g (cat 0))
                                (cfundef 'f (cat 0))))
       (cfundef 'f (cat 0)))
                      
@@ -332,8 +356,8 @@
       30)
 (test (cinterp (cat 0) (list) (list 5)) 5)
 
-(test (cinterp (capp 'f (cadd (cnum 5) (cnum 5)))
-              (list (cfundef 'f (cadd (cat 0) (cat 0))))
+(test (cinterp (capp 0 (cadd (cnum 5) (cnum 5)))
+              (list (cadd (cat 0) (cat 0)))
               empty)
       20)
 
@@ -341,14 +365,16 @@
 ;; Interpreter that uses the compiler
 
 ;; interp* : F1WAE list-of-FunDef -> num
-(define (interp* a-wae fundefs)
-  (cinterp (compile a-wae (mtCSub))
+;; -------------
+;; OVERHAULED CODE
+;; Changed this to accomodate no use of the cfundefs
+;; -------------
+(define (interp* a-wae funs)
+  (cinterp (compile a-wae (mtCSub) (list))
            (map (lambda (fd)
-                  (cfundef (fundef-fun-name fd)
-                           (compile (fundef-body fd)
-                                    (aCSub (fundef-arg-name fd)
-                                           (mtCSub)))))
-                fundefs)
+                  (compile (fundef-body fd) (aCSub (fundef-arg-name fd) (mtCSub))
+                           funs))
+                funs)
            empty))
 
 
