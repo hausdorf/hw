@@ -391,6 +391,55 @@
               (list (parse-defn '{deffun {f x} {- x 5}}))
               (mtSub))
       1)
+(test (interp (parse '{if0 0 {f 3} 2})
+              (list (parse-defn '{deffun {f x} {- x 5}}))
+              (mtSub))
+      -2)
+;; NOTE: unbound variable x should never get caught!
+(test (interp (parse '{if0 1 {f x} 2})
+              (list (parse-defn '{deffun {f x} {- x 5}}))
+              (mtSub))
+      2)
+(test (interp (parse '{if0 0 1 {f 3}})
+              (list (parse-defn '{deffun {f x} {- x 5}}))
+              (mtSub))
+      1)
+(test (interp (parse '{if0 1 1 {f 2}})
+              (list (parse-defn '{deffun {f x} {- x 5}}))
+              (mtSub))
+      -3)
+;; NOTE: unbound variable x should never get caught!
+(test (interp (parse '{if0 0 1 {f x}})
+              (list (parse-defn '{deffun {f x} {- x 5}}))
+              (mtSub))
+      1)
+;; ---------------------------
+;; Testing compiling and interpreting of if0
+;; ---------------------------
 (test (interp* (parse '{if0 {f 5} 1 2})
                (list (parse-defn '{deffun {f x} {- x 5}})))
       1)
+(test (interp* (parse '{if0 0 1 2})
+              (list))
+      1)
+(test (interp* (parse '{if0 1 1 2})
+              (list))
+      2)
+(test (interp* (parse '{if0 {f 5} 1 2})
+              (list (parse-defn '{deffun {f x} {- x 5}})))
+      1)
+(test (interp* (parse '{if0 0 {f 3} 2})
+              (list (parse-defn '{deffun {f x} {- x 5}})))
+      -2)
+(test (interp* (parse '{if0 0 1 {f 3}})
+              (list (parse-defn '{deffun {f x} {- x 5}})))
+      1)
+(test (interp* (parse '{if0 1 1 {f 2}})
+              (list (parse-defn '{deffun {f x} {- x 5}})))
+      -3)
+
+
+
+
+
+
