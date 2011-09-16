@@ -11,10 +11,11 @@
   ;; An id, e.g., a variable or function name
   [id (i symbol?)]
   ;; A variable or function definition
-  [is (i id?)
-      (e EXPR?)]
-  ;[fun (name id?)
-  ;     (arg EXPR?)]
+  ;[is (i id?)
+  ;    (e EXPR?)]
+  [func (name id?)
+        (args list?)
+        (body EXPR?)]
   )
 
 ;; Basic tests for EXPR type
@@ -49,7 +50,9 @@
     [id (i)
         (subst i vars)]
     ;; TODO: Handle this properly
-    [is (i e) '()]))
+    ;[is (i e) '()]
+    [func (name args body) '()]
+    ))
 
 ;; parse : symbol -> EXPR
 (define (parse_helper stuff vars)
@@ -71,11 +74,17 @@
           (parse_helper (third stuff) vars))]
     ;; '{is x <number>}
     ;; TODO: Handle this correctly
-    [(and (= 3 (length stuff))
-          (symbol=? 'is (first stuff)))
-     (parse_helper stuff
-                   (cons '((second stuff) (third stuff)))
-                   vars)]
+    ;[(and (= 3 (length stuff))
+    ;      (symbol=? 'is (first stuff)))
+    ; (parse_helper stuff
+    ;               (cons '((second stuff) (third stuff)))
+    ;               vars)]
+    ;; func, e.g. '{func f x {x + 1}}
+    [(and (= 4 (length stuff))
+          (symbol=? 'func (first stuff)))
+     (func (second stuff)
+           (third stuff)
+           (fourth stuff))]
     [else (error "PARSE ERROR")]))
 
 ;; parse : symbol -> EXPR
