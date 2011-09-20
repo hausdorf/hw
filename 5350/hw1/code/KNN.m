@@ -1,10 +1,11 @@
-function res = KNN(mode, varargin)
+function res = KNN(type, varargin)
   % usage is one of the two following:
   %    model = KNN('train', X, Y, K); % X,Y are the labeled training data
   %    Y     = KNN('predict', model, X); % X is the test data. Y is the predictions
     
-  switch lower(mode),
+  switch lower(type),
    case 'name'
+    disp('HERE');
     res = 'KNN';
     
    case 'train'
@@ -63,11 +64,29 @@ function res = KNN(mode, varargin)
     error('unknown KNN mode: need "train" or "predict"');
   end;
 
-  
-  
+
+
+% Computes \ell_2 of two D-length vectors x and y
+function dist = eucdist(x, y)
+  % Pointwise subtract of features
+  z = x - y;
+
+  % Sum up squares of features
+  total = 0;
+  for n = 1:size(z,2)
+      total = z(n) * z(n);
+  end
+
+  % Return square root of the sum of squares
+  dist = sqrt(total)
+
+
 function y = KNNpredict(trX,trY,K,X)
+  % run: disp( KNN('predict', KNN('train', training(:, 2:end), training(:,1), 3), test(1, 2:end)) );
   % trX is NxD, trY is Nx1, K is 1x1 and X is 1xD
   % we return a single value 'y' which is the predicted class
 
   % TODO: write this function
-    
+  dist = eucdist([5 7 9], [2 3 4]);
+  
+  y = 10;
