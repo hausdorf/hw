@@ -1,0 +1,116 @@
+\documentclass[fleqn]{article}
+
+\usepackage{mydefs}
+\usepackage{notes}
+\usepackage{url}
+
+\begin{document}
+\lecture{CS4400}{Lecture 4 Problem Set}{Alex Clemmer, u0458675}
+
+\section{Lecture 6}
+
+Please note the following information on your assignment:
+
+\bee
+\i Which function is equivalent to the IA32 assembly code shown here?
+
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+This IA32 assembly clearly corresponds to \texttt{fun2}. We load \texttt{x} into \texttt{\%eax} and \texttt{y} into \texttt{\%edx} in lines 4 and 3, respectively; then, in line 5, we compare these values. On line 6, if \texttt{y >= x}, we \textit{do not} alter \texttt{\%eax} at all, and simply return, which means that we are returning \texttt{x}. However, in any other case (\textit{i.e.}, if \text{y < x}), we place \texttt{\%edx} in \texttt{\%eax}, which means that we are returning \texttt{y}.
+\end{solution}
+
+
+\i \textbf{Problem 3.56} Complete the function:
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+The function should look like this:
+
+\begin{verbatim}
+int loop(int x, int n)
+{
+    int result = -1;
+    int mask;
+    for (mask = 1; mask != 0; mask = mask << 1) {
+        result ^= x & mask;
+    }
+}
+\end{verbatim}
+\end{solution}
+
+\i \textbf{Problem 3.59} Fill in the body of the switch statement with C code that will have the same behavior as the machine code:
+
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+\begin{verbatim}
+int switch_prob(int x, int n)
+{
+    int result = x;
+    
+    switch (n) {
+        case 50:
+        case 52:
+            result <<= 2;
+            break;
+        case 53:
+            result >>= 2;
+            break;
+        case 54:
+            result += 2;
+        case 55:
+            result *= result;
+        default:
+            result += 10;
+    }
+    
+    return result;
+}
+\end{verbatim}
+\end{solution}
+
+\ene
+
+\section{Lecture 7}
+
+\bee
+\i Is the variable \texttt{val} stored on the stack? If so, at what byte offset (relative to \texttt{\%ebp}) is it stored, and why is it necessary to store it on the stack?
+
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+In at least one critical case it absolutely is. In the line \texttt{val2 = silly(n << 1, \&val);}, we are calling \texttt{silly} and supplying \texttt{\&val} as an argument, and in order to do that, it must be in memory. We get the address using the instruction \texttt{leal -4(\%ebp),\%eax}, and then push that to stack with \texttt{pushl \%eax}.
+\end{solution}
+
+\i Is the variable \texttt{val2} stored on the stack? If so, at what byte offset (relative to \texttt{\%ebp}) is it stored, and why is it necessary to store it on the stack?
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+In at least one very important case it is. At \texttt{.L3} we set \texttt{\%eax} to 0 using the classic \texttt{xor} trick, and then with \texttt{movl \%eax,-4(\%ebp)}, we move this value to the stack at the place where \texttt{val2} is stored (\textit{e.g.}, \texttt{-4(\%ebp)}). This is actually confirmed at \texttt{.L4}, where to implement the expression \texttt{*p = val + val2 + n;} we use the instruction \texttt{movl -4(\%ebp),\%edx} to load \texttt{val2} and then \texttt{addl \%eax,\%edx} to add it to \texttt{val}.
+\end{solution}
+
+\i What (if anything) is stored at \texttt{-24(\%ebp)}? If something is stored there, why is it necessary to store it?
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+At the point in the routine that \texttt{24} makes sense as an offset, that's where the registers are stored. In this case we are storing \texttt{n}, and it needs to be restored when we return.
+\end{solution}
+
+\i What (if anything) is stored at \texttt{-8(\%ebp)}? If something is stored there, why is it necessary to store it?
+
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+It's never used. I was told this might be for cache alignment, but that is not my area of expertise.
+\end{solution}
+
+\ene
+
+\end{document}
