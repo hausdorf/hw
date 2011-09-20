@@ -39,13 +39,13 @@ and how would you use these for $k$NN based binary classification and regression
 One simple solution is to simply apply to each neighbor a weight $w_i = \frac{1}{d}$, with $d$ being the (typically Euclidean) distance between the neighbor and test point $x$. If we have a weight function $W$ that outputs such weights, then obtaining the weighted votes is generally pretty straightforward in the case of \textbf{regression}:
 
 \begin{equation}
-y = \Sigma_{j = 1}^k W(x_0, x_1) y_j
+y = \sum_{j = 1}^k W(x_0, x_1) y_j
 \end{equation}
 
-The case of \textbf{classification} can be done simply by applying a number of votes proportionate to some weight $w_i$. One obvious solution is to invert the weight, which is typically $\frac{1}{d}$ to get $d$ votes for that particular label:
+The case of \textbf{classification} can be done simply by applying a number of votes proportionate to some weight $w_i$. One obvious solution is to invert the weight (which remember is typically $\frac{1}{d}$) to get $d$ votes for that particular label:
 
 \begin{equation}
-y = \Sigma_{j = 1}^k W(x_0, x_1)^{-1} y_j
+y = \sum_{j = 1}^k W(x_0, x_1)^{-1} y_j
 \end{equation}
 
 \end{solution}
@@ -61,7 +61,7 @@ is better than the weighting scheme of $K$-nearest neighbors we talked about
 above? If yes, why? If no, why not?
 
 \begin{solution}
-As George Box says, all models are wrong, but some are useful. The $\epsilon$-ball model does address the problem that $k$NN in the general case can and does treat poor examples and good examples prettty much the same; if the radius of the $\epsilon$-ball is chosen well, then this issue is more or less solved. There is one major advantage, though, with the weighted $k$NN scheme, and that is that it works with pretty much no configuration. In fact, at least one formulation (Shepard '68) uses arbitrarily large $k$ and gives the most important queries the proper weight, similar to the outline above. This is a feature that it is really hard to compensate for with $\epsilon$-ball.
+As George Box says, all models are wrong, but some are useful. The $\epsilon$-ball model does address the problem that $k$NN in the general case can and does treat poor examples and good examples prettty much the same; and indeed, if the radius of the $\epsilon$-ball is chosen well, then this issue is more or less solved. There is one major advantage, though, with the weighted $k$NN scheme, and that is that it works with pretty much no configuration. In fact, at least one formulation (Shepard '68) uses arbitrarily large $k$ and gives the most important queries the proper weight, similar to the outline above. This is a feature that it is really hard to compensate for with $\epsilon$-ball.
 \end{solution}
 
 
@@ -93,9 +93,59 @@ than an $\ell_2$ classifier.  In particular, draw $\geq 1$ training
 points (one for each class) and a test point that would be classified 
 differently according to the two distance metrics.
 
+\begin{solution}
+We can trivially generate Cartesian coordinates that the heuristics disagree on. Imagine that our query is \textbf{(0,0)} and our trained points are \textbf{\{(10,10) (18, 1)\}}, each with a \textbf{different label}. In the case of \textbf{Manhattan} we pick the second:
+
+\begin{equation}
+\norm{\vec z}_1 = \sum_d \ab{\{10, 10\}} = 20
+\end{equation}
+
+\begin{equation}
+\norm{\vec z}_1 = \sum_d \ab{\{18, 1\}} = 19
+\end{equation}
+
+Yet in the case of the \textbf{Euclidean}, we pick the first:
+
+\begin{equation}
+\norm{\vec z}_2 = \left(\sum_d \ab{\{10, 10\}}^2\right)^{\frac 1 2} \approx 14.142
+\end{equation}
+
+\begin{equation}
+\norm{\vec z}_2 = \left(\sum_d \ab{\{18, 1\}}^2\right)^{\frac 1 2} \approx 18.02
+\end{equation}
+
+\end{solution}
+
+\begin{solution}
+We can similarly come up with another set of points using the same pattern. Let's again imagine that the test query is \textbf{(0,0)}, and the trained data is \textbf{\{(25, 4) (21, 10)\}}, each with a different classification perscription. For the \textbf{Manhattan}, we pick the first point:
+
+\begin{equation}
+\norm{\vec z}_1 = \sum_d \ab{\{25, 4\}} = 29
+\end{equation}
+
+\begin{equation}
+\norm{\vec z}_1 = \sum_d \ab{\{21, 10\}} = 31
+\end{equation}
+
+And for the \textbf{Euclidean}, we pick the second:
+
+\begin{equation}
+\norm{\vec z}_2 = \left(\sum_d \ab{\{25, 4\}}^2\right)^{\frac 1 2} \approx 25.318
+\end{equation}
+
+\begin{equation}
+\norm{\vec z}_2 = \left(\sum_d \ab{\{21, 10\}}^2\right)^{\frac 1 2} \approx 23.259
+\end{equation}
+
+\end{solution}
+
 What properties of a data set do you imagine would influence whether
 the $\ell_1$ distance would work better or worse than the $\ell_2$
 distance?
+
+\begin{solution}
+$\ell_1$ is first of all likely to be more effective for problems that can be expressed as a grid, and in which actors can only move under stricture of that grid (\textit{e.g.}, a car on a street). You could, for example, probably express things like Levenshtein distance and string diffs (\textit{i.e.}, the number of discrete transformations it takes to change one string into another) in terms of $\ell_1$. But wherever this sort of characterization is not the case, this probably becomes a less good mechanism, and generally speaking, the more free the movement is, the better $\ell_2$ will be in comparison.
+\end{solution}
 
 \i (\textit{6350 only}) An important notion for a classifier is that 
 of consistency. Roughly, a classification algorithm is consistent if, 
@@ -112,6 +162,28 @@ false, there are three positive and one negative examples. On the other hand,
 when B is true there is three positive and three negative examples; when B is 
 false there are two positive and one negative examples. Which feature will ID3 
 choose to split on? Show the information gain calculations.
+
+\begin{solution}
+The information gain for the various choices break down as so:
+
+\begin{eqnarray*}
+S = [5+, 4-] \Rightarrow H(S) = -(5/9) \mbox{log}_2 (5/9) - (4/9) \mbox{log}_2 (4/9) & \approx & 0.99108 \\[0.1in]
+S_{Atrue} = [2+, 4-] \Rightarrow H(S_{Atrue}) = -(2/5) \mbox{log}_2 (2/5) - (3/5) \mbox{log}_2 (3/5) & \approx & 0.97095 \\
+S_{Afalse} = [3+, 1-] \Rightarrow H(S_{Afalse}) = -(3/4) \mbox{log}_2 (3/4) - (1/4) \mbox{log}_2 (1/4) & \approx & 0.81128 \\[0.1in]
+S_{Btrue} = [3+, 3-] \Rightarrow H(S_{Btrue}) = -(3/6) \mbox{log}_2 (3/6) - (3/6) \mbox{log}_2 (3/6) & = & 1 \\
+S_{Bfalse} = [2+, 1-] \Rightarrow H(S_{Bfalse}) = -(2/3) \mbox{log}_2 (2/3) - (1/3) \mbox{log}_2 (1/3) & \approx & 0.9183
+\end{eqnarray*}
+
+Pluggin these in is fairly straightforward:
+
+\begin{eqnarray*}
+IG(S, A) = 0.99108 - \frac{6}{9} \cdot 0.97095 - \frac{6}{9} \cdot 0.81128 & \approx & -0.19707 \\[0.05in]
+IG(S, B) = 0.99108 - \frac{6}{9} \cdot 1 - \frac{3}{9} \cdot 0.9183 & \approx & 0.018313 \\
+\end{eqnarray*}
+
+Clearly we will split on B.
+
+\end{solution}
 
 \i Recall that under any subtree of the decision tree, a feature that has already 
 been tested before need not be tested. Assume that there are $F$ binary-valued 
