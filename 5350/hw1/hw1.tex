@@ -168,7 +168,7 @@ The information gain for the various choices break down as so:
 
 \begin{eqnarray*}
 S = [5+, 4-] \Rightarrow H(S) = -(5/9) \mbox{log}_2 (5/9) - (4/9) \mbox{log}_2 (4/9) & \approx & 0.99108 \\[0.1in]
-S_{Atrue} = [2+, 4-] \Rightarrow H(S_{Atrue}) = -(2/5) \mbox{log}_2 (2/5) - (3/5) \mbox{log}_2 (3/5) & \approx & 0.97095 \\
+S_{Atrue} = [2+, 3-] \Rightarrow H(S_{Atrue}) = -(2/5) \mbox{log}_2 (2/5) - (3/5) \mbox{log}_2 (3/5) & \approx & 0.97095 \\
 S_{Afalse} = [3+, 1-] \Rightarrow H(S_{Afalse}) = -(3/4) \mbox{log}_2 (3/4) - (1/4) \mbox{log}_2 (1/4) & \approx & 0.81128 \\[0.1in]
 S_{Btrue} = [3+, 3-] \Rightarrow H(S_{Btrue}) = -(3/6) \mbox{log}_2 (3/6) - (3/6) \mbox{log}_2 (3/6) & = & 1 \\
 S_{Bfalse} = [2+, 1-] \Rightarrow H(S_{Bfalse}) = -(2/3) \mbox{log}_2 (2/3) - (1/3) \mbox{log}_2 (1/3) & \approx & 0.9183
@@ -177,11 +177,11 @@ S_{Bfalse} = [2+, 1-] \Rightarrow H(S_{Bfalse}) = -(2/3) \mbox{log}_2 (2/3) - (1
 Pluggin these in is fairly straightforward:
 
 \begin{eqnarray*}
-IG(S, A) = 0.99108 - \frac{6}{9} \cdot 0.97095 - \frac{6}{9} \cdot 0.81128 & \approx & -0.19707 \\[0.05in]
+IG(S, A) = 0.99108 - \frac{5}{9} \cdot 0.97095 - \frac{4}{9} \cdot 0.81128 & \approx & 0.091094 \\[0.05in]
 IG(S, B) = 0.99108 - \frac{6}{9} \cdot 1 - \frac{3}{9} \cdot 0.9183 & \approx & 0.018313 \\
 \end{eqnarray*}
 
-Clearly we will split on B.
+Clearly we will split on A.
 
 \end{solution}
 
@@ -189,6 +189,10 @@ Clearly we will split on B.
 been tested before need not be tested. Assume that there are $F$ binary-valued 
 features in the data. How many information gain calculations would be needed to 
 construct the full decision tree (i.e., assuming no pruning)?
+
+\begin{solution}
+We begin building the tree by finding the binary-valued feature with the highest information gain at root. This process gives us leaves. We then recursively repeat this for each of those leaves until stopping criteria are satisfied for some branch (\textit{i.e.}, when all remaining samples are the same, when there are no samples left, or you run out of features). Since we have to compute a different information gain every time we add a feature to the tree, we must perform $O(n!)$ such calculations.
+\end{solution}
 
 \i (\textit{6350 only}) Intuitively, the information gain criteria prefers to use 
 features that split a node such that the child nodes are as \textit{homogeneous} 
