@@ -1,4 +1,4 @@
-function res = KNN(type, varargin)
+function res = KNNweighted(type, varargin)
   % usage is one of the two following:
   %    model = KNN('train', X, Y, K); % X,Y are the labeled training data
   %    Y     = KNN('predict', model, X); % X is the test data. Y is the predictions
@@ -57,7 +57,7 @@ function res = KNN(type, varargin)
     
     % compute predictions
     for n=1:N,
-      res(n) = KNNpredict(model.trainX, model.trainY, model.K, X(n,:));
+      res(n) = KNNweightedpredict(model.trainX, model.trainY, model.K, X(n,:));
     end;
   
    otherwise
@@ -81,7 +81,7 @@ function dist = eucdist(x, y)
   dist = sqrt(total)
 
 
-function y = KNNpredict(trX,trY,K,X)
+function y = KNNweightedpredict(trX,trY,K,X)
   % run: disp( KNN('predict', KNN('train', training(:, 2:end), training(:,1), 3), test(1, 2:end)) );
   % trX is NxD, trY is Nx1, K is 1x1 and X is 1xD
   % we return a single value 'y' which is the predicted class
@@ -105,10 +105,30 @@ function y = KNNpredict(trX,trY,K,X)
 
   % Get top k closest points
   topK = pairs(1:K,:);
-  disp(topK);
+
+  % Weight the top k closest votes
+  tmp = min(topK(:,2));
+  if tmp < 1
+      tmp = abs(tmp) + 1;
+  else
+      tmp = 1
+  end
+
+  % Poll for the maximum
+  m = max(topK(:,2)) + tmp;
+  votes = zeros(m);
+  for n = 1:size(topK,1)
+      if topK(n,1) == 0.0
+          y = topK(n,2) + tmp
+      end
+
+      votes(topK(n,2) + tmp) = votes(topK(n,2) + tmp) + 1/topK(n,1)
+  end
 
   % Return the "vote" of the top k closest points
-  y = mode(topK(:,2));
+  % Don't forget to un-normalize
+  [ma, i] = max(votes)
+  y = i(1,1) - tmp
 
 
 
