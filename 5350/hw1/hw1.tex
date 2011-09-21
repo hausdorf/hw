@@ -3,6 +3,7 @@
 \usepackage{mydefs}
 \usepackage{notes}
 \usepackage{url}
+\usepackage{graphicx}
 
 \begin{document}
 \lecture{Alex Clemmer u0458675}{HW1: K-Nearest Neighbors and Decision Trees}{Due: September 20}
@@ -229,6 +230,12 @@ in [1; 20] and plot validation, and test error as a function of $K$. At which
 value of $K$ is the development error minimized? At which value of $K$ is the test 
 error minimized?
 
+\begin{solution}
+For me, the error was minimized for development at $k = 17$ and for test at $k = 7$. Please see the code I wrote and run the tests for yourself if you see fit.
+
+\includegraphics[scale=0.8]{Naive.png}
+\end{solution}
+
 \i Re-implement the \texttt{KNNpredict} routine so that it allows the weighting strategy 
 we discussed in the written excercise (1) for the binary classifications setting
 (where the \textit{unweighted} majority rule can be expressed as $y = \sign(\sum_{j 
@@ -236,6 +243,17 @@ we discussed in the written excercise (1) for the binary classifications setting
 Again allow $K$ to range over all \textit{odd integers} in [1; 20] and plot development, 
 and test error as a function of $K$. At which value of $K$ is the development error 
 minimized? At which value of $K$ is the test error minimized?
+
+\begin{solution}
+This straight up did not do as well as I thought it would. This is probably my fault, though I didn't quite have enough time to develop it into what it could/should have been. Anyway, I've included graphs that both look at weigted $k$NN alone and compare it to naive $k$NN, and you'll see that they actually do comparably, so I doubt that I messed up horribly.
+
+For the dev data, $k = 19$ was my best, while for testing it was $k = 17$.
+\end{solution}
+
+\begin{solution}
+\includegraphics[scale=0.8]{Weighted.png}
+\includegraphics[scale=0.8]{Comparison.png}
+\end{solution}
 
 \ene
 
