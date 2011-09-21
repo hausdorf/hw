@@ -87,6 +87,39 @@ function y = KNNpredict(trX,trY,K,X)
   % we return a single value 'y' which is the predicted class
 
   % TODO: write this function
-  dist = eucdist([5 7 9], [2 3 4]);
-  
-  y = 10;
+
+  % Initialize array to hold the distance-label pairs
+  pairs = zeros(size(trX,1), 2);
+  for n = 1:size(trX,1)
+      % Get distance
+
+      dist = eucdist(trX(n,:), X(1,:));
+
+      % Put the distance-label pairs into the matrix
+      pairs(n,1) = dist;
+      pairs(n,2) = trY(n);
+  end
+
+  % Sort the distance-label pairs
+  pairs = sort(pairs);
+
+  % Get top k closest points
+  topK = pairs(1:K,:);
+  disp(topK);
+
+  % Return the "vote" of the top k closest points
+  y = mode(topK(:,2));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
