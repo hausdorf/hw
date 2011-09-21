@@ -105,10 +105,30 @@ function y = KNNweightedpredict(trX,trY,K,X)
 
   % Get top k closest points
   topK = pairs(1:K,:);
-  disp(topK);
+
+  % Weight the top k closest votes
+  tmp = min(topK(:,2));
+  if tmp < 1
+      tmp = abs(tmp) + 1;
+  else
+      tmp = 1
+  end
+
+  % Poll for the maximum
+  m = max(topK(:,2)) + tmp;
+  votes = zeros(m);
+  for n = 1:size(topK,1)
+      if topK(n,1) == 0.0
+          y = topK(n,2) + tmp
+      end
+
+      votes(topK(n,2) + tmp) = votes(topK(n,2) + tmp) + 1/topK(n,1)
+  end
 
   % Return the "vote" of the top k closest points
-  y = mode(topK(:,2));
+  % Don't forget to un-normalize
+  [ma, i] = max(votes)
+  y = i(1,1) - tmp
 
 
 

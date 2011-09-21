@@ -18,7 +18,3 @@ for t = [1:2:20]
     end
     fprintf(file, 'K %.0f\tTotal %f\tcorrect %f\tPercent %f\n', t, total, correct, correct/total);
 end
-
-disp(total);
-disp('CORRECT');
-disp(correct);
