@@ -101,7 +101,7 @@ function y = KNNpredict(trX,trY,K,X)
   end
 
   % Sort the distance-label pairs
-  pairs = sort(pairs);
+  pairs = sortrows(pairs);
 
   % Get top k closest points
   topK = pairs(1:K,:);
