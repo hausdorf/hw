@@ -4,7 +4,7 @@ dev = load('hw1-dev');
 file = fopen('out', 'w');
 
 for t = [1:2:20]
-    total = size(test,1);
+    total = size(dev,1);
     correct = 0;
 
     for n = 1:size(dev,1)
