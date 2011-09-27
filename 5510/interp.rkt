@@ -14,7 +14,7 @@
   ;[is (i id?)
   ;    (e EXPR?)]
   [func (name id?)
-        (args list?)
+        (args id?)
         (body EXPR?)]
   )
 
@@ -51,11 +51,12 @@
         (subst i vars)]
     ;; TODO: Handle this properly
     ;[is (i e) '()]
-    [func (name args body) '()]
+    [func (name args body)
+          '()]
     ))
 
 ;; parse : symbol -> EXPR
-(define (parse_helper stuff vars)
+(define (parse_helper stuff funcs vars)
   (cond
     ;; <id>
     [(symbol? stuff)
@@ -65,13 +66,13 @@
     ;; add, e.g. '{add 3 2}
     [(and (= 3 (length stuff))
           (symbol=? 'add (first stuff)))
-     (add (parse_helper (second stuff) vars)
-          (parse_helper (third stuff) vars))]
+     (add (parse_helper (second stuff) funcs vars)
+          (parse_helper (third stuff) funcs vars))]
     ;; sub, e.g. '{sub 3 2}
     [(and (= 3 (length stuff))
           (symbol=? 'sub (first stuff)))
-     (sub (parse_helper (second stuff) vars)
-          (parse_helper (third stuff) vars))]
+     (sub (parse_helper (second stuff) funcs vars)
+          (parse_helper (third stuff) funcs vars))]
     ;; '{is x <number>}
     ;; TODO: Handle this correctly
     ;[(and (= 3 (length stuff))
@@ -82,14 +83,14 @@
     ;; func, e.g. '{func f x {x + 1}}
     [(and (= 4 (length stuff))
           (symbol=? 'func (first stuff)))
-     (func (second stuff)
-           (third stuff)
-           (fourth stuff))]
+     (func (parse_helper (second stuff) funcs vars)
+           (parse_helper (third stuff) funcs vars)
+           (parse_helper (fourth stuff) funcs vars))]
     [else (error "PARSE ERROR")]))
 
 ;; parse : symbol -> EXPR
 (define (parse stuff)
-  (parse_helper stuff (list)))
+  (parse_helper stuff (list) (list)))
 
 (test (parse '{add 3 3})
       (add (num 3) (num 3)))
@@ -115,3 +116,5 @@
       4)
 (test (interpret '(sub 0 1))
       -1)
+;(test (interpret '{func f x {add x 1}})
+;      (func (id 'f) (id 'x) (add (id 'x) (num 1))))

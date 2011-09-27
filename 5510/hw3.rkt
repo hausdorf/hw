@@ -202,9 +202,13 @@
 ;; --------------------------------------------------
 ;; Compiler
 
-(define-type CFunDef
-  [cfundef (fun-name symbol?)
-           (body CF1WAE?)])
+;; ---------------
+;; REMOVED
+;; Useless; assignment dictates we destroy this
+;; ---------------
+;;(define-type CFunDef
+;;  [cfundef (fun-name symbol?)
+;;           (body CF1WAE?)])
 
 (define-type CF1WAE
   [cnum (n number?)]
@@ -337,11 +341,11 @@
   (lookup-index index cfundefs 0))
 
 (test/exn (lookup-cfundef 'f (list)) "cannot find")
-(test (lookup-cfundef 0 (list (cfundef 'f (cat 0))))
-      (cfundef 'f (cat 0)))
-(test (lookup-cfundef 1 (list (cfundef 'g (cat 0))
-                               (cfundef 'f (cat 0))))
-      (cfundef 'f (cat 0)))
+(test (lookup-cfundef 0 (list '('f (cat 0))))
+      '('f (cat 0)))
+(test (lookup-cfundef 1 (list '('g (cat 0))
+                               '('f (cat 0))))
+      '('f (cat 0)))
                      
 (test (cinterp (cnum 5) (list) empty)
       5)
@@ -372,7 +376,8 @@
 (define (interp* a-wae funs)
   (cinterp (compile a-wae (mtCSub) (list))
            (map (lambda (fd)
-                  (compile (fundef-body fd) (aCSub (fundef-arg-name fd) (mtCSub))
+                  (compile (fundef-body fd)
+                           (aCSub (fundef-arg-name fd) (mtCSub))
                            funs))
                 funs)
            empty))
