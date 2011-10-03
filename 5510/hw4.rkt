@@ -49,9 +49,14 @@
        [(with) (app (fun (first (second sexp)) (parse (third sexp)))
                     (parse (second (second sexp))))]
        [(fun) (fun (first (second sexp)) (parse (third sexp)))]
-       [(rec) (define comp (parse mk-rec-fun))
-              (app (fun (first (second sexp)) (parse (third sexp)))
-                   (app comp (parse (second (second sexp)))))]
+       [(rec) (parse {list {list 'fun {list (first (second sexp))} {list (first (third sexp)) (second (third sexp))}}
+                           {list {list 'fun {list 'body-proc}
+                                       {list 'with {list 'fX {list 'fun {list 'fX}
+                                                                   {list 'with {list 'f {list 'fun {list 'x}
+                                                                                              {list {list 'fX 'fX} 'x}}}
+                                                                         {list 'body-proc 'f}}}}
+                                             {list 'fX 'fX}}}
+                                 {list 'fun {list 'f} (second (second sexp))}}})]
        [(if0) (if0 (parse (second sexp))
                    (parse (third sexp))
                    (parse (fourth sexp)))]
@@ -63,16 +68,6 @@
 (test (parse '{- 1 2}) (sub (num 1) (num 2)))
 (test (parse '{fun {x} x}) (fun 'x (id 'x)))
 (test (parse '{with {x 1} x}) (app (fun 'x (id 'x)) (num 1)))
-;; +++++++++++++
-;; TODO: PUT MORE TESTS OF WITH HERE!
-;; +++++++++++++
-(test (interp (parse '{rec {f {fun {n}
-                                     {if0 n
-                                          0
-                                          {- {f {- n 1}} 1}}}}
-                          {f 10}})
-                 (mtSub))
-          (numV -10))
 (test (parse '{if0 x y z}) (if0 (id 'x) (id 'y) (id 'z)))
 (test (parse '{1 2}) (app (num 1) (num 2)))
 
@@ -157,3 +152,15 @@
 
 (test/exn (interp (parse 'x) (mtSub))
           "free variable")
+
+;; +++++++++++++
+;; TODO: PUT MORE TESTS OF WITH HERE!
+;; +++++++++++++
+(test (interp (parse '{rec {f {fun {n} {f n}}} {f 10}}) (mtSub)) (numV 0))
+(test (interp (parse '{rec {f {fun {n}
+                                     {if0 n
+                                          0
+                                          {- {f {- n 1}} 1}}}}
+                          {f 10}})
+                 (mtSub))
+          (numV -10))
