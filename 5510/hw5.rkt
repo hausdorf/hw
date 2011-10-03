@@ -76,17 +76,17 @@
 (define (interp a-fae ds st)
   (type-case BCFAE a-fae
     [num (n) (v*s (numV n) st)]
-    [add (l r) (interp-two l r ds st
+    [add (l r) (interp-sto l r ds st
                            (lambda (v1 v2 st)
                              (v*s (num+ v1 v2) st)))]
-    [sub (l r) (interp-two l r ds st
+    [sub (l r) (interp-sto l r ds st
                            (lambda (v1 v2 st)
                              (v*s (num- v1 v2) st)))]
     [id (name) (v*s (lookup name ds) st)]
     [fun (param body-expr)
          (v*s (closureV param body-expr ds) st)]
     [app (fun-expr arg-expr)
-         (interp-two fun-expr arg-expr ds st
+         (interp-sto fun-expr arg-expr ds st
                      (lambda (fun-val arg-val st)
                        (interp (closureV-body fun-val)
                                (aSub (closureV-param fun-val)
@@ -100,7 +100,7 @@
                      (v*s (boxV a)
                           (aSto a val st)))])]
     [setbox (bx-expr val-expr)
-            (interp-two bx-expr val-expr ds st
+            (interp-sto bx-expr val-expr ds st
                         (lambda (bx-val val st3)
                           (v*s val
                                (sto-repl val (boxV-address bx-val) st3))))]
@@ -110,14 +110,14 @@
                     (v*s (store-lookup (boxV-address bx-val)
                                        st)
                          st)])]
-    [seqn (a b) (interp-two a b ds st
+    [seqn (a b) (interp-sto a b ds st
                             (lambda (v1 v2 st)
                               (v*s v2 st)))]))
 
-;;interp-two : BCFAE BCFAE DefrdSub Store
+;;interp-sto : BCFAE BCFAE DefrdSub Store
 ;;                  (Value Value Store -> Value*Store)
 ;;             -> Value*Store
-(define (interp-two expr1 expr2 ds st handle)
+(define (interp-sto expr1 expr2 ds st handle)
   (type-case Value*Store (interp expr1 ds st)
     [v*s (val1 st2)
          (type-case Value*Store (interp expr2 ds st2)
@@ -259,9 +259,7 @@
       (v*s (numV 12) 
            (aSto 1
                  (numV 12)
-                 (aSto 1 
-                       (numV 10)
-                       (mtSto)))))
+                 (mtSto))))
 
 (test/exn (interp (parse '{openbox x})
                   (aSub 'x (boxV 1) (mtSub))
