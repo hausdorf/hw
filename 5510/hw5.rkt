@@ -15,8 +15,7 @@
   [setbox (box-expr BCFAE?)
           (val-expr BCFAE?)]
   [openbox (box-expr BCFAE?)]
-  [seqn (first-expr BCFAE?)
-        (second-expr BCFAE?)])
+  [seqn (first-expr (listof BCFAE?))])
 
 (define-type BCFAE-Value
   [numV (n number?)]
@@ -56,7 +55,7 @@
        [(newbox) (newbox (parse (second sexp)))]
        [(setbox) (setbox (parse (second sexp)) (parse (third sexp)))]
        [(openbox) (openbox (parse (second sexp)))]
-       [(seqn) (seqn (parse (second sexp)) (parse (third sexp)))]
+       [(seqn) (seqn (map parse (rest sexp)))]
        [else (app (parse (first sexp)) (parse (second sexp)))])]))
 
 (test (parse 3) (num 3))
@@ -110,9 +109,15 @@
                     (v*s (store-lookup (boxV-address bx-val)
                                        st)
                          st)])]
-    [seqn (a b) (interp-sto a b ds st
+    [seqn (a) (interp-seqn a ds st
                             (lambda (v1 v2 st)
                               (v*s v2 st)))]))
+
+(define (interp-seqn expr ds st handle)
+  (define pe (interp (first expr) ds st))
+  (if (empty? (rest expr))
+      pe
+      (interp-seqn (rest expr) ds (v*s-store pe) handle)))
 
 ;;interp-sto : BCFAE BCFAE DefrdSub Store
 ;;                  (Value Value Store -> Value*Store)
