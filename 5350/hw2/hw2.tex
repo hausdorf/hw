@@ -15,15 +15,48 @@ Classification, Kernel Methods}{Due October 6, 2011}
 
 \i Consider the following variant of the sum-of-squared-errors objective for linear
 regression:
-\begin{equation}
+\textsc{\begin{equation}
  E(\vec{w}) = \frac{1}{2}\sum_{n=1}^N r_n(y_n - \vec{w}^\top\vec{x}_n)^2
 \label{eq:wtreg}
-\end{equation}
+\end{equation}}
 What we have basically done is modulate each of the error terms in 
 the above summation using a variable $r_n$. Derive the expression 
 for the weight vector $\vec{w}$ that minimizes $E(\vec{w})$. Also 
 explain what role does $r_n$ play in Equation~\ref{eq:wtreg}?
 (\textbf{10 marks})
+
+\begin{solution}
+
+Distribute the $r_n$ into the terms of errors:
+
+\begin{eqnarray*}
+ E(\vec{w}) & = & \frac{1}{2}\sum_{n=1}^N r_n(y_n - \vec{w}^\top\vec{x}_n)^2 \\
+ & = & \frac{1}{2}\sum_{n=1}^N (\sqrt{r_n} y_n - \sqrt{r_n} \vec{w}^\top\vec{x}_n)^2 \\
+& = & \frac{1}{2} (\sqrt{R} Y - \sqrt{R} X\vec{w})^T (\sqrt{R} Y - \sqrt{R} X\vec{w}) \\
+\end{eqnarray*}
+
+Substitute $\sqrt{R}X$ for $F$ and $\sqrt{R}Y$ for $G$:
+
+\begin{eqnarray*}
+ E(\vec{w}) & = & \frac{1}{2} (G - F\vec{w})^T (G - F\vec{w}) \\
+\end{eqnarray*}
+
+Then, the derivative follows as shown in class (for the now-identical equation $\frac{1}{2} (Y-X\vec{w})^T (Y-X\vec{w})$:
+
+\begin{eqnarray*}
+\nabla E(\vec{w}) & = & - F^T (G - F \vec{w}) \\
+0 & = & - F^T (G - F \vec{w}) \\
+\Rightarrow & = & F^T F \vec{w} = F^T G \\
+\end{eqnarray*}
+
+Now invert for our solution:
+
+\begin{eqnarray*}
+\hat{\vec{w}} & = & (F^T F)^{-1} F^T G \\
+& = & ((\sqrt{R}X)^T \sqrt{R}X) (\sqrt{R}X)^T \sqrt{R}Y \\
+\end{eqnarray*}
+
+\end{solution}
 
 Note: If it helps your calculations, you may want to rewrite the above 
 objective in matrix notation (e.g., the standard 
@@ -99,7 +132,7 @@ new solution will generalize better or worse than the standard Perceptron on the
 test data? (\textbf{5 marks})
 
 \begin{solution}
-The old conditions tested only whether the desired classification $y_n$ and the observed result (\textit{e.g.}, the result of the postulated-hyperplane function) have different signs. This new $\tau$-based condition tests both whether they have different signs \textit{and} whether the observed result is $< \tau$. In other words, we will still update in some of the cases where we have made a correct classification, but the observed result is smaller than some positive constant $\tau$; this means that some correct positive classifications will make our hyperplane \textit{more positive} and some correct negative classifications will make our hyperplane \textit{more negative}. This could very well make generalization worse for us, particularly since we are adding additional parametric complexity (though of course this depends on things like the exact value of $\tau$).
+The old conditions tested only whether the desired classification $y_n$ and the observed result (\textit{e.g.}, the result of the postulated-hyperplane function) have different signs. This new $\tau$-based condition tests both whether they have different signs \textit{and} whether the observed result is $< \tau$. In other words, we will only consider an answer correct if it is \textit{especially} correct. This will probably generalize better, since we are ignoring the answers most likely to be incorrect, and instead fitting for the general model (though of course this depends on the exact value of $\tau$).
 \end{solution}
 
 \i In the class, we considered the non-separable case of SVM by penalizing
@@ -109,7 +142,7 @@ slacks (i.e., $\sum_n \xi_n^2$). The optimization problem would be of the form:
 
 \begin{gather}
 \begin{split}
-&   	\text{Minimize} \ \ f(\vec{w},b) = \frac{||\vec{w}||^2}{2} + C \sum_{n=1}^N \xi_n^2 \nonumber 
+&   	\text{Minimize} \ \ f(\vec{w},b) = \frac{||\vec{w}||^2}{2} + \frac{C}{2} \sum_{n=1}^N \xi_n^2 \nonumber 
 \\
 &    	\text{subject to}\ \ \  y_n(\vec{w}^T\vec{x}_n + b) \geq 1 - \xi_n,\quad \xi_n \geq 0 \quad n=1,\ldots,N \nonumber
 \end{split}
@@ -120,6 +153,36 @@ optimize the primal Lagrangian with respect to $\vec{w}$ and $b$, plug these
 solutions back in and write the optimization problem just in terms of the dual 
 (Lagrange) variables $\boldsymbol{\alpha}$. How does this compare to the dual formulation 
 for the standard SVM where we had a sum of slacks term ($\sum_n \xi_n$)? (\textbf{10 marks})
+
+\begin{solution}
+The Primal Lagrangian is straightforwardly given from the objective function noted above:
+
+\begin{gather*}
+L_p(\vec{w}, b, \xi, \alpha, \beta) = \frac{||\vec{w}||^2}{2} + \frac{C}{2} \sum_{n=1}^N \xi_n^2 + \sum_{n=1}^N \alpha\{1-y_n(\vec{w}^T \vec{x}_n + b) - \xi_n\} - \sum_{n=1}^N \beta_n \xi_n \\
+\text{subject to}\ \ \ \alpha_n, \beta_n \ge 0; n  = 1, \ldots, N
+\end{gather*}
+
+We begin by finding the partial derivatives of each relevant term:
+\begin{eqnarray*}
+\frac{\partial L_p}{\partial \vec{w}} & = & \sum_N (\alpha - \alpha y_n(\vec{w}^T \vec{x}_n + b) - \alpha \xi_n \\
+& = & \sum_N \alpha y_n(\vec{w}^T \vec{x}_n + b) \\
+\vec{w} & = & \sum_N \alpha y_n \vec{x}_n \\
+\end{eqnarray*}
+\begin{eqnarray*}
+\frac{\partial L_p}{\partial b} & = & \sum_N \alpha(1-y_n(\vec{w}^T \vec{x}_n + b) - \xi_n) \\
+& = & \sum_N \alpha y_n b \\
+b & = & \sum_N \alpha y_n \\
+\end{eqnarray*}
+\begin{eqnarray*}
+\frac{\partial L_p}{\partial \xi_n} & = & \frac{C}{2} \sum_N \xi_n^2 - \sum_N \alpha \xi_n - \beta \xi_n \\
+& = & C \sum_N \xi_n - \sum_N \alpha - \beta \\
+C \sum_N \xi_n & = & \sum_N \alpha - \beta \\
+\xi_n & = & \frac{\alpha - \beta}{C} \\
+\end{eqnarray*}
+
+Then we plug them back in:
+
+\end{solution}
 
 \i Explain in 50 words (or less) why, intuitively, large margins are good. (\textbf{5 marks})
 
@@ -135,6 +198,10 @@ of closeness to the optimal regularizer (closest first), (b) ease of optimizatio
 (easiest first). Which of these regularizers do you like the most, and why?
 (\textbf{5 marks})
 
+\begin{solution}
+Generally we want prediction to be based on as small a number of features as possible; as regularizers go, this typically means that we prefer as many weights in $\vec{w}$ to be $0$ as possible, since this leaves prediction to the few weights that are nonzero. Unfortunately, minimalization of the count of nonzero weights in regularizers is NP-hard, so this is usually not a feasible requirement. Alternatives are: norm-based regularizers,
+\end{solution}
+
 \i Consider a kernel function $k(\vec{x},\vec{z}) = \vec{x}^\top \vec{z}
 + 2(\vec{x}^\top \vec{z})^2$. As we know, each kernel has an associated 
 feature mapping $\boldsymbol{\phi}$ such that $k(\vec{x},\vec{z}) 
@@ -142,6 +209,17 @@ feature mapping $\boldsymbol{\phi}$ such that $k(\vec{x},\vec{z})
 each example has two features (so $\vec{x} = \{x_1,x_2\}, \vec{z} = \{z_1,z_2\}$). 
 Write down the feature mapping $\boldsymbol{\phi}$ associated with 
 the kernel defined above. (\textbf{5 marks})
+
+\begin{solution}
+
+Given $k(\vec{x}, \vec{z}) = \vec{x}^T\vec{z} + 2(\vec{x}^T\vec{z})^2$ for $\vec{x} = \{x_1, x_2\}, \vec{z} = \{z_1, z_2\}$:
+
+\begin{eqnarray}
+k(\vec{x}, \vec{z}) & = & x_1 z_1 + x_2 z_2 + 2(x_1 z_1 + x_2 z_2)^2 \\
+& = & x_1 z_1 + x_2 z_2 + 2(x_1^2 z_1^2 + x_2^2 z_2^2 + 2x_1 x_2 z_1 z_2 \\
+& = & x_1 z_1 + x_2 z_2 + 2x_1^2 z_1^2 + 2x_2^2 z_2^2 + 4 x_1 x_2 z_1 z_2
+\end{eqnarray}
+\end{solution}
 
 \i The Euclidean distance between two points $\vec{x}$ and $\vec{z}$ is 
 defined as  $||\vec{x}-\vec{z}||^2$. It's a linear distance
