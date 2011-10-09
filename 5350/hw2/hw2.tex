@@ -180,7 +180,12 @@ C \sum_N \xi_n & = & \sum_N \alpha - \beta \\
 \xi_n & = & \frac{\alpha - \beta}{C} \\
 \end{eqnarray*}
 
-Then we plug them back in:
+Then we plug them back into the Primal Lagrangian to get the Dual Lagrangian. Luckily the notes have given us most of this step already. All that remains is to isolate the parts that are different and add those to the end:
+\begin{eqnarray*}
+L_D(\vec{w}, b, \xi, \alpha, \beta) & = & \sum_N \alpha_n - \frac{1}{2} \sum_{m,n} \alpha_m \alpha_n y_m y_n (\vec{x}^T_m \vec{x}_n) + \sum_n (\alpha \xi - \beta \xi + \frac{C}{2} \xi^2) \\
+& = & \sum_N \alpha_n - \frac{1}{2} \sum_{m,n} \alpha_m \alpha_n y_m y_n (\vec{x}^T_m \vec{x}_n) + \sum_n \alpha (\frac{\alpha + \beta}{C} - \beta \frac{\alpha + \beta}{C} + \frac{C}{2} \frac{\alpha + \beta}{C}) \\
+& & \text{subject to } \sum_n \alpha_n y_n = 0, 0 \le a_n \le C; n \in [1..N]
+\end{eqnarray*}
 
 \end{solution}
 
@@ -214,11 +219,17 @@ the kernel defined above. (\textbf{5 marks})
 
 Given $k(\vec{x}, \vec{z}) = \vec{x}^T\vec{z} + 2(\vec{x}^T\vec{z})^2$ for $\vec{x} = \{x_1, x_2\}, \vec{z} = \{z_1, z_2\}$:
 
-\begin{eqnarray}
-k(\vec{x}, \vec{z}) & = & x_1 z_1 + x_2 z_2 + 2(x_1 z_1 + x_2 z_2)^2 \\
-& = & x_1 z_1 + x_2 z_2 + 2(x_1^2 z_1^2 + x_2^2 z_2^2 + 2x_1 x_2 z_1 z_2 \\
-& = & x_1 z_1 + x_2 z_2 + 2x_1^2 z_1^2 + 2x_2^2 z_2^2 + 4 x_1 x_2 z_1 z_2
-\end{eqnarray}
+\begin{eqnarray*}
+k(\vec{x}, \vec{z}) & = & (\vec{x}_1 \vec{z}_1 + \vec{x}_2 \vec{z}_2) + 2(\vec{x}_1 \vec{z}_1 + \vec{x}_2 \vec{z}_2)^2 \\
+& = & (\vec{x}_1 \vec{z}_1 + \vec{x}_2 \vec{z}_2) + 2(\vec{x}^2_1 \vec{z}^2_1 + \vec{x}^2_2 \vec{z}^2_2 + 2 \vec{x}_1 \vec{x}_2 \vec{z}_1 \vec{z}_2) \\
+& = & \vec{x}_1 \vec{z}_1 \vec{x}_2 \vec{z}_2 + 2 \vec{x}^2_1 \vec{z}^2_1 + 2 \vec{x}^2_2 \vec{z}^2_2 + 4 \vec{x}_1 \vec{x}_2 \vec{z}_1 \vec{z}_2 \\
+& = & (\vec{x}_1, \vec{x}_2, \sqrt{2} \vec{x}^2_1, \sqrt{2} \vec{x}^2_2, 2 \vec{x}_1 \vec{x}_2)^T (\vec{z}_1, \vec{z}_2, \sqrt{2} \vec{z}^2_1, \sqrt{2} \vec{z}^2_2, 2 \vec{z}_1 \vec{z}_2) \\
+\end{eqnarray*}
+Thus:
+\begin{eqnarray*}
+\phi(\vec{x}) & = & (\vec{x}_1, \vec{x}_2, \sqrt{2} \vec{x}^2_1, \sqrt{2} \vec{x}^2_2, 2 \vec{x}_1 \vec{x}_2) \\
+\phi(\vec{z}) & = & (\vec{z}_1, \vec{z}_2, \sqrt{2} \vec{z}^2_1, \sqrt{2} \vec{z}^2_2, 2 \vec{z}_1 \vec{z}_2) \\
+\end{eqnarray*}
 \end{solution}
 
 \i The Euclidean distance between two points $\vec{x}$ and $\vec{z}$ is 
@@ -235,6 +246,15 @@ kernelized as well, given some kernel function $k$. Give the expression
 of the nonlinearlized version of the distance function in terms of $k$. 
 Also, can you think of an algorithm (among the ones you have already seen in the
 class) where you could use this? (\textbf{5 marks})
+
+\begin{solution}
+Let the vectors $\vec{x} = \{x_1, x_2\}$ and $\vec{z} = \{z_1, z_2\}$. Then, let the kernel function $k(x, z) = \{x^Tz\}$. Then:
+\begin{eqnarray*}
+||\vec{x} - \vec{z}||_2 & = & \sqrt{(\vec{x} - \vec{z})^2} \\
+& = & \sqrt{\vec{x}^T\vec{x} + \vec{z}^T\vec{z} - 2 (\vec{x}^T \vec{z})} \\
+& = & \sqrt{k(\vec{x}, \vec{x}) + k(\vec{z}, \vec{z}) - 2 k(\vec{x}, \vec{z})} \\
+\end{eqnarray*}
+\end{solution}
 
 \ene
 
@@ -313,5 +333,24 @@ of 0.25, 0.5, 1, 2, 4. Plot error rates on both the development data and test
 data for the different values of $C$. How many support vectors are used for each 
 model? Should this increase or decrease with $C$ (why?)? (\textbf{15 marks})
 \ene
+
+\begin{solution}
+Notice in the following graphs that the number of support vectors steadily decreases for each of them. To answer the last question directly, the reason is because for large $C$ in $C \sum_N \xi_n$, the slack will dominate misclassifications, causing us (all else equal) to have a smaller number of misclassified examples. Unfortunately this also makes our margin smaller; either way, this is the explanation for the phenomenon you will see below.
+\end{solution}
+
+\includegraphics[scale=0.75]{linear.png} \\
+The number of support vectors at each cost point for the linear SVM was, respectively: 85, 76, 73, 66, and 65. \\
+
+\includegraphics[scale=0.75]{quad.png} \\
+The number of support vectors at each cost point for the quadratic SVM was, respectively: 155, 155, 150, 135, and 120. \\
+
+\includegraphics[scale=0.75]{cubic.png} \\
+The number of support vectors at each cost point for the cubic SVM was, respectively: 152, 152, 152, 152, and 145. \\
+
+\includegraphics[scale=0.75]{rbf.png} \\
+The number of support vectors at each cost point for the RBF SVM was, respectively: 144, 121, 102, 86, and81. \\
+
+\includegraphics[scale=0.75]{gamma.png} \\
+And, of course, the results of our gamma experiments follow. Rather than look at every single possible experiment, I just ran them on the best-scoring $C$. \\
 
 \end{document}
