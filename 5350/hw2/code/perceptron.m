@@ -8,20 +8,22 @@ function [w b err] = perceptron(X,Y,XX,YY)
     % initialized w and b
     w = zeros(1,D);
     b = 0;
-    
+
     for iter=1:10
         for n=1:N
             % TODO: Replace the ????? with the perceptron mistake condition
-            if(?????)
+            if(sign(X(n,:) * w' + b) ~= Y(n))
                 % TODO: Update w
+                w = w + Y(n) * X(n,:);
                 % TODO: Update b
+                b = b + Y(n);
             end
         end
     end
     % TODO: Use the Perceptron prediction rule and compute the error (call it 
     % 'err') on the test data XX (note YY are the true labels that you'll 
     % compare your predictions with) 
-    err = ???; % 
+    err = sum(sign(X * w' + b) ~= Y) / size(X,1);
     
 function [X,XX] = normalizeData(X,XX)
   % center
