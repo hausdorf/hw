@@ -25,6 +25,12 @@ for the weight vector $\vec{w}$ that minimizes $E(\vec{w})$. Also
 explain what role does $r_n$ play in Equation~\ref{eq:wtreg}?
 (\textbf{10 marks})
 
+Note: If it helps your calculations, you may want to rewrite the above 
+objective in matrix notation (e.g., the standard 
+linear regression objective $\sum_{n=1}^N (y_n - 
+\vec{w}^\top\vec{x}_n)^2$ can be written as $(\vec{Y}-\vec{X}\vec{w})^\top 
+(\vec{Y}-\vec{X}\vec{w})$).
+
 \begin{solution}
 
 Distribute the $r_n$ into the terms of errors:
@@ -56,13 +62,9 @@ Now invert for our solution:
 & = & ((\sqrt{R}X)^T \sqrt{R}X) (\sqrt{R}X)^T \sqrt{R}Y \\
 \end{eqnarray*}
 
-\end{solution}
+What does $r_n$ do here? Clearly it weighs on the estimator $\hat{\vec{w}}$, and since it's in root form, this is probably positive most of the time. This means something is only considered correct if it's \textit{more correct} than usual. This will make us more receptive to the general case, since we become less concerned with fitting tight error (as we are ignoring it to some extent), and more concerned with fitting the picture generally.
 
-Note: If it helps your calculations, you may want to rewrite the above 
-objective in matrix notation (e.g., the standard 
-linear regression objective $\sum_{n=1}^N (y_n - 
-\vec{w}^\top\vec{x}_n)^2$ can be written as $(\vec{Y}-\vec{X}\vec{w})^\top 
-(\vec{Y}-\vec{X}\vec{w})$).
+\end{solution}
 
 \i (\textit{6350 only}) We have seen examples of regularizers
 where we penalize large values of the weights by imposing 
@@ -276,6 +278,10 @@ data. Once you are done with these, you can simply call \texttt{run.m}
 which will print the accuracy on the test data. Report the accuracy on
 the test data. (\textbf{10 marks})
 
+\begin{solution}
+My perceptron error is \texttt{0.11500}. I encourage you to run it with the \texttt{run.m} script.
+\end{solution}
+
 Now, consider the \textit{averaging extension} of the Perceptron. Note that
 the standard Perceptron produces a sequence of weight vectors
 (basically, an updated weight vector everytime the Perceptron makes a mistake).
@@ -298,6 +304,10 @@ Perceptron case. Now, train the averaged version using the provided training
 data and test it on the test data (again, ignore the development data). 
 The script \texttt{run.m} does all this for you once your averaged Perceptron 
 implementation is complete. Report the accuracy on the test data. (\textbf{15 marks})
+
+\begin{solution}
+My averaged perceptron error is \texttt{0.176471}. I encourage you to run it with the \texttt{run.m} script.
+\end{solution}
 
 \i In this part, we will experiment using other people's software, 
 so the programming aspect of this part will just be to write some 
