@@ -130,7 +130,7 @@
   (define result (interp a-fae (mtSub) init-k))
   (cond
     [(numV? result) (numV-n result)]
-    [(FAE-Cont? result) 'function]
+    [(FAE-Value? result) 'function]
     [else (error "BAD INPUT FOR interp-expr")]))
 ;; --------- END NEW CODE
 
