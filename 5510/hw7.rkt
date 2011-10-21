@@ -14,16 +14,23 @@
   [if0 (test FAE?)
        (then FAE?)
        (else FAE?)]
+  ;; --------- NEW CODE
   [neg (expr FAE?)]
   [avg (v1 FAE?)
        (v2 FAE?)
-       (v3 FAE?)])
+       (v3 FAE?)]
+  [withcc (name id?)
+          (arg FAE?)])
+;; --------- END NEW CODE
 
 (define-type FAE-Value
   [numV (n number?)]
   [closureV (param symbol?)
             (body FAE?)
-            (ds DefrdSub?)])
+            (ds DefrdSub?)]
+  ;; --------- NEW CODE
+  [contV (k FAE-Cont?)])
+;; --------- END NEW CODE
 
 (define-type DefrdSub
   [mtSub]
@@ -52,8 +59,10 @@
          (else-expr FAE?)
          (ds DefrdSub?)
          (k FAE-Cont?)]
+  ;; --------- NEW CODE
   [doNeg (ds DefrdSub?)
          (k FAE-Cont?)])
+;; --------- END NEW CODE
 
 ;; ----------------------------------------
 
@@ -70,11 +79,15 @@
        [(if0) (if0 (parse (second sexp))
                    (parse (third sexp))
                    (parse (fourth sexp)))]
+       ;; --------- NEW CODE
        [(neg) (neg (parse (second sexp)))]
        [(avg) (avg (parse (second sexp))
                    (parse (third sexp))
                    (parse (fourth sexp)))]
+       [(withcc) (withcc (parse (second sexp))
+                         (parse (third sexp)))]
        [else (app (parse (first sexp)) (parse (second sexp)))])]))
+;; --------- END NEW CODE
 
 (test (parse 3) (num 3))
 (test (parse 'x) (id 'x))
@@ -99,17 +112,27 @@
          (interp fun-expr ds (appArgK arg-expr ds k))]
     [if0 (test-expr then-expr else-expr)
          (interp test-expr ds (doIfK then-expr else-expr ds k))]
+    ;; --------- NEW CODE
     [neg (expr) (interp expr ds (doNeg ds k))]
     [avg (v1 v2 v3) (continue k 
                               (num/ (interp v1 ds (addSecondK v2 ds (addSecondK v3 ds k)))
-                                    (numV 3)))]))
+                                    (numV 3)))]
+    [withcc (name arg)
+            (interp arg
+                    (aSub (id-name name)
+                          (contV k)
+                          ds)
+                    k)]))
+;; --------- END NEW CODE
 
+;; --------- NEW CODE
 (define (interp-expr a-fae)
   (define result (interp a-fae (mtSub) init-k))
   (cond
     [(numV? result) (numV-n result)]
     [(FAE-Cont? result) 'function]
     [else (error "BAD INPUT FOR interp-expr")]))
+;; --------- END NEW CODE
 
 ;; continue : FAE-Cont FAE-Value -> FAE-Value
 (define (continue k v)
@@ -126,16 +149,23 @@
     [appArgK (arg-expr ds k)
              (interp arg-expr ds (doAppK v k))]
     [doAppK (fun-val k)
-            (interp (closureV-body fun-val)
-                    (aSub (closureV-param fun-val)
-                          v
-                          (closureV-ds fun-val))
-                    k)]
+            (type-case FAE-Value fun-val
+              [closureV (param body-expr ds)
+                        (interp (closureV-body fun-val)
+                                (aSub (closureV-param fun-val)
+                                      v
+                                      (closureV-ds fun-val))
+                                k)]
+              [contV (k)
+                     (continue k v)]
+              [else (error "CONTINUE RECIEVED A BAD CONTINUATION!")])]
     [doIfK (then-expr else-expr ds k)
            (if (numzero? v)
                (interp then-expr ds k)
                (interp else-expr ds k))]
+    ;; --------- NEW CODE
     [doNeg (ds k) (continue k (num* v (numV -1)))]))
+;; --------- END NEW CODE
 
 ;; num-op : (number number -> number) -> (FAE-Value FAE-Value -> FAE-Value)
 (define (num-op op op-name)
@@ -144,8 +174,10 @@
 
 (define num+ (num-op + '+))
 (define num- (num-op - '-))
+;; --------- NEW CODE
 (define num* (num-op * '*))
 (define num/ (num-op / '/))
+;; --------- END NEW CODE
 
 ;; numzero? : FAE-Value -> boolean
 (define (numzero? x)
@@ -244,7 +276,8 @@
           "free variable")
 
 
-;; NEW TESTS
+;; --------- NEW CODE
+; neg
 (test (interp-expr (parse '{neg 2}))
         -2)
 (test (interp-expr (parse '{neg {neg 2}}))
@@ -252,9 +285,25 @@
 (test (interp-expr (parse '{neg {+ 2 2}}))
         -4)
 
+; parse
 (test (interp-expr (parse '{avg 0 6 6}))
         4)
 (test (interp-expr (parse '{avg 6 6 6}))
         6)
 (test (interp-expr (parse '{avg {+ 3 2} 4 6}))
         5)
+
+; withcc
+(test (parse '{withcc k 7})
+      (withcc (id 'k) (num 7)))
+(test (parse '{withcc k k})
+      (withcc (id 'k) (id 'k)))
+(test (parse '{withcc k {neg {k 3}}})
+      (withcc (id 'k) (neg (app (id 'k) (num 3)))))
+(test (interp-expr (parse '{withcc k 7}))
+        7)
+(test (interp-expr (parse '{withcc k k}))
+        'function)
+(test (interp-expr (parse '{withcc k {neg {k 3}}}))
+        3)
+;; --------- END NEW CODE
