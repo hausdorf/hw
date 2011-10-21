@@ -14,7 +14,10 @@
   [if0 (test FAE?)
        (then FAE?)
        (else FAE?)]
-  [neg (expr FAE?)])
+  [neg (expr FAE?)]
+  [avg (v1 FAE?)
+       (v2 FAE?)
+       (v3 FAE?)])
 
 (define-type FAE-Value
   [numV (n number?)]
@@ -68,6 +71,9 @@
                    (parse (third sexp))
                    (parse (fourth sexp)))]
        [(neg) (neg (parse (second sexp)))]
+       [(avg) (avg (parse (second sexp))
+                   (parse (third sexp))
+                   (parse (fourth sexp)))]
        [else (app (parse (first sexp)) (parse (second sexp)))])]))
 
 (test (parse 3) (num 3))
@@ -93,7 +99,10 @@
          (interp fun-expr ds (appArgK arg-expr ds k))]
     [if0 (test-expr then-expr else-expr)
          (interp test-expr ds (doIfK then-expr else-expr ds k))]
-    [neg (expr) (interp expr ds (doNeg ds k))]))
+    [neg (expr) (interp expr ds (doNeg ds k))]
+    [avg (v1 v2 v3) (continue k 
+                              (num/ (interp v1 ds (addSecondK v2 ds (addSecondK v3 ds k)))
+                                    (numV 3)))]))
 
 (define (interp-expr a-fae)
   (define result (interp a-fae (mtSub) init-k))
@@ -136,6 +145,7 @@
 (define num+ (num-op + '+))
 (define num- (num-op - '-))
 (define num* (num-op * '*))
+(define num/ (num-op / '/))
 
 ;; numzero? : FAE-Value -> boolean
 (define (numzero? x)
@@ -233,9 +243,18 @@
 (test/exn (interp (id 'x) (mtSub) init-k)
           "free variable")
 
+
+;; NEW TESTS
 (test (interp-expr (parse '{neg 2}))
         -2)
 (test (interp-expr (parse '{neg {neg 2}}))
         2)
 (test (interp-expr (parse '{neg {+ 2 2}}))
         -4)
+
+(test (interp-expr (parse '{avg 0 6 6}))
+        4)
+(test (interp-expr (parse '{avg 6 6 6}))
+        6)
+(test (interp-expr (parse '{avg {+ 3 2} 4 6}))
+        5)
