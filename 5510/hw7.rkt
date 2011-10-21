@@ -14,10 +14,7 @@
   [if0 (test FAE?)
        (then FAE?)
        (else FAE?)]
-  [neg (n FAE?)]
-  [avg (n1 FAE?)
-       (n2 FAE?)
-       (n3 FAE?)])
+  [neg (expr FAE?)])
 
 (define-type FAE-Value
   [numV (n number?)]
@@ -51,6 +48,8 @@
   [doIfK (then-expr FAE?)
          (else-expr FAE?)
          (ds DefrdSub?)
+         (k FAE-Cont?)]
+  [doNeg (ds DefrdSub?)
          (k FAE-Cont?)])
 
 ;; ----------------------------------------
@@ -69,9 +68,6 @@
                    (parse (third sexp))
                    (parse (fourth sexp)))]
        [(neg) (neg (parse (second sexp)))]
-       [(avg) (avg (parse (second sexp))
-                   (parse (third sexp))
-                   (parse (fourth sexp)))]
        [else (app (parse (first sexp)) (parse (second sexp)))])]))
 
 (test (parse 3) (num 3))
@@ -97,13 +93,14 @@
          (interp fun-expr ds (appArgK arg-expr ds k))]
     [if0 (test-expr then-expr else-expr)
          (interp test-expr ds (doIfK then-expr else-expr ds k))]
-    ;; ADDS NEG
-    [neg (n) (- (num-n n))]
-    [avg (n1 n2 n3) (/ (numV-n (interp (add n1 (add n2 n3)) ds k)) 3)]))
+    [neg (expr) (interp expr ds (doNeg ds k))]))
 
-; PART 1: interp-expr
 (define (interp-expr a-fae)
-  (interp a-fae (mtSub) init-k))
+  (define result (interp a-fae (mtSub) init-k))
+  (cond
+    [(numV? result) (numV-n result)]
+    [(FAE-Cont? result) 'function]
+    [else (error "BAD INPUT FOR interp-expr")]))
 
 ;; continue : FAE-Cont FAE-Value -> FAE-Value
 (define (continue k v)
@@ -128,7 +125,8 @@
     [doIfK (then-expr else-expr ds k)
            (if (numzero? v)
                (interp then-expr ds k)
-               (interp else-expr ds k))]))
+               (interp else-expr ds k))]
+    [doNeg (ds k) (continue k (num* v (numV -1)))]))
 
 ;; num-op : (number number -> number) -> (FAE-Value FAE-Value -> FAE-Value)
 (define (num-op op op-name)
@@ -137,6 +135,7 @@
 
 (define num+ (num-op + '+))
 (define num- (num-op - '-))
+(define num* (num-op * '*))
 
 ;; numzero? : FAE-Value -> boolean
 (define (numzero? x)
@@ -234,13 +233,9 @@
 (test/exn (interp (id 'x) (mtSub) init-k)
           "free variable")
 
-(test (interp-expr (num 10))
-      (numV 10))
-
-
-;; NEW TESTS
 (test (interp-expr (parse '{neg 2}))
         -2)
-
-(test (interp-expr (parse '{avg 0 6 6}))
-        4)
+(test (interp-expr (parse '{neg {neg 2}}))
+        2)
+(test (interp-expr (parse '{neg {+ 2 2}}))
+        -4)
