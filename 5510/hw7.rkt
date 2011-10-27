@@ -144,6 +144,7 @@
 ;; --------- END NEW CODE
 
 (define (rec-aSub nl vl ds)
+  (print nl)
   (cond
     [(empty? nl) ds]
     [(cons? nl) (aSub (first nl)
