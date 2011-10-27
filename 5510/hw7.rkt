@@ -1,5 +1,11 @@
 #lang plai
 
+;; ---------------------
+;; ALEX CLEMMER u0458675
+;; CS 5510 Fall 2011
+;; HOMEWORK 7
+;; ---------------------
+
 (define-type FAE
   [num (n number?)]
   [add (lhs FAE?)
@@ -7,10 +13,12 @@
   [sub (lhs FAE?)
        (rhs FAE?)]
   [id (name symbol?)]
-  [fun (param symbol?)
+  ;; --------- NEW CODE
+  [fun (param (listof symbol?))
        (body FAE?)]
+  ;; --------- END NEW CODE
   [app (fun-expr FAE?)
-       (arg-expr FAE?)]
+       (arg-expr (listof FAE?))]
   [if0 (test FAE?)
        (then FAE?)
        (else FAE?)]
@@ -25,7 +33,7 @@
 
 (define-type FAE-Value
   [numV (n number?)]
-  [closureV (param symbol?)
+  [closureV (param (listof symbol?))
             (body FAE?)
             (ds DefrdSub?)]
   ;; --------- NEW CODE
@@ -50,10 +58,10 @@
               (k FAE-Cont?)]
   [doSubK (v1 FAE-Value?)
           (k FAE-Cont?)]
-  [appArgK (arg-expr FAE?)
+  [appArgK (arg-expr (listof FAE?))
            (ds DefrdSub?)
            (k FAE-Cont?)]
-  [doAppK (fun-val FAE-Value?)
+  [doAppK (fun-val (listof FAE-Value?))
           (k FAE-Cont?)]
   [doIfK (then-expr FAE?)
          (else-expr FAE?)
@@ -75,7 +83,7 @@
      (case (first sexp)
        [(+) (add (parse (second sexp)) (parse (third sexp)))]
        [(-) (sub (parse (second sexp)) (parse (third sexp)))]
-       [(fun) (fun (first (second sexp)) (parse (third sexp)))]
+       [(fun) (fun (second sexp) (parse (third sexp)))]
        [(if0) (if0 (parse (second sexp))
                    (parse (third sexp))
                    (parse (fourth sexp)))]
@@ -86,7 +94,7 @@
                    (parse (fourth sexp)))]
        [(withcc) (withcc (parse (second sexp))
                          (parse (third sexp)))]
-       [else (app (parse (first sexp)) (parse (second sexp)))])]))
+       [else (app (parse (first sexp)) (map parse (rest sexp)))])]))
 ;; --------- END NEW CODE
 
 (test (parse 3) (num 3))
@@ -134,6 +142,20 @@
     [else (error "BAD INPUT FOR interp-expr")]))
 ;; --------- END NEW CODE
 
+(define (rec-aSub nl vl ds)
+  (cond
+    [(empty? nl) ds]
+    [(cons? nl) (aSub (first nl)
+                      (first vl)
+                      (rec-aSub (rest nl)
+                                (rest vl)
+                                ds))]))
+
+(define (interp-args args ds c)
+  (cond
+    [(empty? (rest args)) (list (interp (first args) ds c))]
+    [(cons? (rest args)) (cons (interp (first args) ds c) (interp-args (rest args) ds c))]))
+
 ;; continue : FAE-Cont FAE-Value -> FAE-Value
 (define (continue k v)
   (type-case FAE-Cont k
@@ -147,14 +169,16 @@
     [doSubK (v1 k)
             (continue k (num- v1 v))]
     [appArgK (arg-expr ds k)
-             (interp arg-expr ds (doAppK v k))]
+             (interp-args arg-expr ds (doAppK (interp-args arg-expr ds k) k))]
     [doAppK (fun-val k)
             (type-case FAE-Value fun-val
+              ;; TODO TODO TODO: fun-val is getting passed a list of numV, but the expected value
+              ;; has type FAE-Value
               [closureV (param body-expr ds)
                         (interp (closureV-body fun-val)
-                                (aSub (closureV-param fun-val)
-                                      v
-                                      (closureV-ds fun-val))
+                                (rec-aSub (closureV-param fun-val)
+                                          v
+                                          (closureV-ds fun-val))
                                 k)]
               [contV (k)
                      (continue k v)]
@@ -306,4 +330,6 @@
         'function)
 (test (interp-expr (parse '{withcc k {neg {k 3}}}))
         3)
+(test (interp-expr (parse '{{fun {x y} {- y x}} 10 12}))
+        2)
 ;; --------- END NEW CODE
