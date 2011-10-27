@@ -61,7 +61,7 @@
   [appArgK (arg-expr (listof FAE?))
            (ds DefrdSub?)
            (k FAE-Cont?)]
-  [doAppK (fun-val (listof FAE-Value?))
+  [doAppK (fun-val FAE-Value?)
           (k FAE-Cont?)]
   [doIfK (then-expr FAE?)
          (else-expr FAE?)
@@ -153,6 +153,7 @@
 
 (define (interp-args args ds c)
   (cond
+    [(equal? args '()) '()]
     [(empty? (rest args)) (list (interp (first args) ds c))]
     [(cons? (rest args)) (cons (interp (first args) ds c) (interp-args (rest args) ds c))]))
 
@@ -169,7 +170,7 @@
     [doSubK (v1 k)
             (continue k (num- v1 v))]
     [appArgK (arg-expr ds k)
-             (interp-args arg-expr ds (doAppK (interp-args arg-expr ds k) k))]
+             (continue (doAppK v k) (interp-args arg-expr ds k))]
     [doAppK (fun-val k)
             (type-case FAE-Value fun-val
               ;; TODO TODO TODO: fun-val is getting passed a list of numV, but the expected value
@@ -182,7 +183,7 @@
                                 k)]
               [contV (k)
                      (continue k v)]
-              [else (error "CONTINUE RECIEVED A BAD CONTINUATION!")])]
+              [else fun-val])]
     [doIfK (then-expr else-expr ds k)
            (if (numzero? v)
                (interp then-expr ds k)
@@ -332,4 +333,15 @@
         3)
 (test (interp-expr (parse '{{fun {x y} {- y x}} 10 12}))
         2)
+(test (interp-expr (parse '{fun {} 12}))
+      'function)
+(test (interp-expr (parse '{fun {x} {fun {} x}}))
+      'function)
+(test (interp-expr (parse '{{{fun {x} {fun {} x}} 13}}))
+      13)
+
+;(test (interp-expr (parse '{withcc esc {{fun {x y} x} 1 {esc 3}}}))
+;      3)
+;(test (interp-expr (parse '{{withcc esc {{fun {x y} {fun {z} {+ z y}}} 1 {withcc k {esc k}}}} 10}))
+;      20)
 ;; --------- END NEW CODE
