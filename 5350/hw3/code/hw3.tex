@@ -1,0 +1,141 @@
+\documentclass[fleqn]{article}
+
+\usepackage{mydefs}
+\usepackage{notes}
+\usepackage{url}
+\usepackage{graphicx}
+
+\begin{document}
+\lecture{CS5350: Machine Learning}{HW3: Probabilistic Models, Feature 
+Selection, Learning Theory, Clustering}{Due November 3, 2011}
+
+\section{Written Exercises}
+
+\bee
+
+\i The \emph{Poisson} distribution is a distribution over
+\emph{positive count values}.  It has the form $P(X \| \la) = \frac 1
+{e^{\la}} \frac {\la^X} {X!}$, where $X$ is the count and $\la$ is the
+(single) parameter of the Poisson. $X!$ denotes the factorial of $X$. 
+Here $P(X \| \la)$ is the likelihood (probability of data given the 
+parameters). Now suppose we have a bunch of count data (for 
+instance, the number of cars to pass an intersection on a given day, 
+measured on $N$-many days) called $X_1, X_2, \dots, X_N$. Compute the 
+maximum likelihood estimate (MLE) for $\la$ given this data. (Hint: 
+just as we did in the class, write down the likelihood over the $N$
+observations, then take the log. Do some algebra to simplify and then 
+take the derivative with respect to $\la$.) (\textit{10 points})
+
+\i Most feature selection algorithms consider adding (in forward search)
+or removing (in backward search) \textit{one feature at a time}. Even the
+methods that are based on using some sort of score for each feature consider
+only that feature while computing the score. For what type of features, this
+strategy (i.e., looking at features in \textit{isolation}) might be suboptimal 
+in hindsight. (\textit{5 points})
+
+\i We have seen the concept of shattering for hypothesis classes of
+infinite size (e.g., set of linear classifiers in 2 or higher dimensions).
+Now consider the case when the hypothesis class $\mathcal{H}$ is of \textit{finite 
+size} (e.g., all decision trees of a fixed depth). Show that if a sample of
+size $N$ is shattered by $\mathcal{H}$ (assume binary classification) then 
+the size of this hypothesis class is \textit{at least} $2^N$. Also, using
+this result, give an upper bound on the VC-dimension of a finite hypothesis
+class of size $|\mathcal{H}|$. (\textit{10 points})  
+
+\i Assume we have a dataset in two dimensions with five data points at: 
+\{(1, 0), (-1, 0), (0, 1), (3, 0), (3, 1)\}. Run two iterations of 
+$k$-means by hand with cluster centers initialized at (-1, 0) and 
+(3, 1) (so $K=2$). For each iteration, write down which data points get
+assigned to which cluster center and also compute the cluster centers.
+Has the algorithm converged after two iterations? (\textit{5 points})
+
+\i What advantages does the Gaussian Mixture Model (GMM) have over
+the $k$-means clustering. Note that in GMM, each mixture component is a 
+Gaussian distribution $\Nor(\mu_k,\Sigma_k)$ where $\mu_k$ and $\Sigma_k$ 
+are the mean and covariance of this Gaussian. Which special case of the 
+GMM corresponds to $k$-means? (\textit{10 points})
+
+\i Give an intuitive explanation  (100 words or less) of the \textit{general} 
+EM algorithm (i.e., what are the quantities being estimated in each step and 
+\textit{how} are they estimated?). Give 2 examples (not including GMM) of where the 
+EM algorithm can be used. (\textit{10 points}) 
+
+\i (\textit{6350 only}) The $k$-means algorithm makes hard assignments of 
+points to clusters, unlike the Gaussian mixture model which makes soft assignments
+(so each point has a nonzero probability of being assigned to each cluster, 
+with these probabilities summing to one). Show that you can accomplish something 
+similar by slightly modifying the $k$-means algorithm. In particular, describe how 
+the 2 steps of $k$-means (cluster assignments and cluster center computations) would 
+need to be changed in this variant of the $k$-means algorithm. (Hint: The hard 
+assignments of the original $k$-means are a result of assigning each point 
+\textit{fully} to the cluster center it is the \textit{closest} to; in the soft 
+assignments you would  want to give a part of each point to each of the $K$ clusters, 
+based on how close it is to a particular cluster center). (\textit{10 points})
+
+\ene
+
+\section{Programming Exercises}
+
+\bee
+
+\i In this part, we will implement a feature selection method based on
+the Pearson correlation coefficient (PCC). The \textit{estimate} of 
+$\mathcal{R}(d)$ is given by
+\[
+  R(d) = \frac{\sum_{n=1}^N (X_{nd} - \bar{X}_{d})(Y_n - \bar{Y})}
+  {\sqrt{\sum_{n=1}^N (X_{nd} - \bar{X}_{d})^2\sum_{n=1}^N(Y_n - \bar{Y})^2}}
+\]
+$X$ is the $N\times D$ data matrix where each row is an example and each
+column is a feature. $X_d$ above denotes the $d$-th column of $X$, consisting
+of the $d$-th feature of all the $N$ examples. $Y$ is an $N\times 1$ vector
+of labels.
+
+In the above equation, the bar notation denotes an average over the index $n$
+(so $\bar{X}_{d}$ is basically the average of $X_d$).Using the \textit{absolute} 
+value of the PCC estimate ($|R(d)|$), for the provided training data (train.mat), rank the features in 
+the order of decreasing relevance. Now run a $KNN$ classifier on the provided dataset
+(train.mat and test.mat) using the $m$ best features by varying $m$ from 1 to 15. 
+Plot the percentage accuracy on test data as a function of $m$. The skeleton code is 
+in \texttt{feature\_select.m} and the \texttt{run.m} with test it (but you will have to 
+plot the results yourself :). 
+
+Also answer why would you want to use the absolute PCC scores ($|R(d)|$) rather than the 
+raw PCC scores ($R(d)$)? (\textit{15 points}) 
+
+\i In this task, we implement K-means clustering. A shell is in \texttt{kmeans.m}. 
+There are essentially two things you need to implement. First, is the actual 
+K-means algorithm. Second is the initialization based on the ``furthest point'' 
+heuristic. To remind you, the furthest point heuristic starts by
+choosing one of the data points as the first cluster center, then chooses the
+second cluster center which is furthest from the first center, then chooses 
+the third cluster center which is furthest from both the first and the second 
+centers (equivalently, from their mean), and so on.
+
+You should follow the comments in \texttt{kmeans.m} for hints on how to do the 
+implementation. 
+
+There is another script, \texttt{test\_kmeans.m} for (not surprisingly!) testing 
+your kmeans function. This function reads in some simple two dimensional data and 
+then tries to cluster it. The figures it produces are:
+
+\begin{itemize}
+  \item A plot of the data, unclustered
+  \item The data clustered with K = 2 and random initialization
+  \item The data clustered with K = 3 and random initialization (this is run 
+  16 times... you should see a small
+  amount of variability in the outputs). The plots also include scores.
+  \item The data clustered with K = 3 and ``furthest point'' initialization 
+  (this is run 16 times... you should see a small amount of variability in the 
+  outputs). The plots also include scores.
+  \item A plot of K = \{2; 3; 4; 5; 6; 8; 10; 15; 20\} versus score.
+  \item The data clustered for K = \{2; 3; 4; 5; 6\} with together with scores.
+\end{itemize}
+
+To verify that things seem to be going okay, aside from just checking to see if 
+your clusters look reasonable in the plots, the scores that I get in Figure 6 are: 
+120, 58, 47, 38, 32. There will be a small amount of variation due to the random 
+initialization, but they should be reasonably close. (\textit{35 points})
+
+\ene
+
+\end{document}
