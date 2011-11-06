@@ -11,3 +11,4 @@ for m=1:15
         Ypred = KNN('predict', model, X(:,indices)); % important: test using only the selected features
         acc(m) = mean(Ypred==Y);
 end
+disp(acc);
