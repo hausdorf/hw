@@ -124,6 +124,12 @@ EM algorithm (i.e., what are the quantities being estimated in each step and
 \textit{how} are they estimated?). Give 2 examples (not including GMM) of where the 
 EM algorithm can be used. (\textit{10 points}) 
 
+\begin{solution}
+The expectation step estimates the log likelihood given the current estimate for the parameters, while the maximization step estimates the parameters given the data. This is done more or less by (1) initializing the parameters to some values (possible random), (2) choosing unobserved data points that fit best to these parameters, (3) choosing parameters that best fit the newly-chosen unobserved data points, and (4) repeating until convergence.
+
+In NLP, we use EM for lots of stuff, including probabilistic CFGs. We also can use EM for stuff like image processing (particularly things like photon tomography).
+\end{solution}
+
 \i (\textit{6350 only}) The $k$-means algorithm makes hard assignments of 
 points to clusters, unlike the Gaussian mixture model which makes soft assignments
 (so each point has a nonzero probability of being assigned to each cluster, 
@@ -166,6 +172,10 @@ plot the results yourself :).
 Also answer why would you want to use the absolute PCC scores ($|R(d)|$) rather than the 
 raw PCC scores ($R(d)$)? (\textit{15 points}) 
 
+\begin{solution}
+See the enclosed PCC.png for the plot. As for the question, the absolute value of the PCC estimate is $\le 1$, and describes the direction and magnitude relationship between two variables. This is why we use the absolute value.
+\end{solution}
+
 \i In this task, we implement K-means clustering. A shell is in \texttt{kmeans.m}. 
 There are essentially two things you need to implement. First, is the actual 
 K-means algorithm. Second is the initialization based on the ``furthest point'' 
@@ -201,5 +211,9 @@ your clusters look reasonable in the plots, the scores that I get in Figure 6 ar
 initialization, but they should be reasonably close. (\textit{35 points})
 
 \ene
+
+\begin{solution}
+Please see included figures.
+\end{solution}
 
 \end{document}
