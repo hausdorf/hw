@@ -10,5 +10,5 @@ for m=1:15
         load test;
         Ypred = KNN('predict', model, X(:,indices)); % important: test using only the selected features
         acc(m) = mean(Ypred==Y);
+        %disp(acc(m));
 end
-disp(acc);

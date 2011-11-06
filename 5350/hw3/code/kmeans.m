@@ -51,7 +51,16 @@ for iter=1:20,
     % assign point n to the closest center
 
     %TODO
+    mn = [1 sqrt((X(1,1) - mu(1,1))^2 + (X(1,2) - mu(1,2))^2)];
+    for k=1:K,
+      tmp = sqrt((X(n,1) - mu(k,1))^2 + (X(n,2) - mu(k,2))^2);
+      if tmp < mn(2)
+        mn = [k tmp];
+      end
+    end
+    z(n) = mn(1);
   end;
+  disp(z(n));
   
   % check to see if we've converged
   if all(oldz==z),
