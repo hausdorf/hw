@@ -51,6 +51,16 @@ for iter=1:20,
     % assign point n to the closest center
 
     %TODO
+    %mn = [1 sqrt((X(1,1) - mu(1,1))^2 + (X(1,2) - mu(1,2))^2)];
+    mn = [1 norm(X(n,:) - mu(1,:))^2];
+    for k=1:K,
+      %tmp = sqrt((X(n,1) - mu(k,1))^2 + (X(n,2) - mu(k,2))^2);
+      tmp = norm(X(n,:) - mu(k,:))^2;
+      if tmp < mn(2)
+        mn = [k tmp];
+      end
+    end
+    z(n) = mn(1);
   end;
   
   % check to see if we've converged
@@ -62,7 +72,18 @@ for iter=1:20,
   % re-estimate the means
 
   %TODO
+  mu = zeros(k,2);
+  counts = zeros(1,k);
+  for n=1:N,
+    mu(z(n),:) = mu(z(n),:) + X(n,:);
+    counts(1,z(n)) = counts(1,z(n)) + 1;
+  end
+
+  for k=1:K,
+    mu(k,:) = mu(k,:) / counts(1,k);
+  end
 end;
+disp(mu);
 
 % final: compute the score
 score = 0;
