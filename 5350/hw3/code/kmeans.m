@@ -31,7 +31,37 @@ elseif strcmp(init, 'furthest'),
   % iteratively choose furthest points as the remaining centers
 
   %TODO
-  
+  r = floor(rand(1)*N);
+  p1 = X(r,:);
+  p2 = X(1,:);
+  p3 = X(1,:);
+
+  mx = [1 norm(X(1,:) - p1)^2];
+  for n=1:N,
+    tmp = norm(X(n,:) - p1)^2;
+
+    if tmp > mx(1,2)
+      mx = [n tmp];
+    end
+  end
+  p2 = X(mx(1,1));
+
+  mn = (p1+p2) / 2;
+  mx = [1 norm(X(1,:) - p1)^2];
+  for n=1:n,
+    tmp = norm(X(n,:) - mn)^2;
+
+    if tmp > mx(1,2)
+      mx = [n tmp];
+    end
+  end
+  p3 = X(mx(1,1));
+
+  mu = zeros(3,2);
+  mu(1,:) = p1;
+  mu(2,:) = p2;
+  mu(3,:) = p3;
+
   % again, don't bother initializing z
   z = zeros(N,1);
 else
