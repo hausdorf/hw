@@ -76,13 +76,16 @@
 ;; ----------------------------------------
 
 (define (rec-sub p a ds)
-  (if (empty? (rest a))
+  (cond
+    [(empty? p) (mtSub)]
+    [(empty? (rest a))
       (aSub (first p)
             (first a)
-            ds)
+            ds)]
+    [else
       (aSub (first p)
             (first a)
-            (rec-sub (rest p) (rest a) ds))))
+            (rec-sub (rest p) (rest a) ds))]))
 
 (define (rec-bind n a env)
   (if (empty? (rest n))
@@ -94,10 +97,13 @@
              (rec-bind (rest n) (rest a) env))))
 
 (define (rec-interp a ds)
-  (if (empty? (rest a))
-      (list (interp (first a) ds))
+  (cond
+    [(empty? a) (list)]
+    [(empty? (rest a))
+      (list (interp (first a) ds))]
+    [else
       (cons (interp (first a) ds)
-            (rec-interp (rest a) ds))))
+            (rec-interp (rest a) ds))]))
 
 ;; interp : FAE DefrdSub -> FAE-Value
 (define (interp a-fae ds)
@@ -433,5 +439,27 @@
 
 (test/exn (typecheck (fun 'x (crossTE (numTE) (boolTE))
                              (ifthenelse (fst (id 'x)) (num 0) (fst (id 'x))))
+                       (mtEnv))
+            "no type")
+
+(test (interp (App (Fun (list) (list) (num 10)) (list))
+               (mtSub))
+        (numV 10))
+
+(test (interp (App (Fun (list 'x 'y) (list (numTE) (numTE))
+                          (sub (id 'x) (id 'y)))
+                     (list (num 10) (num 20)))
+                (mtSub))
+        (numV -10))
+
+(test (typecheck (App (Fun (list 'x 'y) (list (numTE) (boolTE))
+                             (id 'y))
+                        (list (num 10) (bool false)))
+                   (mtEnv))
+        (boolT))
+
+(test/exn (typecheck (App (Fun (list 'x 'y) (list (numTE) (boolTE))
+                             (id 'y))
+                        (list (num 10) (num 10)))
                        (mtEnv))
             "no type")
