@@ -1,0 +1,110 @@
+% $Id: AllegProposal.tex,v 1.8 2000/07/05 21:02:12 culver Exp $
+% AllegProposal.tex
+% by A. Thall
+% 13. Feb 2003
+%
+% Small edits and a few additions made by R. Roos
+% 21 Jan 2007
+% Most particularly, the "box" around the thesis statement has been removed,
+% section titles have been modified. The section named "Prior work II" has
+% been commented out. The \topmargin has been changed to -.5in and the
+% change to \parindent has been commented out.
+% The filename "nausicaa.eps" has been changed to simply "nausicaa" so that
+% pdflatex can be used on the file (and a file named "nausicaa.pdf" has
+% been created using the "epstopdf" command).
+% Several subsections have been added to illustrate subsection usage.
+% The word "comp" has been replaced by "project" or "thesis" throughout.
+% Other small changes have been made.
+%
+% This document provides a sample Senior Project Proposal template for use
+% by students in Allegheny's CS and Applied Computing programs.
+
+\NeedsTeXFormat{LaTeX2e}
+\documentclass[11pt]{article}
+
+%The following is used by WinEdt to set up cross-referencing to the BibTeX files
+%It is NOT commented out---the comment lets it be simply ignored by non-WinEdt LaTeX compilers
+
+%GATHER{mybibtexDB.bib}
+
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{epsfig}
+\usepackage{fancybox}
+\usepackage{listings}
+\usepackage{algo}
+\usepackage{url}
+
+\setlength{\textheight}{9in}
+\setlength{\textwidth}{6in}
+\setlength{\oddsidemargin}{.25in}
+\setlength{\topmargin}{-.5in}  % changed from -.25 by RSR on 1/21/07
+%\parindent .5in    % commented out by RSR 1/21/07
+
+%put words in the hyphenation statement if you want to enforce
+%how LaTeX should break them (or not) at the end of a line.
+%\hyphenation{repre-sen-tations problems exact linear}
+\hyphenation{itself}
+
+%%%%%
+%% Commented out -- RSR, 1/21/07
+%%%%%
+% The following provides a box to surround the thesis statement
+%\newenvironment{Thesis}%
+%{\begin{Sbox}\begin{minipage}{.95\linewidth}}%
+%{\end{minipage}\end{Sbox}\begin{center}\fbox{\TheSbox}\end{center}}
+
+\title{Scoring Procedure and Documentation of PPM Implementation}
+\author{}
+
+\begin{document}
+
+% You can specify a language and other options for
+% the code-formatting "listings" package
+\lstset{language=C++,basicstyle=\small,
+        stringstyle=\ttfamily,showstringspaces=false}
+
+\singlespace
+\maketitle
+
+\section{Working With the PPM Implementation}\label{ch:overview}
+Working with \texttt{ppm.py} is pretty straightforward. The class that abstracts the PPM is called \texttt{Compressor}, and there are really only two relevant methods: \texttt{add()} and \texttt{score()}. These both do exactly what you would expect. Here's an example program:
+
+\begin{verbatim}
+import ppm
+from __future__ import with_statement
+
+if __name__ == '__main__':
+    c = ppm.Compressor()
+	
+    # Train on every line in file
+    with open('training_data') as f:
+        for l in f.readlines():
+            c.add(l)
+	
+    # Test on every line in another file
+    with open('dev_data') as f:
+        for l in f.readlines():
+            c.score(l)
+\end{verbatim}
+
+You can train it on pretty much any structured data, though of course your scoring results will depend on things like entropy and the features you're handing it.
+
+\section{Proposed Scoring Procedure}\label{ch:overview}
+The procedure for scoring, at this point is as follows. To begin, we partition our data into two subsets: emails which occur over \textit{at least} two red vertices (since emails can be addressed to lots of people), and those which are not. If we denote all of our data with $D$, then the red-red partition can be called $\mathcal{RR} \subset D$ and the other (nonred-nonred) data can be called $\mathcal{NN}$.
+
+We train \textit{two models}---one using only the $\mathcal{RR}$ partition, and the other using the $\mathcal{NN}$ partition. We can do so using the techniques delineated in the code above.
+
+After scoring, we have two models that output log probs. The goal now is to take these two log probs and get a ``score" for the content. The first part of this process is to map it to the space of numbers $\in [0,1]$ (\textit{e.g.}, turn it into a probability). Trivially, we can do so by raising it over some constant, usually something like $e$ or 2: $\text{PROB} = 2^p$.
+
+Each model outputs a probability, let's call them $p_{\mathcal{RR}}$ and $p_{\mathcal{NN}}$. The next thing to do is to normalize these two probabilities so that they add to one, and then emit the probaility that a given bit of content is $\in \mathcal{RR}$. Also trivial, we can express this as $p_{\mathcal{RR}}(\text{content}) = \cfrac{p_{\mathcal{RR}}}{p_{\mathcal{RR}} + p_{\mathcal{NN}}}$. This gives us a balanced notion not just that a piece of content looks like it's $\in \mathcal{RR}$, but also that it looks like it's \textit{not} $\in \mathcal{NN}$.
+
+The complete scoring mechanism looks like so:
+
+\begin{equation}
+\cfrac{2^{\text{logprob}{_{\mathcal{RR}}}}}{2^{\text{logprob}_{\mathcal{RR}}} + 2^{\text{logprob}_{\mathcal{NN}}}}
+\end{equation}
+
+
+\end{document}

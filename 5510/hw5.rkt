@@ -1,48 +1,55 @@
 #lang plai
 
-(define-type BCFAE
+(define-type Rcrd-Data
+  [data (name id?)
+        (expr RCFAE?)])
+
+(define-type RCFAE
   [num (n number?)]
-  [add (lhs BCFAE?)
-       (rhs BCFAE?)]
-  [sub (lhs BCFAE?)
-       (rhs BCFAE?)]
+  [add (lhs RCFAE?)
+       (rhs RCFAE?)]
+  [sub (lhs RCFAE?)
+       (rhs RCFAE?)]
   [id (name symbol?)]
   [fun (param symbol?)
-       (body BCFAE?)]
-  [app (fun-expr BCFAE?)
-       (arg-expr BCFAE?)]
-  [newbox (val-expr BCFAE?)]
-  [setbox (box-expr BCFAE?)
-          (val-expr BCFAE?)]
-  [openbox (box-expr BCFAE?)]
-  [seqn (first-expr (listof BCFAE?))])
+       (body RCFAE?)]
+  [app (fun-expr RCFAE?)
+       (arg-expr RCFAE?)]
+  [newbox (val-expr RCFAE?)]
+  [setbox (box-expr RCFAE?)
+          (val-expr RCFAE?)]
+  [openbox (box-expr RCFAE?)]
+  [seqn (first-expr (listof RCFAE?))]
+  [record (rcrds (listof data?))]
+  [get (expr RCFAE?)
+       (name id?)])
 
-(define-type BCFAE-Value
+(define-type RCFAE-Value
   [numV (n number?)]
   [closureV (param symbol?)
-            (body BCFAE?)
+            (body RCFAE?)
             (ds DefrdSub?)]
   [boxV (address integer?)])
 
 (define-type DefrdSub
   [mtSub]
   [aSub (name symbol?)
-        (value BCFAE-Value?)
+        (value RCFAE-Value?)
         (rest DefrdSub?)])
 
 (define-type Store
   [mtSto]
   [aSto (address integer?)
-        (value BCFAE-Value?)
+        (value RCFAE-Value?)
         (rest Store?)])
 
 (define-type Value*Store
-  [v*s (value BCFAE-Value?)
+  [v*s (value RCFAE-Value?)
        (store Store?)])
 
 ;; ----------------------------------------
 
-;; parse : S-expr -> BCFAE
+;; parse : S-expr -> RCFAE
 (define (parse sexp)
   (cond
     [(number? sexp) (num sexp)]
@@ -56,7 +63,12 @@
        [(setbox) (setbox (parse (second sexp)) (parse (third sexp)))]
        [(openbox) (openbox (parse (second sexp)))]
        [(seqn) (seqn (map parse (rest sexp)))]
+       [(record) (record (map parse-record (rest sexp)))]
+       [(get) (get (parse (second sexp)) (parse (third sexp)))]
        [else (app (parse (first sexp)) (parse (second sexp)))])]))
+
+(define (parse-record sexp)
+  (data (parse (first sexp)) (parse (second sexp))))
 
 (test (parse 3) (num 3))
 (test (parse 'x) (id 'x))
@@ -68,12 +80,13 @@
 (test (parse '{setbox 1 2}) (setbox (num 1) (num 2)))
 (test (parse '{openbox 1}) (openbox (num 1)))
 (test (parse '{seqn 1 2}) (seqn (num 1) (num 2)))
+(test (parse '{record}) (record (list)))
 
 ;; ----------------------------------------
 
-;; interp : BCFAE DefrdSub Store -> Value*Store
+;; interp : RCFAE DefrdSub Store -> Value*Store
 (define (interp a-fae ds st)
-  (type-case BCFAE a-fae
+  (type-case RCFAE a-fae
     [num (n) (v*s (numV n) st)]
     [add (l r) (interp-sto l r ds st
                            (lambda (v1 v2 st)
@@ -111,7 +124,20 @@
                          st)])]
     [seqn (a) (interp-seqn a ds st
                             (lambda (v1 v2 st)
-                              (v*s v2 st)))]))
+                              (v*s v2 st)))]
+    [record (rcrds) (record rcrds)]
+    [get (expr name) (if (record? expr)
+                         (get-record name (record-rcrds expr))
+                         (interp expr ds st))]))
+
+(define (get-record name datal)
+  (define nm (data-name (first datal)))
+  (if (symbol=? (id-name name) (id-name nm))
+      (data-expr (first datal))
+      (if (empty? (rest datal))
+          (error "no such field")
+          (get-record name (rest datal)))))
+  
 
 (define (interp-seqn expr ds st handle)
   (define pe (interp (first expr) ds st))
@@ -119,7 +145,7 @@
       pe
       (interp-seqn (rest expr) ds (v*s-store pe) handle)))
 
-;;interp-sto : BCFAE BCFAE DefrdSub Store
+;;interp-sto : RCFAE RCFAE DefrdSub Store
 ;;                  (Value Value Store -> Value*Store)
 ;;             -> Value*Store
 (define (interp-sto expr1 expr2 ds st handle)
@@ -129,7 +155,17 @@
            [v*s (val2 st3)
                 (handle val1 val2 st3)])]))
 
-;;sto-repl : BCFAE natural-number store -> store
+(define (interp-expr rcrd)
+  ;(printf "\n\nHDKSDJHFK\n")
+  ;(print rcrd)
+  ;(printf "\nSLD\n")
+  (define res (interp rcrd (mtSub) (mtSto)))
+  ;(print res)
+  (cond
+    [(record? res) 'record]
+    [(app? res) 'function]))
+
+;;sto-repl : RCFAE natural-number store -> store
 ;;
 ;; Looks at the entire store, replaces the value in store at address. NOTE: will replace all numbers with
 ;; given address!
@@ -143,7 +179,7 @@
 
 (test (sto-repl (numV 1) 1 (aSto 1 (numV 2) (aSto 1 (numV 1) (mtSto)))) (aSto 1 (numV 1) (aSto 1 (numV 1) (mtSto))))
 
-;; num-op : (number number -> number) -> (BCFAE-Value BCFAE-Value -> BCFAE-Value)
+;; num-op : (number number -> number) -> (RCFAE-Value RCFAE-Value -> RCFAE-Value)
 (define (num-op op op-name x y)
   (numV (op (numV-n x) (numV-n y))))
 
@@ -161,7 +197,7 @@
     [aSto (n v st)
           (max n (max-address st))]))
 
-;; lookup : symbol DefrdSub -> BCFAE-Value
+;; lookup : symbol DefrdSub -> RCFAE-Value
 (define (lookup name ds)
   (type-case DefrdSub ds
     [mtSub () (error 'lookup "free variable")]
@@ -170,7 +206,7 @@
               val
               (lookup name rest-ds))]))
 
-;; store-lookup : number Store -> BCFAE-Value
+;; store-lookup : number Store -> RCFAE-Value
 (define (store-lookup addr st)
   (type-case Store st
     [mtSto () (error 'store-lookup "unallocated")]
@@ -292,3 +328,14 @@
                 (mtSto))
         (v*s (numV 10)
              (aSto 1 (numV 10) (mtSto))))
+
+(test (interp-expr (parse '{record {a 10} {b {+ 1 2}}}))
+      'record)
+(test (interp-expr (parse '{get {record {a 10} {b {+ 1 2}}} b}))
+      3)
+(test/exn (interp-expr (parse '{get {record {a 10}} b})) "no such field")
+(test (interp-expr (parse '{get {record {r {record {z 0}}}} r}))
+      'record)
+(test (interp-expr (parse '{get {get {record {r {record {z 0}}}} r} z}))
+      0)
+

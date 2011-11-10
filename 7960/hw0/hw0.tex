@@ -22,9 +22,9 @@ The insertion case of $B$-Trees (\textit{i.e.}, the general case of $B$-Trees, n
 
 This problem more or less breaks down into a couple basic cases. If the leaf block we're planning to insert to is $\textit{not}$ full, then we can simply add the record. If it actually is full, we want to run a $\texttt{split}$ procedure on the leaf.
 
-$\texttt{split}$ is conceptually simple: we allocate a new leaf, and move half the records from the current leaf into the new leaf. We then want to take this new leaf's smallest key and insert it into the parent, in addition to the middle key. If the parent is full, we $\texttt{split}$ that too.
+$\texttt{split}$ is conceptually simple: we allocate a new leaf (which will become the current leaf's right neighbor), and move half the records from the current leaf into the new leaf. We then want to take this new leaf's smallest key and insert it into the parent, in addition to the middle key. If the parent is full, we $\texttt{split}$ that too.
 
-Notably, there is a way to do this in a single pass (as opposed to one pass both to find the leaf position, and $n$ more IOs to split all parents that need to be split), and while this will reduce our constants, it will not reduce the order of our IOs.
+Notably, there is a way to do this in a single pass (as opposed to one pass both to find the leaf position, and $O(n)$ more IOs to split all parents that need to be split), and while this will reduce our constants, it will not reduce the order of our IOs.
 
 \subsection{Analysis}
 
@@ -39,26 +39,33 @@ From this we can trivially see that it takes $O(h) = O(\log_B N)$ IOs to actuall
 
 \section{Aggressive Approximate Counts}
 
-\bee
-\i When $k=1$, $S(x)$ will return either $a_m$ (the last element in the stream) or $m/k$ (the ``default" value). This is guaranteed by the $\texttt{else}$ condition: when we have only one counter-index pair, that pair is always $c_{\mbox{min}}$, and therefore we will always increment $c_i$ and set $t_i = a_j$. Any query that is not the last number in the stream will yield $m/k$.
+NOTE: This may be (by the standards of the directions) a bit verbose, as I am not a math major. However, I really did try to make it as concise as possible, and I didn't just make things up. So, please be patient in reading the proofs. Thanks.
 
-\i When $k=2$, $c_1 + c_2 = m$. No matter what, we will always increment either $c_1$ or $c_2$. There is no way to avoid this. Thus, adding them gives us $m$.
+\begin{enumerate}
+\renewcommand{\labelenumi}{(\Alph{enumi})}
 
-\i If $k=2$ and $f_x > m/2$, then $S(x) > m/2$. We can trivially see that if the stream is split between 2 numbers, $p$ and $q$ such that $c_p > c_q$, then one of the counts $c_i$ will be at least 1 greater than the other. At this point, we could split up $c_q$ between any number of unique numbers. Unfortunately, there is no way to divide $c_q$ such that $c_p < c_q$. Since each of these numbers will have a smaller count than $q$, this property must hold no matter how the count is divided. Thus, $S(x) > m/2$ for any case where $f_x > m/2$.
 
-\i These circumstances provide a maximum $|S(x_r) - f_{x_r}| = 0$. The reason is, if there are $k$ counter-index pairs and exactly $k$ numbers $\{x_1 \ldots x_k\}$ for which it is true that $f_{x_i} > 0$, then every $x_i$ will be tracked by one counter-index pair $(c_i, t_i)$, which means that $S(x)$ should always be precise.
+\item When $k=1$, $S(x)$ will return either $a_m$ (the last element in the stream) or $m/k$ (the ``default" value). This is guaranteed by the $\texttt{else}$ condition: when we have only one counter-index pair, that pair is always $c_{\mbox{min}}$, and therefore we will always increment $c_i$ and set $t_i = a_j$. Any query that is not the last number in the stream will yield $m/k$.
 
-\i In this case, at most, $c_i = m/k$. There are $k$ counter-index pairs, and we must pick the minimum. The smallest of these counters will at most be $m/k$ (or else the sum of counters will be $> m$).
+\item When $k=2$, $c_1 + c_2 = m$. No matter what, we will always increment either $c_1$ or $c_2$. There is no way to avoid this. Thus, adding them gives us $m$.
 
-\i In this case, the maximum is $|S(x) - f_x| = m/k$. Let's say there are $k + 1$ total elements in the stream, that the last two elements in the stream are equal, (\textit{i.e.}, $a_k = a_{k+1}$), and that their value is not found anywhere else in the stream. When we encounter $a_k$, we are forced by the \texttt{else} clause to increment $c_{min}$ and replace $t_{min} = a_k$. Then, when we encounter $a_{k+1}$, we increment this count again. From above we know that at most $c_{min} = m/k$, which makes $c_{a_{k+1}} = m/k + 2$. Since $f_{a_{k+1}} = 2$, at most $|S(x) - f_x| = m/k + 2 - 2 = m/k$.
+\item If $k=2$ and $f_x > m/2$, then $S(x) > m/2$. We can trivially see that if the $m$-length stream consists of only repetitions of two numbers $p$ and $q$, and if $f_p > f_q$, the algorithm will terminate with $c_p$ being at least one greater than $c_q$. Here we can split up $c_q$ between any number of unique numbers (\textit{i.e.}, increase the unique numbers in $m$, but making sure that $c_p > m/2$). But there is no way to distribute fractions of $c_q$ in two buckets in such a way that they will not eventually be overwhelmed by the sheer magnitude of $c_p$.
 
-\i No. Reassigning $t_i = x'$ to $t_i = x$ requires that the corresponding $c_i$ is actually one of the $c_{min}$'s. Reassignment also involves incrementing $c_i$, which makes this count bigger than current $f_{x'}$. Encountering $x'$ again will cause us to reassign to one of the pairs with count $c_{min}$; since $c_{x'}$ had to be a $c_{min}$ to be overwritten to begin with, the current pool of $c_{min}$'s is at least as large as $c_{x'}$ was. Thus there is no way to have processed more than $c_i$ instances of $x'$ than the variable indicates.
+\item These circumstances provide a maximum $|S(x_r) - f_{x_r}| = 0$. The reason is, if there are $k$ counter-index pairs and exactly $k$ numbers $\{x_1 \ldots x_k\}$ for which it is true that $f_{x_i} > 0$, then every $x_i$ will be tracked by one counter-index pair $(c_i, t_i)$, which means that $S(x)$ should always be precise.
 
-\i No. From the last section we know that some for some $t_i = x$, the count $c_i \ge f_{x_i}$.
+\item In this case, at most, $c_i = m/k$. There are $k$ counter-index pairs, and we must pick the minimum. The smallest of these counters will at most be $m/k$ (or else the sum of counters will be $> m$).
 
-\i No.
+\item In this case, the maximum is $|S(x) - f_x| = m/k$. Let's say there are $k + 1$ total elements in the stream, that the last two elements in the stream are equal, (\textit{i.e.}, $a_k = a_{k+1}$), and that their value is not found anywhere else in the stream. When we encounter $a_k$, we are forced by the \texttt{else} clause to increment $c_{min}$ and replace $t_{min} = a_k$. Then, when we encounter $a_{k+1}$, we increment this count again. From above we know that at most $c_{min} = m/k$, which gives the upper bound $c_{a_{k+1}} = m/k + 2$. Since at minimum $f_{a_{k+1}} = 2$, at most $|S(x) - f_x| = m/k + 2 - 2 = m/k$.
 
-\ene
+\item No. Reassigning $t_i = x'$ to $t_i = x$ requires that the corresponding $c_i$ is actually one of the $c_{min}$'s. Reassignment also involves incrementing $c_i$, which makes this count bigger than current $f_{x'}$. Encountering $x'$ again will cause us to reassign to one of the pairs with count $c_{min}$; since $c_{x'}$ had to be a $c_{min}$ to be overwritten to begin with, the current pool of $c_{min}$'s is at least as large as $c_{x'}$ was. Thus there is no way to have processed more than $c_i$ instances of $x'$ than the variable indicates.
+
+\item No. (G) shows that there is no possible way for us to have processed more $x'$ instances than denoted by counter $c_{x'}$. Put another way, it is never the case that some $f_x' > c_x'$. Thus if there is a count at all for $c_x'$ for $S(x)$ to return, it is at least $\ge f_x'$.
+
+\item No. If some $f_x > m/k$, then we will encounter $x$ \textit{at least} one time more than some other corresponding element $y$ for which it must be true that $f_{y} < m/k$. So even if there is no $t_i = x$ every time we see $x$, we will still end up incrementing some $c_{min}$ once more than it is possible for $y$ to do, because $x$ occurs at least one time more than $y$, and if the last occurrence of $y$ happens after the last occurrence of $x$, then $x$ will not be $c_{min}$ (since it would have at worst incremented some $c_{min}$), and the $y$ thus can't select it to replace. If $y$ could replace it, it can't be the case that $f_x > m/k$.
+
+\item $|S(x) - f_x| \le m/k$. This is the maximum bound we can construct from the cases above.
+
+\end{enumerate}
 
 
 \section{Randomized Approximate Range Searching}
@@ -76,11 +83,21 @@ Ensuring this bound is pretty straightforward:
 
 Notably, the error count estimate of $S$ is $M = \sum X_i$. The Chernoff bound is useful here:
 
-\begin{eqnarray}
+\begin{eqnarray*}
 P(|M - \sum \mathbb{E}[X_i] | > \alpha) < 2 \cdot exp(-2 \alpha^2 / \sum_i (\Delta_i)^2) \\
 P(|M| > \epsilon) < 2 \cdot exp(-2 \epsilon^2 / (k (1/k^2)))
-\end{eqnarray}
+\end{eqnarray*}
 
-Note here that usually $\mathbb{E}[X_i] = 0$. From here, we solve for $k$, yielding $k \in O(1/\epsilon^2 \log (1/\delta))$, which determines how many $k$ we'll need to control the error to the extent we wish.
+Note here that usually $\mathbb{E}[X_i] = 0$. From here, we solve for $k$:
+
+\begin{eqnarray*}
+2 exp(- 2 \epsilon^2 k) < \delta \\
+exp(2 \epsilon^2 k) > 2/\delta \\
+2 \epsilon^2 k > \ln(2/\delta) \\
+k > (1/2) (1/\epsilon^2) \ln (2/delta) \\
+= O((1/\epsilon^2) \log (1/\delta) \\
+\end{eqnarray*}
+
+Thus $k \in O(1/\epsilon^2 \log (1/\delta))$, which determines how many $k$ we'll need to control the error to the extent we wish.
 
 \end{document}
