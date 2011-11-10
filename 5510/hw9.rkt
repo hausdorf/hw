@@ -11,8 +11,13 @@
   [fun (param : symbol)
        (argty : TE)
        (body : FAE)]
+  [Fun (param : (listof symbol))
+       (argty : (listof TE))
+       (body : FAE)]
   [app (fun-expr : FAE)
        (arg-expr : FAE)]
+  [App (Fun-expr : FAE)
+       (arg-expr : (listof FAE))]
   [eq (lhs : FAE)
       (rhs : FAE)]
   [ifthenelse (exp : FAE)
@@ -28,12 +33,17 @@
   [boolTE]
   [arrowTE (arg : TE)
            (result : TE)]
+  [ArrowTE (arg : (listof TE))
+           (result : TE)]
   [crossTE (f : TE)
            (s : TE)])
 
 (define-type FAE-Value
   [numV (n : number)]
   [closureV (param : symbol)
+            (body : FAE)
+            (ds : DefrdSub)]
+  [ClosureV (param : (listof symbol))
             (body : FAE)
             (ds : DefrdSub)]
   [boolV (b : boolean)]
@@ -52,6 +62,8 @@
   [boolT]
   [arrowT (arg : Type)
           (result : Type)]
+  [ArrowT (arg : (listof Type))
+          (result : Type)]
   [crossT (f : Type)
           (s : Type)])
 
@@ -63,6 +75,30 @@
 
 ;; ----------------------------------------
 
+(define (rec-sub p a ds)
+  (if (empty? (rest a))
+      (aSub (first p)
+            (first a)
+            ds)
+      (aSub (first p)
+            (first a)
+            (rec-sub (rest p) (rest a) ds))))
+
+(define (rec-bind n a env)
+  (if (empty? (rest n))
+      (aBind (first n)
+             (first a)
+             env)
+      (aBind (first n)
+             (first a)
+             (rec-bind (rest n) (rest a) env))))
+
+(define (rec-interp a ds)
+  (if (empty? (rest a))
+      (list (interp (first a) ds))
+      (cons (interp (first a) ds)
+            (rec-interp (rest a) ds))))
+
 ;; interp : FAE DefrdSub -> FAE-Value
 (define (interp a-fae ds)
   (type-case FAE a-fae
@@ -73,6 +109,8 @@
     [id (name) (lookup name ds)]
     [fun (param arg-te body-expr)
          (closureV param body-expr ds)]
+    [Fun (param arg-te body-expr)
+         (ClosureV param body-expr ds)]
     [app (fun-expr arg-expr)
          (local [(define fun-val
                    (interp fun-expr ds))
@@ -82,6 +120,15 @@
                    (aSub (closureV-param fun-val)
                          arg-val
                          (closureV-ds fun-val))))]
+    [App (Fun-expr arg-expr)
+         (local [(define Fun-val
+                   (interp Fun-expr ds))
+                 (define arg-val
+                   (rec-interp arg-expr ds))]
+           (interp (ClosureV-body Fun-val)
+                   (rec-sub (ClosureV-param Fun-val)
+                            arg-val
+                            (ClosureV-ds Fun-val))))]
     [eq (l r)
         (local [(define l-val (interp l ds))
                 (define r-val (interp r ds))]
@@ -131,8 +178,16 @@
     [boolTE () (boolT)]
     [arrowTE (a b) (arrowT (parse-type a)
                            (parse-type b))]
+    [ArrowTE (a b) (ArrowT (rec-parse-type a)
+                           (parse-type b))]
     [crossTE (f s) (crossT (parse-type f)
                             (parse-type s))]))
+
+(define (rec-parse-type te)
+  (if (empty? (rest te))
+      (list (parse-type (first te)))
+      (cons (parse-type (first te))
+            (rec-parse-type (rest te)))))
 
 (define (type-error fae msg)
   (error 'typecheck (string-append
@@ -141,6 +196,12 @@
                       (to-string fae)
                       (string-append " not "
                                      msg)))))
+
+(define (map-typecheck a env)
+  (cond
+    [(empty? (rest a)) (list (typecheck (first a) env))]
+    [else (cons (typecheck (first a) env)
+                (map-typecheck (rest a) env))]))
 
 (define typecheck : (FAE TypeEnv -> Type)
   (lambda (fae env)
@@ -166,11 +227,26 @@
                      (typecheck body (aBind name
                                             arg-type
                                             env))))]
+      [Fun (name te body)
+           (local [(define arg-type (rec-parse-type te))]
+             (ArrowT arg-type
+                     (typecheck body (rec-bind name
+                                               arg-type
+                                               env))))]
       [app (fn arg)
            (type-case Type (typecheck fn env)
              [arrowT (arg-type result-type)
                      (if (equal? arg-type
                                  (typecheck arg env))
+                         result-type
+                         (type-error arg
+                                     (to-string arg-type)))]
+             [else (type-error fn "function")])]
+      [App (fn arg)
+           (type-case Type (typecheck fn env)
+             [ArrowT (arg-type result-type)
+                     (if (equal? arg-type
+                                 (map-typecheck arg env))
                          result-type
                          (type-error arg
                                      (to-string arg-type)))]
