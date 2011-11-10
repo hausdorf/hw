@@ -27,7 +27,9 @@
   [numTE]
   [boolTE]
   [arrowTE (arg : TE)
-           (result : TE)])
+           (result : TE)]
+  [crossTE (f : TE)
+           (s : TE)])
 
 (define-type FAE-Value
   [numV (n : number)]
@@ -45,10 +47,13 @@
         (rest : DefrdSub)])
 
 (define-type Type
+  [idT]
   [numT]
   [boolT]
   [arrowT (arg : Type)
-          (result : Type)])
+          (result : Type)]
+  [crossT (f : Type)
+          (s : Type)])
 
 (define-type TypeEnv
   [mtEnv]
@@ -125,7 +130,9 @@
     [numTE () (numT)]
     [boolTE () (boolT)]
     [arrowTE (a b) (arrowT (parse-type a)
-                           (parse-type b))]))
+                           (parse-type b))]
+    [crossTE (f s) (crossT (parse-type f)
+                            (parse-type s))]))
 
 (define (type-error fae msg)
   (error 'typecheck (string-append
@@ -174,8 +181,8 @@
             [numT ()
                    (type-case Type (typecheck r env)
                      [numT () (boolT)]
-                     [else (type-error r "bool")])]
-            [else (type-error l "bool")])]
+                     [else (type-error r "numT")])]
+            [else (type-error l "numT")])]
       [ifthenelse (i t e)
                   (type-case Type (typecheck i env)
                     [boolT ()
@@ -183,12 +190,36 @@
                              [numT ()
                                    (type-case Type (typecheck e env)
                                      [numT () (numT)]
-                                     [else (type-error e "num")])]
-                             [else (type-error t "num")])]
-                    [else (type-error i "num")])]
-      [pair (f s) (boolT)]
-      [fst (p) (boolT)]
-      [snd (p) (boolT)])))
+                                     [else (type-error e "numT")])]
+                             [else (type-error t "numT")])]
+                    [else (type-error i "boolT")])]
+      [pair (f s)
+            (local [(define f-type (typecheck f env))
+                    (define s-type (typecheck s env))]
+              (crossT (type-case Type f-type
+                        [numT () (numT)]
+                        [boolT () (boolT)]
+                        [else (type-error f "num")])
+                      (type-case Type s-type
+                        [numT () (numT)]
+                        [boolT () (boolT)]
+                        [else (type-error s "num")])))]
+      [fst (p)
+           (type-case FAE p
+             [id (name) (crossT-f (get-type name env))]
+             [pair (f s)
+                   (type-case Type (typecheck f env)
+                     [numT () (numT)]
+                     [else (type-error f "numT")])]
+             [else (type-error p "pair")])]
+      [snd (p)
+           (type-case FAE p
+             [id (name) (crossT-s (get-type name env))]
+             [pair (f s)
+                   (type-case Type (typecheck s env)
+                     [numT () (numT)]
+                     [else (type-error s "numT")])]
+             [else (type-error p "pair")])])))
 
 ;; ----------------------------------------
 
@@ -303,3 +334,28 @@
 (test (interp (snd (pair (num 10) (num 8)))
                 (mtSub))
         (numV 8))
+
+(test (typecheck (pair (num 10) (num 8))
+                   (mtEnv))
+        (crossT (numT) (numT)))
+
+(test (typecheck (add (num 1) (snd (pair (num 10) (num 8))))
+                   (mtEnv))
+        (numT))
+
+(test (typecheck (fun 'x (crossTE (numTE) (boolTE))
+                    (ifthenelse (snd (id 'x)) (num 0) (fst (id 'x))))
+                   (mtEnv))
+       (arrowT (crossT (numT) (boolT)) (numT)))
+
+(test/exn (typecheck (fst (num 10)) (mtEnv))
+            "no type")
+
+(test/exn (typecheck (add (num 1) (fst (pair (bool false) (num 8))))
+                       (mtEnv))
+            "no type")
+
+(test/exn (typecheck (fun 'x (crossTE (numTE) (boolTE))
+                             (ifthenelse (fst (id 'x)) (num 0) (fst (id 'x))))
+                       (mtEnv))
+            "no type")
