@@ -169,8 +169,23 @@
                                      (to-string arg-type)))]
              [else (type-error fn "function")])]
       ; TODO: FIX THIS
-      [eq (l r) (boolT)]
-      [ifthenelse (i t e) (boolT)]
+      [eq (l r)
+          (type-case Type (typecheck l env)
+            [numT ()
+                   (type-case Type (typecheck r env)
+                     [numT () (boolT)]
+                     [else (type-error r "bool")])]
+            [else (type-error l "bool")])]
+      [ifthenelse (i t e)
+                  (type-case Type (typecheck i env)
+                    [boolT ()
+                           (type-case Type (typecheck t env)
+                             [numT ()
+                                   (type-case Type (typecheck e env)
+                                     [numT () (numT)]
+                                     [else (type-error e "num")])]
+                             [else (type-error t "num")])]
+                    [else (type-error i "num")])]
       [pair (f s) (boolT)]
       [fst (p) (boolT)]
       [snd (p) (boolT)])))
@@ -252,9 +267,6 @@
 (test (typecheck (bool false) (mtEnv))
       (boolT))
 
-(test (typecheck (eq (bool false) (bool true)) (mtEnv))
-      (boolT))
-
 (test (interp (eq (num 13) (num 13))
                 (mtSub))
          (boolV true))
@@ -277,12 +289,12 @@
                    (mtEnv))
          (boolT))
 
-;(test/exn (typecheck (add (num 1)
-;                            (ifthenelse (bool true)
-;                                        (bool true)
-;                                        (bool false)))
-;                       (mtEnv))
-;            "no type")
+(test/exn (typecheck (add (num 1)
+                            (ifthenelse (bool true)
+                                        (bool true)
+                                        (bool false)))
+                       (mtEnv))
+            "no type")
 
 (test (interp (fst (pair (num 10) (num 8)))
                 (mtSub))
