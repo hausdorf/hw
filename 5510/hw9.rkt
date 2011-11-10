@@ -2,7 +2,7 @@
 
 (define-type FAE
   [num (n : number)]
-  [bool (n : boolean)]
+  [bool (b : boolean)]
   [add (lhs : FAE)
        (rhs : FAE)]
   [sub (lhs : FAE)
@@ -14,7 +14,10 @@
   [app (fun-expr : FAE)
        (arg-expr : FAE)]
   [eq (lhs : FAE)
-      (rhs : FAE)])
+      (rhs : FAE)]
+  [ifthenelse (exp : FAE)
+              (thenexp : FAE)
+              (elseexp : FAE)])
 
 (define-type TE
   [numTE]
@@ -71,7 +74,14 @@
     [eq (l r)
         (local [(define l-val (interp l ds))
                 (define r-val (interp r ds))]
-          (boolV (equal? l-val r-val)))]))
+          (boolV (equal? l-val r-val)))]
+    [ifthenelse (exp thenexp elseexp)
+                (local [(define exp-val (interp exp ds))
+                        (define thenexp-val (interp thenexp ds))
+                        (define elseexp-val (interp elseexp ds))]
+                  (if (boolV-b exp-val)
+                      thenexp-val
+                      elseexp-val))]))
 
 ;; num-op : (number number -> number) -> (FAE-Value FAE-Value -> FAE-Value)
 (define (num-op op op-name x y)
@@ -149,7 +159,8 @@
                                      (to-string arg-type)))]
              [else (type-error fn "function")])]
       ; TODO: FIX THIS
-      [eq (l r) (boolT)])))
+      [eq (l r) (boolT)]
+      [ifthenelse (i t e) (boolT)])))
 
 ;; ----------------------------------------
 
@@ -234,3 +245,28 @@
 (test (interp (eq (num 13) (num 13))
                 (mtSub))
          (boolV true))
+
+(test (interp (eq (num 12) (num 13))
+                (mtSub))
+         (boolV false))
+
+(test (interp (eq (num 13)
+                    (ifthenelse (eq (num 1) (add (num -1) (num 2)))
+                                (num 12)
+                                (num 13)))
+                (mtSub))
+         (boolV false))
+
+(test (typecheck (eq (num 13)
+                       (ifthenelse (eq (num 1) (add (num -1) (num 2)))
+                                   (num 12)
+                                   (num 13)))
+                   (mtEnv))
+         (boolT))
+
+;(test/exn (typecheck (add (num 1)
+;                            (ifthenelse (bool true)
+;                                        (bool true)
+;                                        (bool false)))
+;                       (mtEnv))
+;            "no type")
