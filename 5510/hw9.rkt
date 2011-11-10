@@ -17,7 +17,11 @@
       (rhs : FAE)]
   [ifthenelse (exp : FAE)
               (thenexp : FAE)
-              (elseexp : FAE)])
+              (elseexp : FAE)]
+  [pair (f : FAE)
+        (s : FAE)]
+  [fst (p : FAE)]
+  [snd (p : FAE)])
 
 (define-type TE
   [numTE]
@@ -30,7 +34,9 @@
   [closureV (param : symbol)
             (body : FAE)
             (ds : DefrdSub)]
-  [boolV (b : boolean)])
+  [boolV (b : boolean)]
+  [pairV (f : FAE-Value)
+         (s : FAE-Value)])
 
 (define-type DefrdSub
   [mtSub]
@@ -81,7 +87,11 @@
                         (define elseexp-val (interp elseexp ds))]
                   (if (boolV-b exp-val)
                       thenexp-val
-                      elseexp-val))]))
+                      elseexp-val))]
+    [pair (f s) (pairV (interp f ds)
+                      (interp s ds))]
+    [fst (p) (pairV-f (interp p ds))]
+    [snd (p) (pairV-s (interp p ds))]))
 
 ;; num-op : (number number -> number) -> (FAE-Value FAE-Value -> FAE-Value)
 (define (num-op op op-name x y)
@@ -160,7 +170,10 @@
              [else (type-error fn "function")])]
       ; TODO: FIX THIS
       [eq (l r) (boolT)]
-      [ifthenelse (i t e) (boolT)])))
+      [ifthenelse (i t e) (boolT)]
+      [pair (f s) (boolT)]
+      [fst (p) (boolT)]
+      [snd (p) (boolT)])))
 
 ;; ----------------------------------------
 
@@ -270,3 +283,11 @@
 ;                                        (bool false)))
 ;                       (mtEnv))
 ;            "no type")
+
+(test (interp (fst (pair (num 10) (num 8)))
+                (mtSub))
+        (numV 10))
+
+(test (interp (snd (pair (num 10) (num 8)))
+                (mtSub))
+        (numV 8))
