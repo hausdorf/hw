@@ -2,6 +2,7 @@
 
 (define-type FAE
   [num (n : number)]
+  [bool (n : boolean)]
   [add (lhs : FAE)
        (rhs : FAE)]
   [sub (lhs : FAE)
@@ -11,7 +12,9 @@
        (argty : TE)
        (body : FAE)]
   [app (fun-expr : FAE)
-       (arg-expr : FAE)])
+       (arg-expr : FAE)]
+  [eq (lhs : FAE)
+      (rhs : FAE)])
 
 (define-type TE
   [numTE]
@@ -23,7 +26,8 @@
   [numV (n : number)]
   [closureV (param : symbol)
             (body : FAE)
-            (ds : DefrdSub)])
+            (ds : DefrdSub)]
+  [boolV (b : boolean)])
 
 (define-type DefrdSub
   [mtSub]
@@ -49,6 +53,7 @@
 (define (interp a-fae ds)
   (type-case FAE a-fae
     [num (n) (numV n)]
+    [bool (b) (boolV b)]
     [add (l r) (num+ (interp l ds) (interp r ds))]
     [sub (l r) (num- (interp l ds) (interp r ds))]
     [id (name) (lookup name ds)]
@@ -62,7 +67,11 @@
            (interp (closureV-body fun-val)
                    (aSub (closureV-param fun-val)
                          arg-val
-                         (closureV-ds fun-val))))]))
+                         (closureV-ds fun-val))))]
+    [eq (l r)
+        (local [(define l-val (interp l ds))
+                (define r-val (interp r ds))]
+          (boolV (equal? l-val r-val)))]))
 
 ;; num-op : (number number -> number) -> (FAE-Value FAE-Value -> FAE-Value)
 (define (num-op op op-name x y)
@@ -110,6 +119,7 @@
   (lambda (fae env)
     (type-case FAE fae
       [num (n) (numT)]
+      [bool (b) (boolT)]
       [add (l r) (type-case Type (typecheck l env)
                    [numT ()
                          (type-case Type (typecheck r env)
@@ -137,7 +147,9 @@
                          result-type
                          (type-error arg
                                      (to-string arg-type)))]
-             [else (type-error fn "function")])])))
+             [else (type-error fn "function")])]
+      ; TODO: FIX THIS
+      [eq (l r) (boolT)])))
 
 ;; ----------------------------------------
 
@@ -212,3 +224,13 @@
                           (num 2))
                      (mtEnv))
           "no type")
+
+(test (typecheck (bool false) (mtEnv))
+      (boolT))
+
+(test (typecheck (eq (bool false) (bool true)) (mtEnv))
+      (boolT))
+
+(test (interp (eq (num 13) (num 13))
+                (mtSub))
+         (boolV true))
