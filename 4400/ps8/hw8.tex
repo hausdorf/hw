@@ -1,0 +1,126 @@
+\documentclass[fleqn]{article}
+
+\usepackage{mydefs}
+\usepackage{notes}
+\usepackage{url}
+
+\begin{document}
+\lecture{CS4400}{Homework 8 Problem Set}{Alex Clemmer, u0458675}
+
+% IF YOU ARE USING THIS .TEX FILE AS A TEMPLATE, PLEASE REPLACE
+% "CS5350, Fall 2011" WITH YOUR NAME AND UID.
+
+\section{Problem 6.28}
+
+\bee
+\i Addresses that hit for set 1 are: \texttt{0x8a4}, \texttt{0x8a5}, \texttt{0x8a6}, \texttt{0x8a7}, \texttt{0x704}, \texttt{0x705}, \texttt{0x706}, and \texttt{0x707}.
+
+\i Addresses that hit for set 6 are: \texttt{0x1238}, \texttt{0x1239}, \texttt{0x123a}, and \texttt{0x123b}.
+
+\ene
+
+\section{Problem 6.31}
+
+\bee
+
+\i $C = E \cdot B \cdot S = 4 \cdot 4 \cdot 8 = 128$ bytes.
+
+\i The address breaks down like so: \texttt{CT CT CT CT CT CT CT CT  CI CI CI  CO CO}.
+
+\ene
+
+\section{Problem 6.32}
+
+\bee
+
+\i The address works out to be: \texttt{0 0 1 1 1 0 0 0 1 1 0 1 0}.
+
+\i CO = \texttt{0x2}, CI = \texttt{0x6}, CT = \texttt{0x38}. This result in a \textbf{hit}, returning \texttt{0x93}.
+
+\ene
+
+\section{Problem 6.36}
+
+Each array is 64 bytes in size; since our cache is 128 bytes in size, both the \texttt{dst} and \texttt{src} can fit, which leaves only the unavoidable cost of the cold misses left:
+
+\bee
+
+\i \begin{tabular}{ c|c|c|c|c| }
+  & \multicolumn{4}{|c|}{\texttt{dst}} \\
+  \hline
+  & Col 0 & Col 1 & Col 2 & Col 3 \\
+  \hline
+  Row 0 & m & h & h & h \\
+  \hline
+  Row 1 & m & h & h & h \\
+  \hline
+  Row 2 & m & h & h & h \\
+  \hline
+  Row 3 & m & h & h & h \\
+  \hline
+\end{tabular}
+
+\begin{tabular}{ c|c|c|c|c| }
+  & \multicolumn{4}{|c|}{\texttt{src}} \\
+  \hline
+  & Col 0 & Col 1 & Col 2 & Col 3 \\
+  \hline
+  Row 0 & m & h & h & h \\
+  \hline
+  Row 1 & m & h & h & h \\
+  \hline
+  Row 2 & m & h & h & h \\
+  \hline
+  Row 3 & m & h & h & h \\
+  \hline
+\end{tabular}
+
+\ene
+
+\section{Problem 6.39}
+
+Stride-1 access pattern makes this straightforward: we write 4 elements per \texttt{point\_color}, and we can fit 2 \texttt{point\_color}s per block. So we will miss $\frac{16 \cdot 16}{2} = 128$ times
+
+\bee
+
+\i There are \textbf{1024} writes in total.
+
+\i There are \textbf{128} writes that miss.
+
+\i The miss rate is therefore \textbf{12.8\%}.
+
+\ene
+
+\section{Problem 6.40}
+
+The size of our array is exactly twice as big as the size of cache, so any accesses in the second half of the array will evict the corresponding blocks from the first half. In other words, \texttt{square[0][0]} will be overwritten by \texttt{square[8][0]}. Since we are iterating on \texttt{j} for \texttt{square[j][i]}, we are guaranteed to complete iteration over \texttt{j}, which means that when we increment \texttt{i}, we will have replaced the first half of the array in cache with the second half. This means that we start over with all misses again, and of course, that means the second half will be replaced with the first  half, which means that when we access the second half again, it too will be all misses.
+
+Luckily, we are writing 4 values for ever element in \texttt{square}. So we incur one miss, and 3 writes for every access. 
+
+\bee
+
+\i There are \textbf{1024} writes in total.
+
+\i There are \textbf{256} writes that miss.
+
+\i The miss rate is therefore \textbf{25\%}.
+
+\ene
+
+\section{Problem 6.41}
+
+We are accessing the \texttt{y} element by itself. Since we can fit two \texttt{point\_color}s into one block, only every other access is a miss. There are 256 total accesses, there will be 128 misses here.
+
+The same goes for the second loop. There are 256 total accesses. Fortunately, every miss fetches two \texttt{point\_color} structs, which means that we will incur 2 hits for the first \texttt{point\_color} in the block, and 3 times for the second (since it avoids the cold miss that caused us to fetch both blocks). So there will be a total of 128 more misses, but also 640 hits.
+
+\bee
+
+\i There are \textbf{1024} writes in total.
+
+\i There are \textbf{256} writes that miss.
+
+\i The miss rate is therefore \textbf{25\%}
+
+\ene
+
+\end{document}

@@ -1,0 +1,144 @@
+\documentclass[fleqn]{article}
+
+\usepackage{mydefs}
+\usepackage{notes}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{fancyvrb}
+\usepackage{color}
+
+\definecolor{lightgreen}{rgb}{0.8,1.0,0.8}
+
+\DefineVerbatimEnvironment%
+  {matlab}{Verbatim}
+  {baselinestretch=1.0,frame=single,fillcolor=\color{lightgreen}}
+
+\begin{document}
+\lecture{CS5350: Machine Learning}{HW4: Dimensionality Reduction, Ensemble 
+Methods, Multiclass/Ranking}{Due November 17, 2011}
+
+\section{Written Exercises}
+
+\bee
+
+\i Linear PCA does an eigen-decomposition of the $D\times D$ covariance
+matrix of the data where $D$ is the original dimensionality of the data.
+Kernel PCA (KPCA) which learns nonlinear projections is also based on doing an
+eigen-decomposition of the covariance matrix but this time the covariance
+matrix is defined in the feature space ($\phi$) defined by the kernel. This 
+feature space could even be infinite dimensional (e.g., if you use an 
+RBF/Gaussian kernel). Explain how does KPCA get away with \emph{not} computing
+this covariance matrix and doing its eigen-decomposition? What does it
+actually compute and does eigen-decomposition of? (\emph{10 points})
+
+\i Dimensionality reduction methods take as input a set of points
+$\{\vec{x}_1,\vec{x}_2,\ldots,\vec{x}_N\}$ and learn a low-dimensional
+embedding (projection) of these points. Now suppose I give you a new point
+$\vec{x}_{N+1}$. Of the various dimensionality reduction methods we 
+have seen in the class (PCA, Kernel PCA, LLE, ISOMAP), which ones 
+allow you to compute the low-dimensional projection of the new point
+$\vec{x}_{N+1}$ (for each, explain why or why not). This problem is known
+as the \emph{out-of-sample problem}. Note that including $\vec{x}_{N+1}$ in the original
+data and re-running dimensionality reduction on the whole data is not an option.
+(\emph{10 points})
+
+\i For multiclass classification, All-vs-All (AVA) seems more computationally 
+intensive at training time than One-vs-All (OVA) because it trains $\cO(K^2)$ 
+classifiers rather than $\cO(K)$ classifiers.  However, all of the $K$-many OVA
+classifiers are on the full data set of $N$ examples, while the
+$\cO(K^2)$ AVA classifiers are only on subsets of the data.  Suppose
+that you have $N$ data points, divided evenly into $K$ classes (so
+that there are $N/K$ examples per class).
+
+\begin{enumerate}
+\item Suppose that the training time for your binary classifier is
+  linear in the number of examples it receives.  What is the
+  complexity of training OVA and AVA, as a function of $N$ and $K$?
+
+%\begin{solution}
+%  TODO
+%\end{solution}
+
+\item Suppose the training time is quadratic; then what is the
+  complexity of AVA and OVA?
+
+
+%\begin{solution}
+%  TODO
+%\end{solution}
+
+ (\emph{10 points})
+
+\end{enumerate}
+
+\i One issue with multiclass classification based methods such as OVA
+and AVA is that the test time complexity grows 
+linearly or quadratically with $K$, the total number of classes. Moreover
+the multiclass classification error also worsens as $K$ grows (because
+basically we are using a collection of binary classifiers and their individual
+errors would just add up). 
+
+Now suppose we still want to construct a multiclass classification algorithm
+based on a set of binary classifiers but want to control the error such that
+it doesn't get worse than $\cO(\log_2 K)$. How would you accomplish this (hint:
+what you want is minimizing the number of decisions you have to make at test time)?
+(\emph{10 points})
+
+\i Define a ranking preference function $\omega$ that penalizes
+mispredictions \emph{linearly} up to a threshold $K$.  In other
+words, for $K=20$, if I put the object that should be in position
+$5$ in position $20$, then I pay $\$15$; if I put it in position
+$30$, I only pay $\$20$ because nothing costs more than $K=\$20$.
+(\emph{10 points})
+
+\ene
+
+\section{Programming Exercises}
+
+\bee
+
+\i Implement PCA, and Kernel PCA with RBF kernel. For the RBF kernel,
+there is a fairly decent heuristic for choosing the bandwidth parameter: 
+compute the pairwise distances (Euclidean but don't square it) between all 
+the points and take the \emph{median} Euclidean distance as the bandwidth
+parameter. 
+
+The shell for both PCA and Kernel PCA are provided ({\tt PCA.m} and 
+{\tt KPCA.m}) and you will need to fill in the TODO parts. 
+Once you complete implementing these (they are independent), you can test them
+on the MNIST digits dataset (provided in {\tt mnist.mat}).
+
+The test scripts {\tt test\_pca.m} and {\tt test\_kpca.m} would test your
+implementations and will produce several plots, including the figures of 
+reconstructed digits using the projected data. Observe (for both
+PCA and KPCA) how the reconstruct digits look like as you increase 
+the number of dimensions $d$ the data is projected on.
+
+Submit the completed codes for PCA and KPCA, and all the plots. Also comment on your
+observations about the reconstruction accuracies of digits as $d$ varies.
+(\emph{30 points})
+
+\i In this task, we will implement AdaBoost.  A shell for AdaBoost is in
+{\tt Boost.m}.  You will need to fill in the {\tt BoostTrain} and {\tt
+  BoostPredict} functions.  See the comments in {\tt Boost.m} for a
+description of what each function should do and how it should store
+its outputs.  Note that in order to do boosting properly, you need to
+have binary classification algorithms that can accept weighted data.
+I have provided an implmentation of Perceptron that does so in
+{\tt perceptron\_weighted.m} (do not change that code! :) ).
+
+The data for this part is in {\tt data.mat}. When you do {\tt load data.m},
+you would see {\tt trX,trY} for the training data and {\tt teX,teY} for
+the test data.
+
+Once you are done implementing {\tt Boost.m}, you can run {\tt test\_adaboost.m} 
+which will run a series of tests using different number of rounds for the boosting 
+algorithm. To get a sense of whether your implementation is doing sensibly, 
+here are some representative numbers: for boosting round 1, you should get 
+about 62.5\% training and 55.6\% test accuracy; for round 3, you should 
+get training accuracy of about 88.5\% and 86.8\% test accuracy.
+(\emph{20 points})
+
+\ene
+
+\end{document}

@@ -1,0 +1,97 @@
+\documentclass[fleqn]{article}
+
+\usepackage{mydefs}
+\usepackage{notes}
+\usepackage{url}
+
+\begin{document}
+\lecture{CS4400}{Problem Set 9}{Alex Clemmer, u0458675}
+
+% IF YOU ARE USING THIS .TEX FILE AS A TEMPLATE, PLEASE REPLACE
+% "CS5350, Fall 2011" WITH YOUR NAME AND UID.
+
+\section{7.6}
+
+\begin{solution}
+\begin{tabular}{ c c c c c }
+  Symbol & \texttt{swap.o .symtab} entry? & Symbol type & Module where defined & Section \\
+  \hline
+  \texttt{buf} & yes & extern & \texttt{main.o} & \texttt{.data} \\
+  \texttt{bufp0} & yes & global & \texttt{swap.o} & \texttt{.data} \\
+  \texttt{bufp1} & yes & local & \texttt{swap.o} & \texttt{.text} \\
+  \texttt{swap} & yes & global & \texttt{swap.o} & \texttt{.text} \\
+  \texttt{temp} & no & - & - \texttt{} & - \texttt{} \\
+  \texttt{incr} & yes & local & \texttt{swap.o} & \texttt{.text} \\
+  \texttt{count} & yes & local & \texttt{swap.o} & \texttt{.data} \\
+\end{tabular}
+\end{solution}
+
+\section{7.7}
+
+\begin{solution}
+This transformation is trivial. All we need to do is to overwrite the memory locations of \texttt{x} and \texttt{y} again:
+\begin{verbatim}
+static double x;
+
+void f()
+{
+    x = -0.0;
+}
+\end{verbatim}
+\end{solution}
+
+\section{7.8}
+
+\bee
+
+\i
+\begin{solution}
+\texttt{REF(main.1) --> DEF(main.1)} and \texttt{REF(main.2) --> DEF(main.2)}. The \texttt{main} in module 2 is \texttt{static}, and thus local, so there will be no conflict in \texttt{main.1}; in \texttt{main.2}, the memory location will be overwritten to accommodate the definition of the symbol locally.
+\end{solution}
+
+\i
+\begin{solution}
+\texttt{UNKNOWN}. The reason is because they are both weak, so we can pick either arbitrarily.
+\end{solution}
+
+\i
+\begin{solution}
+\texttt{ERROR}. They are both strong, which is illegal. 
+\end{solution}
+
+\ene
+
+\section{7.9}
+
+\begin{solution}
+This happens because \texttt{main} is clearly bound as a method in \texttt{foo6.c}; this supercedes the weak \texttt{char main}, and thus the program prints the odd result.
+\end{solution}
+
+\section{7.10}
+
+\bee
+
+\i
+\begin{solution}
+\texttt{gcc p.o libx.a}
+\end{solution}
+
+\i
+\begin{solution}
+\texttt{gcc p.o libx.a liby.a libx.a}
+\end{solution}
+
+\i
+\begin{solution}
+\texttt{gcc p.o libx.a liby.a libz.a libx.a liby.a}
+\end{solution}
+
+\ene
+
+\section{7.11}
+\begin{solution}
+Interestingly, this indicates that we will be allocating \texttt{.bss}, but that it will be left as zeros. The data itself will occupy the first chunk, as noted in the question.
+\end{solution}
+
+
+\end{document}

@@ -1,0 +1,97 @@
+\documentclass[fleqn]{article}
+
+\usepackage{mydefs}
+\usepackage{notes}
+\usepackage{url}
+
+\begin{document}
+\lecture{Machine Learning}{Notes}{Alex Clemmer, u0458675}
+
+% IF YOU ARE USING THIS .TEX FILE AS A TEMPLATE, PLEASE REPLACE
+% "CS5350, Fall 2011" WITH YOUR NAME AND UID.
+
+\section*{Hypothesis Class}
+
+A Hypothesis Class $\mathcal{H}$ is a non-finite-dimensional index into the space of hypothesis functions we can learn from our data.
+
+Our goal is usually to learn some $h \in \mathcal{H}$ which outputs a result that we ``hypothesize" given some bit of data. This $h$ is typically learned using some $N$ i.i.d. training examples (which, more technically, we can express as $\mathcal{D} \in (\vec{x}, y)^N$). Each training example $(\vec{x}_i, y_i)$ is drawn from $P(\vec{x}_i,y_i)$, which in other words is $\mathcal{D} \sim P^N$.
+
+\subsubsection*{0-1 Training (``Empirical") Error}
+
+One way of measuring the ``error" of some hypothesis funciton $h \in \mathcal{H}$ is to just look at the number of wrong answers it produces over all possible input:
+
+\begin{equation*}
+L_{\mathcal{D}}(h) = \frac{1}{N} \sum_{n=1}^N \mathbb{I}(h(\vec{x}_n \neq y_n))
+\end{equation*}
+
+\subsubsection*{0-1 Expected Error aka ``True Error" aka ``Misclassification Probability"}
+
+Another way to measure error is to look at the probability of misclassification. We can compute this, intuitively by looking at the expected error of misclassification:
+
+\begin{equation*}
+L_P(h) = \mathbb{E}_{(\vec{x}, y) \sim P}[\mathbb{I}(h(\vec{x}_n) \neq y_n)]
+\end{equation*}
+
+\subsubsection*{Zero Training Error}
+
+Say we have some hypothesis function $h \in \mathcal{H}$ with zero training error and a true error $L_P(h) > \epsilon$. The probability of $h$ having zero error on any training example is $\le 1 - \epsilon$. If we take the term $L_{\mathcal{D}}(h) = 0 \cap L_P(h) > \epsilon$ to mean roughly ``$h$ is bad", then the probability of $h$ having zero on any training set $\mathcal{D} \in (\vec{x}, y)^N$ is:
+
+\begin{equation*}
+P_{\mathcal{D} \sim P^N}(L_\mathcal{D}(h) = 0 \cap L_{P}(h) > \epsilon) \le (1 - \epsilon)^N
+\end{equation*}
+
+Given that the hypothesis class $\mathcal{H}$ has $k$ such hypothesis $\{h_1 \ldots h_k\}$, the probability that \textit{at least one} of them has zero training error is
+
+\begin{equation*}
+P_{\mathcal{D} \sim P^N}(\text{``}h_1\text{ is bad"} \cup \ldots \cup \text{``}h_k \text{ is bad"}) \le k(1-\epsilon)^N
+\end{equation*}
+
+Of course $k \le |\mathcal{H}|$, so $k$ can actually be replaced by $|\mathcal{H}|$:
+
+\begin{equation*}
+P_{\mathcal{D} \sim P^N}(\exists h : \text{``} h \text{ is bad"}) \le |\mathcal{H}(1-\epsilon)^N
+\end{equation*}
+
+Further, since $(1-\epsilon) < e^{-e}$, we can reduce even more:
+
+\begin{equation*}
+P_{\mathcal{D}} \sim P^N(\exists h : \text{``} h \text{ is bad} \le |\mathcal{H}| e^{-Ne}
+\end{equation*}
+
+What we gain from this is that \textit{the probability of} $h$ \textit{being bad decreases exponentially as} $N$ \textit{increases}.
+
+\subsubsection*{Non-zero Training Error}
+
+An \textit{empirical mean} produces a vector $\bar{\vec{x}}$, each of whose elements corresponds to the mean of all corresponding elements from every random variable in a set $\{z_1 \ldots z_N\}$. Given any $N$-length set of random variables, this means basically that:
+
+\begin{equation*}
+\bar{\vec{z}} = \frac{1}{N} \sum_{n=1}^N z_n
+\end{equation*}
+
+We will say also that the \textit{true mean} is $\mu_z$. Then the \textit{Chernoff Bound} is given by:
+
+\begin{equation}
+P(|\mu_z - \bar{\vec{z}}| \ge \epsilon) \le e^{-2N\epsilon^2}
+\end{equation}
+
+Generalized, for any single hypothesis $h \in \mathcal{H}$, we can view the training error $L_P(h)$ as the true mean and the expected error $L_{\mathcal{D}}(h)$ have:
+
+\begin{equation}
+P(L_P(h) - L_{\mathcal{D}}(h) \ge \epsilon) \le e{-2N\epsilon^2}
+\end{equation}
+
+\subsubsection*{Infinite Hypothesis Classes}
+
+When $|\mathcal{H}|$ is finite, then
+
+\begin{equation}
+L_P(h) \le L_{\mathcal{D}}(h) + \sqrt{\frac{\log |\mathcal{H}| + \log \frac{1}{\delta}}{2N}}
+\end{equation}
+
+Clearly, though, this breaks down when $|\mathcal{H}|$ is infinite. Might replace this with some notion of the complexity of $|\mathcal{H}|$. It turns out that we can, using the $\textit{Vapnik-Chervonenkis dimension}$, which is a measure on the complexity of a hypothesis class.
+
+First, some terminology: a set of points is said to be $\textit{shattered}$ by some $\mathcal{H}$ if for all possible labellings of the points, $\exists h \in \mathcal{H}$ that can represent the corresponding labeling function. One example of this is the fact that 3 points can always be shattered by any linear separator---there is no choice of labels you can pick for three points such that a linear separator fails to split them. Unfortunately, for 4 points in two dimensions, this does not work.
+
+This is where the aforementioned $\textit{Vapnik-Chervonenkis Dimension}
+
+\end{document}

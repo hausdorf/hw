@@ -55,8 +55,8 @@
 %{\begin{Sbox}\begin{minipage}{.95\linewidth}}%
 %{\end{minipage}\end{Sbox}\begin{center}\fbox{\TheSbox}\end{center}}
 
-\title{Background for Our Novel Framework for Vertex Nomination}
-\author{Alex Clemmer \\ Machine Learning (CS 5350)}
+\title{A Content-Oriented Approach to Vertex Nomination}
+\author{Ashequl Qadir, Eleanor Wong, Alex Clemmer \\\\ Proposal for Final Project \\Machine Learning (CS 5350/6530)}
 
 \begin{document}
 
@@ -68,60 +68,49 @@
 \singlespace
 \maketitle
 
-\begin{abstract}                % ~350 words max
-Possibly the most common graph problem found in the real world is the case where there is strong verified knowledge of a useful set of attributes for only some fraction of the total vertices. Among such cases, it is frequently true that we care particularly about one feature (or set of features). The process of using this verified knowledge to ``nominate" vertices that are likely to have this attribute that we care about is called vertex nomination [Coppersmith and Priebe, 2011].
+\begin{abstract}             % ~350 words max
+We are given a graph $G=(V,E)$. Commonly it is the case that we have verified knowledge of some attribute $\vec{x} \in \mathbb{R}^D$ for only some fraction of the vertices $\mathcal{V} \subset V$, and that it is either extremely expensive or impossible to directly verify $\vec{x}$ for any particular new vertex $v \in V$. The space of methods that produce a list of vertices $\mathcal{Q} \subseteq V$ that are likely to have $\vec{x}$ is called vertex nomination [Coppersmith \& Priebe, 2011].
 
-The end goal for the final project is to produce a useful framework the task of vertex nomination. In this document I hope to present a detailed background on the approach I suggest, as well as a rough program for the suggested solution.
+We will build off existing work to apply this framework to the Enron Email Corpus. This corpus is somewhat unique in that it consists of emails siezed by the Justice Department in their 2002 investigation of the Enron Corporation, and contains some emails that provide evidence that the correspondents were involved in criminal activity. We a propose a supervised learning approach that will leverage the data in these emails to ``nominate" a list of vertices that are likely to have this quality. Specifically we propose building a variable-length $n$-gram language model using the Prediction by Partial Match (PPM) algorithm [Cleary, Witten, 1990]. We will use PPM to determine the probability that some blob of content indicates criminal activity, and subsequently, we will use a mapping $f: [0,1] \rightarrow [0,1]$ of email probabilities to vertex probabilities to construct a list of the $k$ vertices that are most likely to be ``evil".
 \end{abstract}
 
-\doublespace
-% This sets section-numbering to only include Section and Subsection numbers
-\setcounter{secnumdepth}{2}
+\section{Introduction}\label{ch:overview}
+In the context of the Enron corpus, the graph $G = (V,E)$ each $v \in V$ represents an email address, and each $e \in E$ represents the content of a specific email. Note that an email can be addressed to many people, in which case there would be corresponding edges between different vertices that contain the same content.
 
-\section{The State of the Art}\label{ch:overview}
+In the context of the problem, we will think of the $\mathcal{V}$ as the set of vertices which we know were indicted for criminal activity. Such vertices are said to be \textit{red}; in contrast, vertices that are not known to be indicted for criminal activity are said to be \textit{nonred}. It is particularly important to note that nonred vertices are not necessarily not criminals: rather, they are not \textit{known to be criminals}. In other words, if we return a list of $k$ vertices, and the list contains none of the vertices that we know to be red, our list may not be wrong, since we do not know that nonred vertices are not actually criminals.
 
-The traditional approach to vertex nomination so far is to return a list of the top \textit{k} vertices that are most likely to have the specific attribute that we're looking for. The problem, often enough, is that the thing we're looking for is often not immediately verifiable. If, for example, the attribute we're looking for is that this person is an evil executive, or a spammer, it is particularly difficult to evaluate how successful the process has been.
+It is also important to note that the vertex color pertains specifically to the context of the experiment. This means that it is possible to, say, ``hide" some of the red vertices for training purposes, and then evaluate success on some metric (\textit{e.g.}, precision of results, which is defined to be $\frac{\text{number of correct answers}}{\text{number of possible correct answers}}$).
 
-The usual approach is to simply look at the mean average precision --- the more people that we return who are known to have such an attribute, the ``better" the result is, up to a point. This presents a problem of empiricism: if we return a list with \textit{no} vertices that are known to have this attribute, we are not necessarily wrong, since we don't actually know who does and does not have this attribute. And there are plenty of cases where MAP simply paints the wrong picture (the most obvious case being if \textit{every} vertex has this attribute).
+\section{Previous Work}\label{ch:overview}
+Previous approaches to vertex nomination in the context of the Enron corpus [Coppersmith \& Priebe, 2011] have ignored the email-analytic approach, instead focusing exclusively on graph-oriented features like graph topology to nominate their list of $k$ vertices.
 
-One significant consequence of this observation is that pretty much any vertex nomination scheme cast from this mold is not going to be very generalizable: researchers will cast their solution to fit their specific context, and every solution will be $ad-hoc$ fit to that data. Results will become less comparable as the context changes.
+Our proposal differs in that we will mainly be concerned with nomination specifically from the content-analytic approach. It is notably possible to augment the content- and context-based approaches, and if we have time, we will do this, but it will not be our priority.
 
-We would like to propose a framework that steps away from these problems. First, vertex nominationis fundamentally a clustering task, and we would thus like to decouple the (significant) problems of clustering correctly with the problems of using those clusters effectively. One major advantage of this is that researchers can then take advantage of the troves of research dedicated to these two very well-defined problems.
+Previous approaches evaluate success using mean precision (MP) over a set of cross-validated experiments. Specifically, a given experiment will ``hide" some of the red vertices, and evaluate precision for that experiment as $\frac{\text{number of red vertices returned}}{\text{number of red vertices in total}}$. Because the experiments are jacknifed, we end up with 100 such numbers; the evaluation metric is the mean of these precisions.
 
-Second, we would like to develop the idea of vertex nomination into a rich platform for describing a swath of problems that are expressable with this graphical abstraction. We want to step away from the inherent limitations of viewing vertices as people and nomination as role application to those vertices.
+Whether this is the right thing to do is entirely debateable. One case where it clearly fails is if our selected vertices are only moderately ``evil", then a perfect algorithm would return a top-$k$ list that would include only the worst bad guys, which would very likely include either very few known red vertices, or none at all. In this case, the MP would be definitively wrong, since it would be $0\%$ or close to $0\%$ every time.
 
-\section{Dirichlet Processes (aka DPs)}
+We probably do not have time to fix this problem. Instead, we will likely just use their metric, which also has the advantage of making our results directly comparable to theirs. If we come across a vastly better way to evaluate, we will use that, but this is not our expectation for this project.
 
-A probablility measure (with some simplification) can be thought of as any probability function $G$ for which $G(\Omega) = 1$, $G(0) = 0$, and the disjoint union $G(A_0 \dot{\cup} \ldots \dot{\cup} A_m)$ where $A_i \subset \Omega$.
+\section{Procedure}\label{ch:overview}
+We begin by training a model. We will use a composite model---two models that each output a probability individually, which we then normalize and return. One of the sub-models will be trained on content that occurs between two or more red vertices, which in other words is content that is most likely to be indicative of ``evil" behavior. The other of the sub-models will use content that occurs between all non-red vertices.
 
-If we think of $(\Theta, B)$ as a measureable space, with $G$ as a random probability measure on that space. For this random variable $G$, a \textbf{Dirichlet Process} is basically the distribution of probability measures that $G$ can possibly be over the space $(\Theta, B)$, such that any possible finite partition $(A_0, \ldots, A_m)$ of $\Theta$ has a corresponding random vector $(G(A_0), \ldots, G(A_m))$ which is distributed as a finite-dimensional Dirichlet. It is said thus of this vector, for some positive real $\alpha$ (which we can basically ignore for now):
+We will train our model at the sentence level, not the email level, because our experiments so far have demonstrated this to be more effective. PPM models based on variable-length $n$-grams; in this context, our grams will be \textit{characters}, which makes a 3-gram the characters in length. The reason, again, is that this has proven to be much more effective in our experiments so far.
 
-\begin{equation}
-(G(A_0), \ldots, G(A_m)) \sim \text{Dirichlet}(\alpha_0 G_0 (A_0, \ldots \alpha_0 G_0(A_m))
-\end{equation}
+We begin training by taking some set of training vertices, partitioning them up according to the division between the sub-models, and then training on respective relevant content. Essentially, the process begins by taking all of the respective emails, and feeding them into the model sentence by sentence.
 
-Note here that $G_0$ is the \textit{base measure} of $G$; $\alpha_0$ is known as the concentration parameter (and, again, ignored for now).
+Because we are using a composite model, scoring is slightly tricky. To score one sentence, we supply the sentence directly to each of the sub-models. Both of these will output a log prob. The first task is to turn this into a probability, which we do by raising it as a power over 2, \textit{e.g.}, $\text{probability} = 2^{\text{log prob}}$.
 
-\section{DP Mixture Models}
+This so far will cause our score to prefer shorter sentences, so we will normalize this with respect to sentence length. Since our $n$-grams are characters, we do this simply by dividing by total length of sentence in characters.
 
-Let $G \sim DP(\alpha_0, G_0)$ be a random probability measure distributed according to the formulation of Dirichlet Processes noted above. If we have an $n$-element vector of (exchangeable) data $\vec{x} = (x_0, \ldots, x_n)$, then we can draw $n$ mixture weights $\phi_i \sim G, \forall i \in [0..n]$. If this is confusing, remember that the mixture weight $\phi_i$ is really the prior probability of the component $x_i$.
+Because this is a composite model, we want to balance the assertion that a given sentence indicates ``evil" behavior (\textit{i.e.}, $\text{prob}_{red}$ with the assertion that it is not $\text{prob}_{nonred}$. The way to do this is to normalize these probabilities, so that $\text{prob}_{red} + \text{prob}_{nonred} = 1$. For example, $\text{prob}_{red} = \frac{\text{prob}_{red}}{\text{prob}_{red} + \text{prob}_{nonred}}$. We then return $\text{prob}_{red}$, which is the probability that a given sentence indicates ``evil" behavior.
 
-From here, according to the formulation of the standard mixture model, $x_i \sim F(\phi_i)$ for some distribution $F$. When this is drawn for every $i \in [0..n]$, we have formed what is known as the \textbf{Dirichlet Process Mixture Model}.
+So far we have a way to ``score" sentences, so the question is how we apply these scores to a vertex. We begin by picking any vertex $v$ that we'd like to score. We then take all of the emails that this vertex is involved with, and feed each of the $t$ sentences into the model on a sentence-by-sentence basis. This results in $t$ probabilities that correspond to the ``evilness" of each of the $t$ sentences. This is representable as $\vec{p} \in [0,1]^t$.
 
-Note that if each of these weights $\phi_i$ were all completely distinct, the model would effectively be a useless $n$-component vector; for reasons involving exchangeability of random variables, this is simply not the case; the distinct values actually only grow in $O(\log n)$, but I won't derive the solution here. You can ask me if you really care.
+Here we have a dilemma: we can define the score of a given vertex as $\text{score}_v = \text{max}(\vec{p})$, but because we are basing our score on one datapoint and one datapoint only, we will get a high anomaly rate. We can define $\text{score}_v = \text{average}(\vec{p})$, but this will wash out red vertices that have a few really bad conversations, but lots more non-bad conversations.
 
-\section{Hierarchical DP Mixture Models}
+Our solution is to take the average of the top $m$ sentences. The intuitive reason is that we want to see roughly how bad the conversations that are most bad, are. By taking the average of some top $m$, we can avoid the washout and the anomaly rate simultaneously.
 
-HDP more or less allows for a 
-
-\pagebreak
-
-% This includes all references from the BibTeX file in the bibliography
-\nocite{*}
-
-\begin{spacing}{1}
-  \bibliographystyle{plain}
-  \bibliography{mybibtexDB}
-\end{spacing}
+So at this point every vertex will have a probability. Since we are using the (vert flawed) metric of success mentioned above, we will subsequently return the top $k$, sorted by this probability. Success then becomes the MP of these cross-validated experiments.
 
 \end{document}
