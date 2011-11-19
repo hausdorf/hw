@@ -8,6 +8,8 @@ function [Z,vecs,vals] = PCA(X,d)
   
 [N D] = size(X);
 
+X = X';
+
 if d > D,
   error('PCA: you are trying to *increase* the dimension!');
 end;
@@ -17,15 +19,15 @@ end;
 
 %TODO
 for i=1:D
-    mn = mean(X(:,i));
+    mn = mean(X(i,:));
     % Tends to yield numbers like 1.5 e-15; CLOSE ENOUGH.
-    X(:,i) = X(:,i) - mn;
+    X(i,:) = X(i,:) - mn;
 end
 
 % next, compute the covariance matrix C of the data
 
 %TODO
-C = cov(X);
+C = (1/N) * X * X';
 
 % compute the top d eigenvalues and eigenvectors of C... 
 % hint: use 'eigs' if you're in matlab or 'eig' if you're in octave
@@ -33,13 +35,12 @@ C = cov(X);
 
 %TODO
 [vecs vals] = eig(C);
-disp(D);
-vecs = vecs(1:D,:);
-vals = vals(1:D,:);
-[q r] = size(vals)
-[q r] = size(vecs)
+vecs = vecs(:,1:d);
+vals = vals(:,1:d);
 
 % now project the data (Z will be the Nxd matrix of projections)
 % to d dimensions
 
-Z = X*vecs;
+disp(size(X));
+disp(size(vecs));
+Z = X'*vecs;

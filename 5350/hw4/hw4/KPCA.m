@@ -42,6 +42,9 @@ KT = K - ONE*K - K*ONE + ONE*K*ONE;
 % in an Nxd matrix called 'vecs'
 
 %TODO
+[vecs vals] = eig(K);
+vecs = vecs(1:d,:)';
+vals = vals(1:d,:)';
 
 % now project the data (Z will be the Nxd matrix of projections)
 % to d dimensions
