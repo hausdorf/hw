@@ -16,16 +16,28 @@ end;
 % (or the original data) is zero.  in other words, mean(X(:,p))==0 for all p.
 
 %TODO
+for i=1:D
+    mn = mean(X(:,i));
+    % Tends to yield numbers like 1.5 e-15; CLOSE ENOUGH.
+    X(:,i) = X(:,i) - mn;
+end
 
 % next, compute the covariance matrix C of the data
 
 %TODO
+C = cov(X);
 
 % compute the top d eigenvalues and eigenvectors of C... 
 % hint: use 'eigs' if you're in matlab or 'eig' if you're in octave
 % Store the d eigenvectors in an Dxd matrix called 'vecs'
 
 %TODO
+[vecs vals] = eig(C);
+disp(D);
+vecs = vecs(1:D,:);
+vals = vals(1:D,:);
+[q r] = size(vals)
+[q r] = size(vecs)
 
 % now project the data (Z will be the Nxd matrix of projections)
 % to d dimensions

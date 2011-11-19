@@ -18,10 +18,24 @@ end;
 % The (i,j)-th entry K(i,j) of the kernel matrix denotes the similarity 
 % between example i and example j
 %TODO
+K = zeros(N,N);
+for i=1:N
+    for j=1:N
+        K(i,j) = exp(norm(X(i,:) - X(j,:), 2));
+    end
+end
 
 % now center the kernel matrix K that you computed above
 % (see the slides from the class)
 %TODO
+ONE = zeros(N,N);
+for i=1:N
+    for j=1:N
+        ONE(i,j) = 1.0 / N;
+    end
+end
+
+KT = K - ONE*K - K*ONE + ONE*K*ONE;
 
 % finally do eigendecomposition of K and take the top
 % d eigenvalues and eigenvectors. Store the d eigenvectors
