@@ -32,7 +32,7 @@ this covariance matrix and doing its eigen-decomposition? What does it
 actually compute and does eigen-decomposition of? (\emph{10 points})
 
 \begin{solution}
-KPCA is based on the intuition that, if a set of $N$ points cannot be linearly separated in $d < N$ dimensions, then it nearly always is linearly separable in $d \ge N$ dimensions. Although we imagine some mapping $\Phi (\vec{x}_i) : \mathbb{R}^D \rightarrow \mathbb{R}^N$, it is undesireable, and possibly intractable to actually perform such computations in that feature space. Instead, we build an $N \times N$ matrix $\vec{K}$, which is the inner product space of the (probably intractable) feature space. What remains is to compute the $N \times 1$ eigenvector $\vec{v}_i$ for $\vec{K} \vec{v}_i = \lambda N 	\vec{v}_i, \forall i \in [1,N]$.
+KPCA is based on the intuition that, if a set of $N$ points cannot be linearly separated in $d < N$ dimensions, then it nearly always is linearly separable in $d \ge N$ dimensions. Although we imagine some mapping $\Phi (\vec{x}_i) : \mathbb{R}^D \rightarrow \mathbb{R}^N$, it is undesireable, and usually intractable to actually perform such computations in this higher-dimension feature space. Instead, we use a kernel function $k$ to map every point in the training data into and $N$-dimensional space, and then build an $N \times N$ matrix $\vec{K}$, which is the inner product space of this new feature space. Finding the top $t$ eigenvectors and eigenvalues gives us the dimensions that are in some sense ``most important" in preserving the variance while reducing the dimensionality. In this way, we avoid dealing with the covariance matrix that standard PCA must deal with.
 \end{solution}
 
 \i Dimensionality reduction methods take as input a set of points
@@ -45,6 +45,12 @@ $\vec{x}_{N+1}$ (for each, explain why or why not). This problem is known
 as the \emph{out-of-sample problem}. Note that including $\vec{x}_{N+1}$ in the original
 data and re-running dimensionality reduction on the whole data is not an option.
 (\emph{10 points})
+
+\begin{solution}
+PCA and KPCA can actually produce a low-dimensional mapping for some new point $\vec{x}_i$; over some training set, the ranked eigendecomposition (either on the covariance matrix or on the matrix of innerproduct space over the feature space) has given us the $M$ principal components, and to map the test point into low-dimensional feature space, we must only throw away the dimensions that are not on the list. (Of course, whether this is a wise mapping to make will depend on whether the training data was representative of the test data.) \newline
+
+On the other hand, in LLE and ISOMAP both rely on some notion of close neighbors to make this same decision, and one unfortunate consequence is that you need to know the data beforehand to construct the mappings.
+\end{solution}
 
 \i For multiclass classification, All-vs-All (AVA) seems more computationally 
 intensive at training time than One-vs-All (OVA) because it trains $\cO(K^2)$ 
@@ -87,6 +93,10 @@ based on a set of binary classifiers but want to control the error such that
 it doesn't get worse than $\cO(\log_2 K)$. How would you accomplish this (hint:
 what you want is minimizing the number of decisions you have to make at test time)?
 (\emph{10 points})
+
+\begin{solution}
+The basic idea is to construct a balanced binary tree of classifiers whose leaf nodes correspond to the $K$ possible classes. Each node is a classifier that is trained with half the remaining classes as positive input, and half the remaining classes as negative input. Thus, at each node, a test point will yield a $+1$ or a $-1$, allowing you to discard half of the remaining tree at each step. Since there are $K$ leaves, you end up with $\log_2 K$ decisions to make, before terminating. Page 76 of the assigned reading for multi-class classifiers shows that this has a bound of $\log_2 K \epsilon$ error, but since you didn't ask me to prove it, I will omit it here.
+\end{solution}
 
 \i Define a ranking preference function $\omega$ that penalizes
 mispredictions \emph{linearly} up to a threshold $K$.  In other
@@ -139,6 +149,14 @@ Submit the completed codes for PCA and KPCA, and all the plots. Also comment on 
 observations about the reconstruction accuracies of digits as $d$ varies.
 (\emph{30 points})
 
+\begin{solution}
+For the PCA code, see \texttt{PCA.m}. For KPCA code \texttt{KPCA.m}. For the PCA plots, see \texttt{pca-fig1.pdf}-\texttt{pca-fig7.pdf}. For the KPCA plots, please see \texttt{kpca-fig1.pdf}-\texttt{kpca-fig7.pdf}. \newline
+
+As for the results, the reconstruction accuracies get much clearer as $d$ gets larger. The idea behing PCA is that we're mapping something in $D$ dimensions down to some $M < D$ dimensions while still trying to preserve some semblance of the variance the original had. We do this by finding the eigenvectors and eigenvalues of the top $M$ dimensions $\in D$, called \textit{principal components}. In our program, $d$ represents our choice for $M$, the number of principal components we will select. \newline
+
+Of course, when we select a smaller $M$ we get only the very common features. When we select larger $M$, we preserve more variance across text points, and therefore we get more fine-grained differentiation between numbers like 0 and 8.
+\end{solution}
+
 \i In this task, we will implement AdaBoost.  A shell for AdaBoost is in
 {\tt Boost.m}.  You will need to fill in the {\tt BoostTrain} and {\tt
   BoostPredict} functions.  See the comments in {\tt Boost.m} for a
@@ -159,6 +177,10 @@ here are some representative numbers: for boosting round 1, you should get
 about 62.5\% training and 55.6\% test accuracy; for round 3, you should 
 get training accuracy of about 88.5\% and 86.8\% test accuracy.
 (\emph{20 points})
+
+\begin{solution}
+Please see \texttt{Boost.m} for my code; it has identical output to that listed here.
+\end{solution}
 
 \ene
 
