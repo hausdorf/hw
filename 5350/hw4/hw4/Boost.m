@@ -81,7 +81,18 @@ function boost = BoostTrain(learn, X, Y, numRounds, varargin)
     P = feval(learn, 'predict', h, X);
     
     % TODO: next, compute the error 'e' associated with this weak learner:
-    e = ???;
+    e = -1;
+    tmp = zeros(N,1);
+    for i=1:N
+        if P(i,1) ~= Y(i,1)
+            ind = 1;
+        else
+            ind = 0;
+        end
+        tmp(i,1) = W(i,1) * ind;
+    end
+
+    e = sum(tmp) / sum(W);
   
     % store this in the "error"
     boost.errors{t} = e;
@@ -90,11 +101,19 @@ function boost = BoostTrain(learn, X, Y, numRounds, varargin)
     if e >= 0.5,
       break;
     end;
-    
+
     % TODO: compute alpha and update weights
-    a = ???;
-    W = ???;
-    
+    a = log((1-e)/e);
+    for i=1:N
+        if P(i,1) ~= Y(i,1)
+            ind = 1;
+        else
+            ind = 0;
+        end
+
+        W(i,1) = W(i,1) * exp(a * ind);
+    end
+
     % store
     boost.models{t} = h;
     boost.alphas{t} = a;
@@ -106,7 +125,7 @@ function Y = BoostPredict(learn, boost, X, maxRounds)
   % like models, alphas, etc.), X is the N*D data to predict, and
   % maxRounds is the maximum number of boosting rounds we should use
   % (i.e., even if the length of boost.models is longer).
-  
+
   N = size(X,1);
   
   % store our output variables
@@ -115,6 +134,8 @@ function Y = BoostPredict(learn, boost, X, maxRounds)
   % compute predictions...
   for t=1:maxRounds,
     % TODO: make predictions and update Y
+    Y = Y + boost.alphas{t} * feval(learn, 'predict', boost.models{t}, X);
   end;
-  
+
+  Y = sign(Y);
   
