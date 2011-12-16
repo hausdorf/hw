@@ -20,6 +20,9 @@
        (args : (listof CAE))]
   [get (obj-expr : CAE)
        (field-name : symbol)]
+  [set (obj-expr : CAE)
+       (field-name : symbol)
+       (item : CAE)]
   [dsend (obj-expr : CAE)
          (method-name : symbol)
          (arg-expr : CAE)]
@@ -45,7 +48,7 @@
   [numV (n : number)]
   [strV (s : string)]
   [objV (class : CDecl)
-        (field-values : (listof CAE-Value))]
+        (field-values : (listof (boxof CAE-Value)))]
   [nullV])
 
 ;; ----------------------------------------
@@ -108,16 +111,28 @@
         [arg () arg-val]
         [new (class-name field-exprs)
              (local [(define cdecl (find-class class-name cdecls))
-                     (define vals (map recur field-exprs))]
+                     (define vals (map (lambda (x)
+                                         (box (recur x)))
+                                       field-exprs))]
                (objV cdecl vals))]
         [get (obj-expr field-name)
              (type-case CAE-Value (recur obj-expr)
                [objV (cdecl field-vals)
                      (type-case CDecl cdecl
                        [class (name fields methods)
-                         (get-field field-name fields field-vals)])]
+                         (unbox (get-field field-name fields field-vals))])]
                [nullV () (error 'interp "can't call get on null!")]
                [else (error 'interp "not an object")])]
+        [set (obj-expr field-name item)
+             (local [(define item-val (recur item))]
+               (type-case CAE-Value (recur obj-expr)
+                 [objV (cdecl field-vals)
+                       (type-case CDecl cdecl
+                         [class (name fields methods)
+                           (begin
+                             (set-box! (get-field field-name fields field-vals) item-val)
+                             (objV cdecl field-vals))])]
+                 [else (error 'interp "not an object")]))]
         [dsend (obj-expr method-name arg-expr)
                (local [(define obj (recur obj-expr))
                        (define arg-val (recur arg-expr))]
@@ -860,3 +875,6 @@
 
 (test (iinterp (list sposnClass) (inull)) (nullV))
 (test/exn (iinterp (list sposnClass) (instanceof (inull) 'object)) "compile-expr: `null` isn't an instanceof anything!")
+
+(test (interp (get mkPosn27 'x) (list posnClass) (numV 0) (numV 1)) (numV 2))
+(test (interp (get (set mkPosn27 'x (num 52)) 'x) (list posnClass) (numV 0) (numV 1)) (numV 52))
