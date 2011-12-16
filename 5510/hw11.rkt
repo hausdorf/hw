@@ -253,10 +253,10 @@
                   (type-case IDecl c
                     [iclass (name super fields methods) name]))))
 
-(define compile-expr : (ICAE IDecl -> CAE)
-  (lambda (icae this-class)
+(define compile-expr : (ICAE IDecl (listof IDecl) -> CAE)
+  (lambda (icae this-class all-classes)
     (local [(define (recur expr)
-              (compile-expr expr this-class))]
+              (compile-expr expr this-class all-classes))]
       (type-case ICAE icae
         [inum (n) (num n)]
         [istr (s) (str s)]
@@ -280,28 +280,23 @@
                                  super-name method-name
                                  (recur arg-expr))])]
         [instanceof (expr cl)
-                    (type-case IDecl this-class
-                      ; call function that determines whether class-name
-                      ; is an instanceof of cl. If true, return (num 1),
-                      ; and if false return (num 0)
-                      [iclass (name super-name fields method)
-                            (if (is-instanceof? this-class cl)
-                                (num 1)
-                                (num 0))])]))))  ;#
+                    ; Process the expr argument; if it's an object, try to find out whether
+                    ; it's an instance of `cl`. 
+                    (type-case ICAE expr
+                      [inew (class-name field-exprs) (is-instanceof? (find-iclass (inew-class expr) all-classes)
+                                                                     cl
+                                                                     all-classes)]
+                      [else (error 'compile-expr "instanceof must take an object to work!")])]))))  ;#
 
-(define (is-instanceof? idecl target)
-  ; Is idecl's class == target?
-  ; If not, look at next object up the hierarchy, making
-  ; sure to stop when we've reached `'object` (which is
-  ; at the top of the hierarchy).
-  (local [(define superclass (iclass-super idecl))
-          (define class (iclass-name idecl))]
+(define (is-instanceof? expr target all-idecls)
+  (local [(define class (find-iclass (iclass-name expr) all-idecls))]
     (cond
-      [(equal? target class) #t]
-      [(equal? target superclass) #t]
-      [(equal? target 'object) #f]
-      ;[(is-instanceof (find-iclass ))
-      [else #f])))
+      [(equal? (iclass-name class) target) (num 1)]
+      [(equal? (iclass-name class) 'object) (num 0)]
+      [(equal? (iclass-super class) 'object) (num 0)]
+      [else (is-instanceof? (find-iclass (iclass-super class) all-idecls)
+                            target
+                            all-idecls)])))
 
 (define (compile-methods idecl)
   (type-case IDecl idecl
@@ -316,7 +311,8 @@
                        [imethod (name body-expr) 
                                 (method name 
                                         (compile-expr body-expr
-                                                      idecl))]))
+                                                      idecl
+                                                      empty))]))
                    methods))]))
 
 (define (add-fields super-fields fields)
@@ -358,7 +354,8 @@
 
 (define (iinterp idecls iexpr)
   (local [(define expr (compile-expr iexpr 
-                                     (iclass 'bad 'bad empty empty)))
+                                     (iclass 'bad 'bad empty empty)
+                                     idecls))
           (define cdecls-not-flat
             (map compile-methods idecls))
           (define cdecls
