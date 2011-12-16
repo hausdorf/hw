@@ -132,6 +132,7 @@
                            (begin
                              (set-box! (get-field field-name fields field-vals) item-val)
                              (objV cdecl field-vals))])]
+                 [nullV () (error 'interp "can't call set on null!")]
                  [else (error 'interp "not an object")]))]
         [dsend (obj-expr method-name arg-expr)
                (local [(define obj (recur obj-expr))
@@ -253,6 +254,9 @@
         (args : (listof ICAE))]
   [iget (obj-expr : ICAE)
         (field-name : symbol)]
+  [iset (obj-expr : ICAE)
+        (field-name : symbol)
+        (item : ICAE)]
   [isend (obj-expr : ICAE)
          (method-name : symbol)
          (arg-expr : ICAE)]
@@ -297,6 +301,8 @@
               (new class-name (map recur field-exprs))]
         [iget (expr field-name)
               (get (recur expr) field-name)]
+        [iset (expr field-name item)
+              (set (recur expr) field-name (recur item))]
         [isend (expr method-name arg-expr)
                (dsend (recur expr)
                       method-name
@@ -609,6 +615,7 @@
                                          tdecls)
                         [tfield (name te) (parse-type te)])]
                 [else (type-error obj-expr "object")])]
+        [iset (obj-expr field-name item) (numT)] ;; TODO -- IMPLEMENT ME
         [isend (obj-expr method-name arg-expr)
                (local [(define obj-type (recur obj-expr))
                        (define arg-type (recur arg-expr))]
@@ -623,7 +630,7 @@
                   (typecheck-send (tclass-super-name this-class)
                                   method-name
                                   arg-expr arg-type tdecls))]
-        [instanceof (expr cl) (numT)]
+        [instanceof (expr cl) (numT)] ;; TODO -- IMPLEMENT ME
         [inull () (numT)])))) ;; TODO -- IMPLEMENT ME
 
 (define (typecheck-send class-name method-name arg-expr arg-type tdecls)
