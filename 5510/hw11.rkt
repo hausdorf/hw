@@ -2,6 +2,7 @@
 
 ; TODO:
 ; - Fix typechecking so that it actually works on our new code
+; - Test the stuff
 
 
 (define-type CAE
