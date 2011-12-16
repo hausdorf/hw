@@ -1,5 +1,9 @@
 #lang plai-typed
 
+; TODO:
+; - Fix typechecking so that it actually works on our new code
+
+
 (define-type CAE
   [num (n : number)]
   [str (s : string)]
