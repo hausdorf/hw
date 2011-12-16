@@ -26,7 +26,8 @@
   [ssend (obj-expr : CAE)
          (class-name : symbol)
          (method-name : symbol)
-         (arg-expr : CAE)])
+         (arg-expr : CAE)]
+  [null])
 
 (define-type CDecl
   [class (name : symbol)
@@ -44,7 +45,8 @@
   [numV (n : number)]
   [strV (s : string)]
   [objV (class : CDecl)
-        (field-values : (listof CAE-Value))])
+        (field-values : (listof CAE-Value))]
+  [nullV])
 
 ;; ----------------------------------------
 
@@ -114,6 +116,7 @@
                      (type-case CDecl cdecl
                        [class (name fields methods)
                          (get-field field-name fields field-vals)])]
+               [nullV () (error 'interp "can't call get on null!")]
                [else (error 'interp "not an object")])]
         [dsend (obj-expr method-name arg-expr)
                (local [(define obj (recur obj-expr))
@@ -128,18 +131,23 @@
                                                cdecls
                                                obj
                                                arg-val)])])]
+                   [nullV () (error 'interp "can't call method on null object!")]
                    [else (error 'interp "not an object")]))]
         [ssend (obj-expr class-name method-name arg-expr)
                (local [(define obj (recur obj-expr))
                        (define arg-val (recur arg-expr))]
-                 (type-case CDecl (find-class class-name cdecls)
-                   [class (name fields methods)
-                     (type-case Method (find-method method-name methods)
-                       [method (name body-expr)
-                               (interp body-expr
-                                       cdecls
-                                       obj
-                                       arg-val)])]))]))))
+                 (type-case CAE-Value obj
+                   [nullV () (error 'interp "can't call method on null object!")]
+                   [else
+                    (type-case CDecl (find-class class-name cdecls)
+                      [class (name fields methods)
+                        (type-case Method (find-method method-name methods)
+                          [method (name body-expr)
+                                  (interp body-expr
+                                          cdecls
+                                          obj
+                                          arg-val)])])]))]
+        [null () (nullV)]))))
 
 ;; num-op : (number number -> number) -> (CAE-Value CAE-Value -> CAE-Value)
 (define (num-op op op-name x y)
@@ -236,7 +244,8 @@
   [isuper (method-name : symbol)
           (arg-expr : ICAE)]
   [instanceof (cl : ICAE)
-              (target : symbol)])  ;#
+              (target : symbol)]
+  [inull])  ;#
 
 (define-type IDecl
   [iclass (name : symbol)
@@ -290,11 +299,14 @@
                       [inew (class-name field-exprs) (is-instanceof? (find-iclass (inew-class expr) all-classes)
                                                                      cl
                                                                      all-classes)]
-                      [else (error 'compile-expr "instanceof must take an object to work!")])]))))  ;#
+                      [inull () (error 'compile-expr "`null` isn't an instanceof anything!")]
+                      [else (error 'compile-expr "instanceof must take an object to work!")])]
+        [inull () (null)]))))  ;#
 
 (define (is-instanceof? expr target all-idecls)
   (local [(define class (find-iclass (iclass-name expr) all-idecls))]
     (cond
+      [(equal? target 'object) (num 1)]
       [(equal? (iclass-name class) target) (num 1)]
       [(equal? (iclass-name class) 'object) (num 0)]
       [(equal? (iclass-super class) 'object) (num 0)]
@@ -596,7 +608,8 @@
                   (typecheck-send (tclass-super-name this-class)
                                   method-name
                                   arg-expr arg-type tdecls))]
-        [instanceof (expr cl) (numT)])))) ;; TODO -- IMPLEMENT ME
+        [instanceof (expr cl) (numT)]
+        [inull () (numT)])))) ;; TODO -- IMPLEMENT ME
 
 (define (typecheck-send class-name method-name arg-expr arg-type tdecls)
   (type-case TMethod (find-method-in-tree
@@ -835,3 +848,15 @@
       (strV "dull"))
 (test (typecheck (list posn posn3D animal snake) (iget mksnake1 'scales))
       (strT))
+
+(test (iinterp (list sposnClass) (instanceof smkPosn27 'posn)) (numV 1))
+(test (iinterp (list sposnClass) (instanceof smkPosn27 'cow)) (numV 0))
+(test (iinterp (list sposnClass) (instanceof smkPosn27 'object)) (numV 1))
+
+(test (interp (null) (list posnClass) (numV 0) (numV 0)) (nullV))
+(test (interp (arg) (list posnClass) (numV 0) (nullV)) (nullV))
+(test (interp (this) (list posnClass) (nullV) (numV 0)) (nullV))
+(test (interp (if0 (num 0) (null) (num 2)) (list posnClass) (nullV) (numV 0)) (nullV))
+
+(test (iinterp (list sposnClass) (inull)) (nullV))
+(test/exn (iinterp (list sposnClass) (instanceof (inull) 'object)) "compile-expr: `null` isn't an instanceof anything!")
