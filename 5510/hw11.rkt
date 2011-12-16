@@ -230,7 +230,9 @@
          (method-name : symbol)
          (arg-expr : ICAE)]
   [isuper (method-name : symbol)
-          (arg-expr : ICAE)])
+          (arg-expr : ICAE)]
+  [instanceof (cl : ICAE)
+              (target : symbol)])  ;#
 
 (define-type IDecl
   [iclass (name : symbol)
@@ -276,7 +278,30 @@
                   [iclass (name super-name fields method)
                           (ssend (this) 
                                  super-name method-name
-                                 (recur arg-expr))])]))))
+                                 (recur arg-expr))])]
+        [instanceof (expr cl)
+                    (type-case IDecl this-class
+                      ; call function that determines whether class-name
+                      ; is an instanceof of cl. If true, return (num 1),
+                      ; and if false return (num 0)
+                      [iclass (name super-name fields method)
+                            (if (is-instanceof? this-class cl)
+                                (num 1)
+                                (num 0))])]))))  ;#
+
+(define (is-instanceof? idecl target)
+  ; Is idecl's class == target?
+  ; If not, look at next object up the hierarchy, making
+  ; sure to stop when we've reached `'object` (which is
+  ; at the top of the hierarchy).
+  (local [(define superclass (iclass-super idecl))
+          (define class (iclass-name idecl))]
+    (cond
+      [(equal? target class) #t]
+      [(equal? target superclass) #t]
+      [(equal? target 'object) #f]
+      ;[(is-instanceof (find-iclass ))
+      [else #f])))
 
 (define (compile-methods idecl)
   (type-case IDecl idecl
@@ -569,7 +594,8 @@
                 (local [(define arg-type (recur arg-expr))]
                   (typecheck-send (tclass-super-name this-class)
                                   method-name
-                                  arg-expr arg-type tdecls))]))))
+                                  arg-expr arg-type tdecls))]
+        [instanceof (expr cl) (numT)])))) ;; TODO -- IMPLEMENT ME
 
 (define (typecheck-send class-name method-name arg-expr arg-type tdecls)
   (type-case TMethod (find-method-in-tree
