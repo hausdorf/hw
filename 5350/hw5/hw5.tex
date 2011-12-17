@@ -22,12 +22,49 @@ y_L)$ and $U$ unlabeled examples $\vec x_{L+1}, \dots, \vec x_{L+U}$.
 \bee
 \i Construct the Lagrange formulation (yes, again!) for this model.
 (\emph{10 points})
+
+\begin{solution}
+
+Begin by putting it in primal form:
+
+\begin{displaymath}
+\cfrac{||\vec{w}||^2}{2} + \sum \alpha_m (1 - y_n (\vec{w}^\top \vec{x}_n + b)) + \sum \beta_n ( 1 + \vec{w}^\top \vec{x}_n + b)
+\end{displaymath}
+
+Convert to dual:
+
+\begin{displaymath}
+\cfrac{||\vec{w}||^2}{2} + \cfrac{\partial}{\partial \vec{w}} \sum \alpha_m (1 - y_n (\vec{w}^\top \vec{x}_n + b)) + \cfrac{\partial}{\partial \vec{w}}  \sum \beta_n ( 1 + \vec{w}^\top \vec{x}_n + b)
+\end{displaymath}
+
+\begin{displaymath}
+\sum \alpha_m (y_n x_n) + \sum \beta_n x_n = 0
+\end{displaymath}
+
+\begin{displaymath}
+w + \sum \alpha_m (y_n x_n) + \sum \beta_n x_n = 0
+\end{displaymath}
+
+\begin{displaymath}
+\sum_1^L \alpha_m (y_n x_n) - \sum_{L+1}^{L+U} \beta_n x_n = w
+\end{displaymath}
+
+\begin{displaymath}
+L_D = \frac{1}{2} \sum_1^L \alpha_m (y_n x_n) - \frac{1}{2} \sum_{L+1}^{L+U} \beta_n x_n = w
+\end{displaymath}
+
+\end{solution}
+
+
 \i In the Lagrange formulation, there is a term for the hinge loss on
 the labeled data points.  There is also some term for a
 loss-like-thing on the unlabeled data points.  What does this loss
 look like (i.e., draw a picture); it should be clear from this picture
 that this is non-convex.
 (\emph{10 points}) 
+
+It's going to have two local minima, looking sort of like a valley with a bulge in the middle. I'm not going to draw it, but Chappelle, Sindhwani, and Keerthi showed that you can actually reduce smoothing, and make it convex.
+
 \i (6350 only) What is the gradient of this formulation, as a function
 of $\vec w$ (don't bother doing the case for $b$)?  If you were to run
 gradient descent, what (intuitively) would it do? (\emph{10 points})
