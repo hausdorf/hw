@@ -1,8 +1,8 @@
 #lang plai-typed
 
-; TODO:
-; - Fix typechecking so that it actually works on our new code
-; - Test the stuff
+; ALEX CLEMMER
+; u0458675
+; FINAL PROJECT
 
 
 (define-type CAE
@@ -17,8 +17,7 @@
        (else-expr : CAE)]
   [arg]
   [this]
-  [new (class : symbol)
-       (args : (listof CAE))]
+  [new (class : symbol)]
   [get (obj-expr : CAE)
        (field-name : symbol)]
   [set (obj-expr : CAE)
@@ -110,11 +109,11 @@
                  (recur else-expr))]
         [this () this-val]
         [arg () arg-val]
-        [new (class-name field-exprs)
+        [new (class-name)
              (local [(define cdecl (find-class class-name cdecls))
                      (define vals (map (lambda (x)
-                                         (box (recur x)))
-                                       field-exprs))]
+                                         (box (nullV)))
+                                       (class-fields (find-class class-name cdecls))))]
                (objV cdecl vals))]
         [get (obj-expr field-name)
              (type-case CAE-Value (recur obj-expr)
@@ -187,7 +186,7 @@
           (method 'addX
                   (add (get (this) 'x) (arg)))
           (method 'subY (sub (arg) (get (this) 'y)))
-          (method 'factory01 (new 'posn (list (num 0) (num 1)))))))
+          (method 'factory01 (set (set (new 'posn) 'x (num 0)) 'y (num 1))))))
 
 (define posn3DClass
   (class 'posn3D
@@ -196,8 +195,8 @@
                               (ssend (this) 'posn 'mdist (arg))))
           (method 'addDist (ssend (this) 'posn 'addDist (arg))))))
 
-(define mkPosn27 (new 'posn (list (num 2) (num 7))))
-(define mkPosn531 (new 'posn3D (list (num 5) (num 3) (num 1))))
+(define mkPosn27 (set (set (new 'posn) 'x (num 2)) 'y (num 7)))
+(define mkPosn531 (set (set (set (new 'posn3D) 'x (num 5)) 'y (num 3)) 'z (num 1)))
 
 (define (mdist o)
   (dsend o 'mdist (num 0)))
@@ -251,8 +250,7 @@
         (else-expr : ICAE)]
   [iarg]
   [ithis]
-  [inew (class : symbol)
-        (args : (listof ICAE))]
+  [inew (class : symbol)]
   [iget (obj-expr : ICAE)
         (field-name : symbol)]
   [iset (obj-expr : ICAE)
@@ -298,8 +296,8 @@
         [iif0 (t th el) (if0 (recur t) (recur th) (recur el))]
         [iarg () (arg)]
         [ithis () (this)]
-        [inew (class-name field-exprs)
-              (new class-name (map recur field-exprs))]
+        [inew (class-name)
+              (new class-name)]
         [iget (expr field-name)
               (get (recur expr) field-name)]
         [iset (expr field-name item)
@@ -318,12 +316,21 @@
                     ; Process the expr argument; if it's an object, try to find out whether
                     ; it's an instance of `cl`. 
                     (type-case ICAE expr
-                      [inew (class-name field-exprs) (is-instanceof? (find-iclass (inew-class expr) all-classes)
+                      [inew (class-name) (is-instanceof? (find-iclass (inew-class expr) all-classes)
                                                                      cl
                                                                      all-classes)]
+                      [iset (expr field val) (proc-isets expr cl this-class all-classes)]
                       [inull () (error 'compile-expr "`null` isn't an instanceof anything!")]
                       [else (error 'compile-expr "instanceof must take an object to work!")])]
         [inull () (null)]))))  ;#
+
+(define (proc-isets expr cl this-class all-classes)
+  (type-case ICAE expr
+    [inew (class-name) (is-instanceof? (find-iclass (inew-class expr) all-classes)
+                                       cl
+                                       all-classes)]
+    [iset (expr field val) (proc-isets expr cl this-class all-classes)]
+    [else (error 'proc-isets "somehow you managed to set something that is not an object")]))
 
 (define (is-instanceof? expr target all-idecls)
   (local [(define class (find-iclass (iclass-name expr) all-idecls))]
@@ -419,8 +426,8 @@
           (list (imethod 'mdist (iadd (iget (ithis) 'z)
                                       (isuper 'mdist (iarg)))))))
 
-(define smkPosn27 (inew 'posn (list (inum 2) (inum 7))))
-(define smkPosn531 (inew 'posn3D (list (inum 5) (inum 3) (inum 1))))
+(define smkPosn27 (iset (iset (inew 'posn) 'x (inum 2)) 'y (inum 7)))
+(define smkPosn531 (iset (iset (iset (inew 'posn3D) 'x (inum 5)) 'y (inum 3)) 'z (inum 1)))
 
 (define (smdist o)
   (isend o 'mdist (inum 0)))
@@ -470,7 +477,8 @@
 (define-type Type
   [numT]
   [strT]
-  [objT (class-name : symbol)])
+  [objT (class-name : symbol)]
+  [nullT])
 
 ;; Type checking
 
@@ -599,14 +607,15 @@
         [ithis () (type-case TDecl this-class
                     [tclass (name super-name fields methods)
                             (objT name)])]
-        [inew (class-name exprs)
-              (local [(define arg-types (map recur exprs))]
-                (if (andmap2 (lambda (t1 t2) 
-                               (is-subtype? t1 t2 tdecls))
-                             arg-types
-                             (get-all-field-types class-name tdecls))
-                    (objT class-name)
-                    (type-error expr "field type mismatch")))]
+        [inew (class-name)
+              ;(local [(define arg-types (map recur exprs))]
+              ;  (if (andmap2 (lambda (t1 t2) 
+              ;                 (is-subtype? t1 t2 tdecls))
+              ;               arg-types
+              ;               (get-all-field-types class-name tdecls))
+              (objT class-name)
+              ;      (type-error expr "field type mismatch")))]
+              ]
         [iget (obj-expr field-name)
               (type-case Type (recur obj-expr)
                 [objT (class-name)
@@ -616,7 +625,18 @@
                                          tdecls)
                         [tfield (name te) (parse-type te)])]
                 [else (type-error obj-expr "object")])]
-        [iset (obj-expr field-name item) (numT)] ;; TODO -- IMPLEMENT ME
+        [iset (obj-expr field-name item)
+              (type-case Type (recur obj-expr)
+                [objT (class-name)
+                      (type-case TField (find-field-in-tree
+                                         field-name
+                                         (find-tclass class-name tdecls)
+                                         tdecls)
+                        ;[tfield (name te) (parse-type te)])]
+                        [tfield (name te) (if (is-subtype? (parse-type te) (recur item) tdecls)
+                                              (objT class-name)
+                                              (error 'typecheck "var not subclass of field"))])]
+                [else (type-error obj-expr "object")])]
         [isend (obj-expr method-name arg-expr)
                (local [(define obj-type (recur obj-expr))
                        (define arg-type (recur arg-expr))]
@@ -631,8 +651,10 @@
                   (typecheck-send (tclass-super-name this-class)
                                   method-name
                                   arg-expr arg-type tdecls))]
-        [instanceof (expr cl) (numT)] ;; TODO -- IMPLEMENT ME
-        [inull () (numT)])))) ;; TODO -- IMPLEMENT ME
+        [instanceof (expr cl)
+                    ; cl is guaranteed to be a symbol
+                    (typecheck-expr expr tdecls arg-type this-class)]
+        [inull () (nullT)]))))
 
 (define (typecheck-send class-name method-name arg-expr arg-type tdecls)
   (type-case TMethod (find-method-in-tree
@@ -758,10 +780,10 @@
 (test (typecheck-posn (saddDist smkPosn27 smkPosn531))
       (numT))
 
-(test (typecheck-posn (inew 'square (list (inew 'posn (list (inum 0) (inum 1))))))
+(test (typecheck-posn (inew 'square))
       (objT 'square))
-(test (typecheck-posn (inew 'square (list (inew 'posn3D (list (inum 0) (inum 1) (inum 3))))))
-      (objT 'square))  
+(test (typecheck-posn (inew 'square))
+      (objT 'square))
 
 (test/exn (typecheck-posn (smdist (inum 10)))
           "no type")
@@ -780,19 +802,19 @@
               (numV 0))
       (numV 0))
 
-(test (interp (new 'simple empty)
+(test (interp (new 'simple)
               (list (class 'simple empty empty))
               (numV 0)
               (numV 0))
       (objV (class 'simple empty empty) empty))
 
-(test (interp (get (new 'simple (list (num 12))) 'z)
+(test (interp (get (set (new 'simple) 'z (num 12)) 'z)
               (list (class 'simple (list (field 'z)) empty))
               (numV 0)
               (numV 0))
       (numV 12))
 
-(test (interp (dsend (new 'simple (list (num 12))) 'add (num 17))
+(test (interp (dsend (set (new 'simple) 'z (num 12)) 'add (num 17))
               (list (class 'simple 
                       (list (field 'z))
                       (list (method 'add (add (get (this) 'z) (arg))))))
@@ -849,19 +871,19 @@
                          (iget (ithis) 'scales)))))
 
 (define mkPosn3D_7_8_1
-  (inew 'posn3D
-        (list (inum 7) 
-              (inum 8) 
-              (inum 1))))
+  (iset (iset (iset (inew 'posn3D) 'x (inum 7)) 'y (inum 8)) 'z (inum 1)))
 
 (define mksnake1
-  (inew 'snake
-        (list (istr "Johnny")
-              (inum 2) 
-              (inum 2000) 
-              (istr  "rats")
-              mkPosn3D_7_8_1
-              (istr "dull"))))
+  (iset (inew 'snake) 'scales (istr "Johnny")))
+
+;(define mksnake1
+;  (inew 'snake
+;        (list (istr "Johnny")
+;              (inum 2) 
+;              (inum 2000) 
+;              (istr  "rats")
+;              mkPosn3D_7_8_1
+;              (istr "dull"))))
 
 (test (typecheck (list posn posn3D snake animal)
                  mksnake1)
