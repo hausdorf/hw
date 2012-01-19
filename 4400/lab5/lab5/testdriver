@@ -1,0 +1,23 @@
+#!/usr/bin/python
+# run the shell tests all at once
+#	written by Daniel Blakemore
+
+import commands
+from difflib import Differ
+import sys
+
+d = Differ()
+
+testoutput = open("testoutput.txt", 'w')
+
+print "Running all Shell Lab tests via \"make (r)test##\" and saving the diffs in testoutput.txt"
+
+for i in range(1, 17):
+	print "Running trace" + str(i)
+	testoutput.write("\n\ntrace" + str(i) + ".txt\n")
+	tshrefout = commands.getoutput("make rtest" + str(i).zfill(2)).splitlines()
+	tshout = commands.getoutput("make test" + str(i).zfill(2)).splitlines()
+	for diffline in list(d.compare(tshrefout, tshout)):
+		testoutput.write(diffline + "\n")
+
+testoutput.close()
