@@ -1,0 +1,156 @@
+\documentclass[12pt]{article}
+
+\usepackage{times}
+\usepackage{notes}
+\usepackage{url}
+\usepackage{graphicx}
+
+\begin{document}
+\lecture{Artificial Intelligence}{HW01: Search}{Alex Clemmer u0458675}
+% IF YOU'RE USING THIS .TEX FILE AS A TEMPLATE, PLEASE REPLACE
+% "CS5300/6300, Spring 2012" WITH YOUR NAME AND UID.
+
+A paper copy of your answers are due at the beginning of class on the due date. We encourage using \LaTeX\ to produce your writeups. See the Homework Assignments page on the class website for details.
+
+\section{Graph Search}
+
+Given the graph above calculate the frontier and final path returned by each of the algorithms listed below. Resolve ties where necessary using lexicographic ordering. Assume cycle checking so no duplicate paths will be placed on the frontier. Finally stop when the goal is removed from the frontier.
+
+\begin{enumerate}
+
+\item Depth First Search
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+% \begin{solution}
+% \end{solution}
+
+\item Breadth First Search
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+% \begin{solution}
+% \end{solution}
+
+\item Uniform Cost Search
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+% \begin{solution}
+% \end{solution}
+
+\item Best First Search
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+% \begin{solution}
+% \end{solution}
+
+\item A* Search
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+% \begin{solution}
+% \end{solution}
+
+\end{enumerate}
+
+\newpage
+
+\section{Space Elevator}
+%Inspired by (2 - Driving Circles) from w1_sp09 Berkely homework and (2 - Downhill Skiiing) from Dr. Daume sp10 homework.
+
+
+SpaceY has revolutionized transport to and from space by making the space elevator practical! It can move at speeds in the set $V = \{v | v$ is a power of 2$\}$. At each time step it can accelerate by doubling its speed, coast (not change speed), or decelerate by splitting its speed in half. In the event the elevator is not moving accelerating would increase its speed to 1 and if it has a speed of 1 then decelerating reduces its speed to 0.\newline
+\newline
+Once an action is selected, the elevator agent then moves a number of squares equal to its NEW speed. For example, if the first action is to accelerate, the agent will have a speed of 1 and move up/down 1 unit. If the second action is to again accelerate, then the new speed will be 2 and the unit will move 2 more units leaving it 3 units from the starting position.\newline
+\newline
+Refer to the diagram above. Assume the elevator starts on the ground, is not moving and has the goal of getting to space as quickly as possible such that it has 0 speed at the top. The answer should be in terms of the height of the elevator which is $N$.\newline
+
+\begin{enumerate}
+\item Describe the state space, start state and goal state for this problem.
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+We will assume that the space elevator can only go up to space (\textit{i.e.}, it does not have the goal of coming back down). In this case, the starting state $S$ is simply the first square you start at. The goal state $G$ will then be the last square on the track.
+\newline
+
+The initial state $S$, the set of actions $\mathcal{A} = \{ accelerate, decelerate, coast \}$, and transition model $\mathbf{ \Theta }$ (which dictates the affect that any particular action will have on any particular state) implicitly define the \textit{state space}.
+\newline
+
+More concretely, at any particular space, the action that we pick (along with our current speed) will determine which square we end up in. The specific square we are currently in, combined with our current speed comprise a specific \textit{state}, and the specific state we are in will determine what actions are available, as well as their effects.
+\newline
+
+Note, for example, that the starting state $S$ has no speed, and begins at the very first square. Meaningful actions are \textit{acceleration} (since \textit{deceleration} and \textit{coast} both result in us staying in state $S$).
+\end{solution}
+
+\item What is the maximum branching factor of this problem? Briefly justify your answer.
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+3. At any particular state, there are at most 3 actions you can choose from. Each action maps deterministically to exactly one ``result" state. There is no way to end up in a state other than one of these three states. Thus, the branching factor is at most 3.
+\end{solution}
+
+\item Is the number of spaces left an admissible heuristic? Explain.
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+Yes. Say there are $t$ squares between our current square and the final square. No matter which value of $t$ you pick, if the heuristic function $h(n)$ estimates the cost to be $t$ squares, then it \textit{cannot} have overestimated, since it is never true that $t > t$.
+\end{solution}
+
+\item State and justify an alternative, non-trivial heuristic for this state space.
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+If you have $t$ remaining squares and your current speed is $m$ squares per turn, then we can estimate the number of squares remaining to be
+
+\begin{displaymath}
+   h(x) = \left\{
+     \begin{array}{ll}
+       t & : m = 0 \\
+       \frac{t}{m} & : else
+     \end{array}
+   \right.
+\end{displaymath}
+
+Note that your speed must always be nonnegative; since $t / 0$ is undefined, we must define the case where $m = 0$ manually. Otherwise, $h(n) = t / m, \forall m > 0$ will \textit{always} be less than $t$, which makes this an admissible heuristic. Note that this is not necessarily a consistent heuristic.
+\end{solution}
+
+\item Is breadth-first search guaranteed to find an optimal solution to this problem?
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+Yes. It is possible to construct the state space as a tree with unweighted edges, which necessarily means that BFS will find the optimal solution. For example, observe that an optimal solution will be the \textit{smallest number of moves} between states $S$ and $G$. If every state in the state space represents a current square coupled with a current speed, then the optimal solution will also be the most shallow solution, since the edges will not have weights.
+\end{solution}
+
+\item Is depth-first search complete for this problem?
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+\begin{solution}
+Yes. There are a finite (though possible \textit{huge}) number of states, which means that DFS will find \textit{one} of them.
+\end{solution}
+
+\end{enumerate}
+
+\newpage
+
+\section{Upgraded Space Elevator}
+\emph{This problem is for grad students only.} The SpaceY elevator has been upgraded! It can accelerate by unit increases in it's speed, doubling it's speed as before, or even tripling it's speed.
+
+\begin{enumerate}
+\item What impact does this have on the state space? I.e. does this change the state space description and/or the maximum branching factor?
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+% \begin{solution}
+% \end{solution}
+
+\item State and justify an alternative, non-trivial heuristic for this state space.
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+% \begin{solution}
+% \end{solution}
+
+\item Diagram the first three levels of the search tree for this problem.
+% ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
+% TEXT AND FILL IN YOUR OWN.
+% \begin{solution}
+% \end{solution}
+
+\end{enumerate}
+
+\end{document}

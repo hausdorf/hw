@@ -1,0 +1,35 @@
+\setlength{\oddsidemargin}{0 in}
+\setlength{\evensidemargin}{0 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{9 in}
+\setlength{\headsep}{0.5 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\newcommand{\lecture}[3]{
+   \pagestyle{myheadings}
+   \thispagestyle{plain}
+   \newpage
+   \setcounter{page}{1}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{1mm}
+    \hbox to 6.28in { #1 \hfill {\it #3} }
+       \vspace{2mm}
+       \hbox to 6.28in { {\Large \hfill #2 \hfill} }
+      \vspace{1mm}}
+   }
+   \end{center}
+   \markboth{#1}{#2}
+}
+
+\newenvironment{solution}
+  {\linespread{1}\center%
+   \begin{tabular}{|p{5.8in}|}%
+     \hline\vspace{+0.02in}%
+     \begin{sffamily}%
+     }
+  {\end{sffamily} \vspace{+0.05in}\\\hline%
+   \end{tabular}\vspace{+0.1in}\\}
