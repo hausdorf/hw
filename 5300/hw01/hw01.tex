@@ -16,37 +16,68 @@ A paper copy of your answers are due at the beginning of class on the due date. 
 
 Given the graph above calculate the frontier and final path returned by each of the algorithms listed below. Resolve ties where necessary using lexicographic ordering. Assume cycle checking so no duplicate paths will be placed on the frontier. Finally stop when the goal is removed from the frontier.
 
+\begin{solution}
+This question does not specifically ask for a particular answer; I will thus assume you want me to show you the frontier at each step, and then the final result at the end.
+\end{solution}
+
 \begin{enumerate}
 
 \item Depth First Search
 % ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
 % TEXT AND FILL IN YOUR OWN.
-% \begin{solution}
-% \end{solution}
+\begin{solution}
+Start \newline
+AB \newline
+BC \newline
+BD \newline
+B Goal \newline
+G $\leftarrow$ D $\leftarrow$ C $\leftarrow$ A $\leftarrow$ Start
+\end{solution}
 
 \item Breadth First Search
 % ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
 % TEXT AND FILL IN YOUR OWN.
-% \begin{solution}
-% \end{solution}
+\begin{solution}
+Start \newline
+AB \newline
+BC \newline
+CD \newline
+G $\leftarrow$ D $\leftarrow$ B $\leftarrow$ Start
+\end{solution}
 
 \item Uniform Cost Search
 % ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
 % TEXT AND FILL IN YOUR OWN.
-% \begin{solution}
-% \end{solution}
+\begin{solution}
+Start \newline
+AB \newline
+BC \newline
+CD \newline
+D \newline
+Goal $\leftarrow$ D $\leftarrow$ B $\leftarrow$ Start
+\end{solution}
 
 \item Best First Search
 % ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
 % TEXT AND FILL IN YOUR OWN.
-% \begin{solution}
-% \end{solution}
+\begin{solution}
+Start \newline 
+AB \newline
+ACD \newline
+AC  \newline
+Goal $\leftarrow$ D $\leftarrow$ B $\leftarrow$ Start
+\end{solution}
 
 \item A* Search
 % ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
 % TEXT AND FILL IN YOUR OWN.
-% \begin{solution}
-% \end{solution}
+\begin{solution}
+Start \newline
+AB  \newline
+ACD \newline
+AC \newline
+Goal $\leftarrow$ D  $\leftarrow$ B  $\leftarrow$ Start
+\end{solution}
 
 \end{enumerate}
 
@@ -70,13 +101,13 @@ Refer to the diagram above. Assume the elevator starts on the ground, is not mov
 We will assume that the space elevator can only go up to space (\textit{i.e.}, it does not have the goal of coming back down). In this case, the starting state $S$ is simply the first square you start at. The goal state $G$ will then be the last square on the track.
 \newline
 
-The initial state $S$, the set of actions $\mathcal{A} = \{ accelerate, decelerate, coast \}$, and transition model $\mathbf{ \Theta }$ (which dictates the affect that any particular action will have on any particular state) implicitly define the \textit{state space}.
+The initial state $S$, the set of actions $\mathcal{A} = \{ accelerate, decelerate, coast \}$, and the transition model $\mathbf{ \Theta }$ (which dictates the affect that any particular action will have on any particular state) implicitly define the \textit{state space}.
 \newline
 
 More concretely, at any particular space, the action that we pick (along with our current speed) will determine which square we end up in. The specific square we are currently in, combined with our current speed comprise a specific \textit{state}, and the specific state we are in will determine what actions are available, as well as their effects.
 \newline
 
-Note, for example, that the starting state $S$ has no speed, and begins at the very first square. Meaningful actions are \textit{acceleration} (since \textit{deceleration} and \textit{coast} both result in us staying in state $S$).
+Note, for example, that in the case of the starting state $S$, we have no speed, and we are at the very first square. Meaningful actions are \textit{acceleration} (since \textit{deceleration} and \textit{coast} both result in us staying in state $S$).
 \end{solution}
 
 \item What is the maximum branching factor of this problem? Briefly justify your answer.
@@ -90,39 +121,49 @@ Note, for example, that the starting state $S$ has no speed, and begins at the v
 % ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
 % TEXT AND FILL IN YOUR OWN.
 \begin{solution}
-Yes. Say there are $t$ squares between our current square and the final square. No matter which value of $t$ you pick, if the heuristic function $h(n)$ estimates the cost to be $t$ squares, then it \textit{cannot} have overestimated, since it is never true that $t > t$.
+No. The fact that $t$ squares exist between your current space and the the final space $G$ does not imply that you need to make $t$ moves to get there (remember that we are using unweighted edges), especially since you can choose to increase your speed. Thus $t$ can be an overestimate.
 \end{solution}
 
 \item State and justify an alternative, non-trivial heuristic for this state space.
 % ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
 % TEXT AND FILL IN YOUR OWN.
 \begin{solution}
-If you have $t$ remaining squares and your current speed is $m$ squares per turn, then we can estimate the number of squares remaining to be
+If you have $t$ remaining squares and your current speed is $m$ squares per turn, then we can estimate the number of squares remaining to be roughly the number of moves it will take to reach the goal at the current speed.
 
 \begin{displaymath}
    h(x) = \left\{
-     \begin{array}{ll}
-       t & : m = 0 \\
+     \begin{array}{cl}
+       c & : m \le 0 \\
        \frac{t}{m} & : else
      \end{array}
    \right.
 \end{displaymath}
 
-Note that your speed must always be nonnegative; since $t / 0$ is undefined, we must define the case where $m = 0$ manually. Otherwise, $h(n) = t / m, \forall m > 0$ will \textit{always} be less than $t$, which makes this an admissible heuristic. Note that this is not necessarily a consistent heuristic.
+The typical case (\textit{i.e.}, the case that we are moving toward the goal, so that $m > 0$) is represented by $h(n) = t / m$. Since we must necessarily decelerate at some point, this will always underestimate the true cost, which will potentially more moves as we reduce our speed.
+\newline
+
+The problem mentions that you can go ``up/down", which means that our estimate must account for the possibility that we are moving in the opposite direction of the goal. We define this to be some constant $c$ (since making it $\infty$ or $t$ would make it a non-admissable heuristic).
+\newline
+
+If we are not moving (\textit{i.e.}, if $m = 0$), our typical estimate of distance would be $t / 0$, which is undefined. Thus, we define the case where $m = 0$ manually to be $c$.
+\newline
+
+This estimate will \textit{always} be less than or equal to the actual $t$, which makes this an admissible heuristic.
 \end{solution}
 
 \item Is breadth-first search guaranteed to find an optimal solution to this problem?
 % ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
 % TEXT AND FILL IN YOUR OWN.
 \begin{solution}
-Yes. It is possible to construct the state space as a tree with unweighted edges, which necessarily means that BFS will find the optimal solution. For example, observe that an optimal solution will be the \textit{smallest number of moves} between states $S$ and $G$. If every state in the state space represents a current square coupled with a current speed, then the optimal solution will also be the most shallow solution, since the edges will not have weights.
+Yes. The search problem as we have formulated it does not have weighted edges, which necessarily means that BFS will find the optimal solution. That is, observe that an optimal solution will be the \textit{smallest number of moves} between states $S$ and $G$.
+\newline
 \end{solution}
 
 \item Is depth-first search complete for this problem?
 % ANY LINE BEGINNING "%" IS A COMMENT.  YOU CAN UNCOMMENT THE BELOW
 % TEXT AND FILL IN YOUR OWN.
 \begin{solution}
-Yes. There are a finite (though possible \textit{huge}) number of states, which means that DFS will find \textit{one} of them.
+Yes. There are a finite (though possibly \textit{huge}) number of states, which means that DFS will find a solution.
 \end{solution}
 
 \end{enumerate}
