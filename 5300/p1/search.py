@@ -59,6 +59,67 @@ def tinyMazeSearch(problem):
   w = Directions.WEST
   return  [s,s,w,s,w,w,s,w]
 
+
+### BEGIN OUR CODE ###
+
+def solution(curr, sol):
+  """
+  Finds solution given current node and explored tree
+  """
+  from game import Directions
+
+  movemap = {'South': Directions.SOUTH, 'West': Directions.WEST,
+      'East': Directions.EAST, 'North': Directions.NORTH}
+
+  moves = []
+  parent = sol[curr]
+  moves.insert(0, curr[1])
+  while parent[1]:
+    moves.insert(0, movemap[parent[1]])
+    parent = sol[parent]
+
+  return moves
+
+
+def generic_search(problem, stype):
+  # NOTE: Currently implements DFS by default
+  """
+  A generic search function that can be DFS, BFS, or A*
+  """
+  # TODO: REMOVE THIS LIBRARY
+  import sys
+  from util import Stack
+
+  # If curr is goal state
+  if problem.isGoalState(problem.getStartState()):
+    return []
+
+  # "Normal" case
+  sol = []  # solution
+  explored = set()
+  parents = {}
+  stack = Stack()
+  stack.push((problem.getStartState(), None, None))
+  parent = None
+  # Not goal, parent is set appropriately, stack not empty
+  while True:
+    if stack.isEmpty():
+      raise 'Stack empty'
+    else:
+      curr = stack.pop()
+
+      if curr[0] in explored:
+        continue
+      explored.add(curr[0])
+
+      for succ in problem.getSuccessors(curr[0]):
+        if succ[0] not in explored:
+          parents[succ] = curr
+          if problem.isGoalState(succ[0]):
+            return solution(succ, parents)
+          stack.push(succ)
+
+
 def depthFirstSearch(problem):
   """
   Search the deepest nodes in the search tree first [p 74].
@@ -66,8 +127,8 @@ def depthFirstSearch(problem):
   Your search algorithm needs to return a list of actions that reaches
   the goal.  Make sure to implement a graph search algorithm [Fig. 3.18].
   """
-  "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  return generic_search(problem, 'dfs')
+
 
 def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 74]"
