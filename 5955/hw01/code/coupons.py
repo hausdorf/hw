@@ -45,10 +45,11 @@ def find_gt_n(list, s, n):
 
 if __name__ == '__main__':
 	times_repeat = 300
-	domain = 60
+	domain = 10000
 	fulls = expt_n_times(times_repeat, domain)
 	ks = [len(e) for e in fulls]
 
+	"""
 	#print fulls
 	print ks
 
@@ -65,6 +66,7 @@ if __name__ == '__main__':
 	ylabel('% of experiments succeeding after k trials', fontsize=16)
 	grid()
 	show()
+	"""
 
 	"""
 	hist(fulls[0], domain+1, facecolor='g', alpha=0.75)

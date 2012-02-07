@@ -37,8 +37,8 @@ def find_gt_n(list, s, n):
 
 
 if __name__ == '__main__':
-	times_repeat = 1000000
-	domain = 1000
+	times_repeat = 10000
+	domain = 1000000
 	collisions = expt_n_times(times_repeat, domain)
 
 	"""
