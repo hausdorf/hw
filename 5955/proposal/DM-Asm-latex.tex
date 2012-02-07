@@ -1,0 +1,94 @@
+\documentclass[11pt]{article}
+\usepackage{euscript}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{epsfig}
+\usepackage{xspace}
+\usepackage{color}
+\usepackage{url}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\textheight}{9in}
+\setlength{\topmargin}{-0.600in}
+\setlength{\headheight}{0.2in}
+\setlength{\headsep}{0.250in}
+\setlength{\footskip}{0.5in}
+\flushbottom
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\columnsep}{2pc}
+\setlength{\parindent}{1em}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\eps}{\varepsilon}
+
+\renewcommand{\c}[1]{\ensuremath{\EuScript{#1}}}
+\renewcommand{\b}[1]{\ensuremath{\mathbb{#1}}}
+\newcommand{\s}[1]{\textsf{#1}}
+
+\newcommand{\E}{\textbf{\textsf{E}}}
+\renewcommand{\Pr}{\textbf{\textsf{Pr}}}
+
+\title{Final Project Proposal
+\footnote{\s{CS 6955 Data Mining; \;\; Spring 2012 \hfill
+Instructor: Jeff M. Phillips, University of Utah}
+}
+}
+\author{Chad Brubaker \& Alex Clemmer}
+
+\begin{document}
+\maketitle
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Overview}
+
+Machine learning in the domain of NLP has traditionally been an \textit{offline} affair, with scientists injesting batches of data, analyzing them, and reporting the results.
+
+Resistance to a fully-online methodology has so far been thanks mostly to the fact that NLP researchers have historically been ill-equipped to deal with the issues of massive data. For example, as \cite{to2007} point out, simply storing (let alone learning from) the $n$-grams of a large corpus requires a precipitously large amount of space, both slowing down processing time, and making a large portion of streaming NLP work infeasible on common desktop machines.
+
+A combination of recent advances in many critical areas, like feature representation \cite{vdl2011} and locality sensitive hashing \cite{vdl2009} makes interesting streaming work on commodity machines viable.
+
+The goal of our project is to demonstrate that the requirements of moving to a fully online setting is not does not require a radical change in methodology, which we will show by adapting an offline classifer to a streaming setting. Specifically, we will train a model offline and extend it to predict well over time in a streaming context. We expect to use spectral Bloom filters to efficiently represent the $n$-gram features and their counts (see above citations). This will be the beating heart of the algorithm, although there may be other ancillary problems to solve, like feature hashing.
+
+Our initial plan is to use the GeoDoc \cite{gd} dataset to classify geospatial locations in text.
+
+
+
+
+
+
+%\newpage
+
+%\begin{thebibliography}{deSolaPITH}
+% Change font size?
+% \tiny, \footnotesize, \small,\normalsize, \large, \Large, \LARGE, and \huge 
+%\begin{small}
+\begin{footnotesize}
+
+\begin{thebibliography}{}
+\bibliographystyle{}
+
+\bibitem[Talbot and Osborne, 2007]{to2007} {\sc David Talbot and Miles Osborne}, ``Randomised Language Modelling for Statistical Machine Translation," \textit{Proceedings of ACL}, 2007.
+
+\bibitem[GeoDoc, 2012]{gd} Geospatial Information and Documents, http://www2.lirmm.fr/~mroche/GeoDoc2012/, \textit{PAKDD Workshop}, 2012
+
+\bibitem[Van Durme \& Lall, 2011]{vdl2011} {\sc Benjamin Van Durme and Ashwin Lall}, ``Efficient Online Locality Sensitive Hashing via Reservoir Counting", \textit{ACL Short}, 2011.
+
+\bibitem[Van Durme \& Lall, 2009]{vdl2009} {\sc Benjamin Van Durme and Ashwin Lall}, ``Probabilistic Counting with Randomized Storage", \textit{IJCAI}, 2009.
+
+\end{thebibliography}
+\end{footnotesize}
+
+
+
+\end{document}
