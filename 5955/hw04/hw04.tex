@@ -198,11 +198,11 @@ CLUST
 Begin with the definition of the average-link cluster:
 
 \begin{equation}
-\cfrac{1}{|S_1||S_2|} \sum_{(s_1,s_2) \in S_1 \times S_2} || s_1 - s_2||_2 = \cfrac{1}{|S_1||S_2|} \sum_{(s_1,s_2) \in S_1 \times S_2} \sqrt{s_1^2 - s_2^2}
+\cfrac{1}{|S_1||S_2|} \sum_{(s_1,s_2) \in S_1 \times S_2} || s_1 - s_2||_2 = \cfrac{1}{|S_1||S_2|} \sum_{(s_1,s_2) \in S_1 \times S_2} \sqrt{(s_1 - s_2)^2}
 \end{equation}
 
 \begin{equation}
-= \cfrac{1}{|S_1||S_2|} \sqrt{\sum_{s_1 \in S_1} s_1^2 - \sum_{s_2 \in S_2} s_2^2}
+= \cfrac{1}{|S_1||S_2|} \sqrt{(\sum_{s_1 \in S_1} s_1 - \sum_{s_2 \in S_2} s_2)^2}
 \end{equation}
 
 This is clearly equivalent to the mean cluster, as long as it's $\mathbb{R}^1$.
@@ -212,6 +212,87 @@ This is clearly equivalent to the mean cluster, as long as it's $\mathbb{R}^1$.
 
 
 \section{Point Assignment Clustering}
+
+\textit{MinMax:} Clusters centers are the first level of indent; the items clustered around them are indented four spaces.
+
+\begin{verbatim}
+('g', (2.0, 3.0))
+     ('g', (2.0, 3.0))
+     ('i', (2.1, 3.8))
+     ('h', (2.4, 3.4))
+     ('k', (2.6, 3.5))
+     ('j', (2.9, 3.1))
+     ('m', (2.2, 3.9))
+     ('l', (2.5, 3.6))
+     ('o', (2.3, 3.4))
+     ('n', (2.7, 3.5))
+     ('q', (1.1, 7.8))
+     ('p', (1.0, 7.0))
+     ('s', (1.5, 7.9))
+     ('r', (1.2, 7.3))
+     ('u', (1.5, 7.1))
+     ('t', (1.3, 7.2))
+     ('w', (1.9, 7.7))
+     ('v', (1.4, 7.2))
+     ('y', (1.6, 7.8))
+     ('x', (1.3, 7.1))
+('z', (16.0, 2.0))
+     ('z', (16.0, 2.0))
+('a', (11.0, 12.0))
+     ('a', (11.0, 12.0))
+     ('c', (11.8, 12.6))
+     ('b', (11.2, 12.3))
+     ('e', (11.3, 12.4))
+     ('d', (11.1, 12.9))
+     ('f', (11.7, 12.1))
+\end{verbatim}
+
+\textit{KMeans++} The same notation is used.
+
+\begin{verbatim}
+('g', (2.0, 3.0))
+     ('g', (2.0, 3.0))
+     ('i', (2.1, 3.8))
+     ('h', (2.4, 3.4))
+     ('k', (2.6, 3.5))
+     ('j', (2.9, 3.1))
+     ('m', (2.2, 3.9))
+     ('l', (2.5, 3.6))
+     ('o', (2.3, 3.4))
+     ('n', (2.7, 3.5))
+     ('q', (1.1, 7.8))
+     ('p', (1.0, 7.0))
+     ('s', (1.5, 7.9))
+     ('r', (1.2, 7.3))
+     ('u', (1.5, 7.1))
+     ('t', (1.3, 7.2))
+     ('w', (1.9, 7.7))
+     ('v', (1.4, 7.2))
+     ('y', (1.6, 7.8))
+     ('x', (1.3, 7.1))
+('z', (16.0, 2.0))
+     ('z', (16.0, 2.0))
+('a', (11.0, 12.0))
+     ('a', (11.0, 12.0))
+     ('c', (11.8, 12.6))
+     ('b', (11.2, 12.3))
+     ('e', (11.3, 12.4))
+     ('d', (11.1, 12.9))
+     ('f', (11.7, 12.1))
+\end{verbatim}
+
+
+\paragraph{B: }
+
+The average distance of a point $p$ to its closest centroid $c$ is given by:
+
+\begin{equation}
+\cfrac{\sum_{p \in P} d(p, [ \arg \min_{c \in C} d(p,c)])}{|P|}
+\end{equation}
+
+The average distance of a point to its closest cluster should always decrease if we are converging. If a cluster moves in some direction, then the gain in average distance loss must be greater than the loss incurred by staying. By the principle of contraction, the average distance gained by any points lost by the cluster in the next evaluation step are less then the average distance lost.
+
+Since the average distance of a point to the closest cluster always decreases, we converge.
 
 
 
@@ -250,6 +331,8 @@ I estimated the probability by generating $n=10,000$ samples, norming them, and 
 The tables are broken apart by dimension $d$ (\textit{i.e.}, the first table is for $d=1$, the second for $d = 2$, and so on). The \textit{index} column is just the number of the experiment---it's useful because there should be 30 in all, which we can plainly see. The $P$ column refers to which norm $L_P$ we're using, \textit{e.g.}, $L_1$, $L_2$, and so on.
 
 Finally, (and most importantly) the last column refers to the empirical probability that the norm is less 1. We calculate this by taking the number of samples for which this condition is true, and dividing that number by the total.
+
+In answer to the second part of the question as $P$ approaches 0, we expect this probability also to approach 0.
 
 \begin{center}
 For $d = 1$:

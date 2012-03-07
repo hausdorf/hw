@@ -187,45 +187,81 @@ def q1(ptdicts):
 
 
 def minmax(pointset, k):
+  pointlist = [(key,v) for key,v in pointset.items()]
   c_i = [('a', pointset['a'])]
 
   for i in range(1,k):
-    maxPt = (float('-inf'),)
+    dists = []
+    for label,point in pointset.items():
+      distsToPoint = [(eucDist(point, c[1]), c, (label,point)) for c in c_i]
+      distsToPoint.sort()
+      dists.append(distsToPoint[0])
 
-  print c1
-  return
+    dists.sort(reverse=True)
+    #print dists[0]
+    c_i.append(dists[0][2])
+
+  # find subsets
+  subsets = {c: [] for c in c_i}
+  for p in pointlist:
+    dists = [(eucDist(p[1], c[1]), c) for c in c_i]
+    dists.sort()
+    subsets[dists[0][1]].append(p)
+
+  return subsets
+
+def findSubsets(pointlist, c_i):
+  # find subsets
+  subsets = {c: [] for c in c_i}
+  for p in pointlist:
+    dists = [(eucDist(p[1], c[1]), c) for c in c_i]
+    dists.sort()
+    subsets[dists[0][1]].append(p)
+
+  return subsets
 
 def kmeanspp(pointlist, k, u):
   points = map(lambda (label,pt): pt, pointlist)
   labels = map(lambda (label,pt): label, pointlist)
 
-  c_i = [points[0]]
+  c_i = [pointlist[0]]
 
   for i in range(1, k):
     wps = {}
     for label,pt in pointlist:
-      wp = [(eucDist(pt, c)**2, label) for c in c_i]
+      wp = [(eucDist(pt, c[1])**2, label) for c in c_i]
       wp.sort(reverse=True)
       wps[label] = wp[0][0]
 
     W = sum([v for k,v in wps.items()])
     v = u[i-1] * W
+
     sumW = 0
-    for i in range(len(pointlist)):
+    for i in range(1, len(pointlist)):
       label,pt = pointlist[i]
       sumW += wps[label]
 
-      if sumW >= v:
+      if (sumW - wps[pointlist[i-1][0]]) < v and v <= sumW:
         break
 
-    sumW2 = sum([wps[labels[j]] for j in range(i + 1, len(pointlist))])
-    print sumW, sumW2
+    c_i.append(pointlist[i])
 
-  return
+  subsets = findSubsets(pointlist, c_i)
+
+  return subsets
 
 def q2(ptdicts, ptlists):
-  #minmax(ptdicts[1], 3)
-  kmeanspp(ptlists[1], 3, [0.35, 0.6])
+  for k,v in minmax(ptdicts[1], 3).items():
+    print k
+    for l in v:
+      print '    ', l
+
+  print 'KMEANS'
+  for k,v in kmeanspp(ptlists[1], 3, [0.35, 0.6]).items():
+    print k
+    for l in v:
+      print '    ', l
+
   return
 
 
