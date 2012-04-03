@@ -1,0 +1,98 @@
+\documentclass[11pt]{article}
+\usepackage{euscript}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{epsfig}
+\usepackage{xspace}
+\usepackage{color}
+\usepackage{url}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\textheight}{9in}
+\setlength{\topmargin}{-0.600in}
+\setlength{\headheight}{0.2in}
+\setlength{\headsep}{0.250in}
+\setlength{\footskip}{0.5in}
+\flushbottom
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\columnsep}{2pc}
+\setlength{\parindent}{1em}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\eps}{\varepsilon}
+
+\renewcommand{\c}[1]{\ensuremath{\EuScript{#1}}}
+\renewcommand{\b}[1]{\ensuremath{\mathbb{#1}}}
+\newcommand{\s}[1]{\textsf{#1}}
+
+\newcommand{\E}{\textbf{\textsf{E}}}
+\renewcommand{\Pr}{\textbf{\textsf{Pr}}}
+
+\title{HW07: More Bayes' Net
+\footnote{\s{CS 5300 AI; \;\; Spring 2012 \hfill
+Instructor: Jur van den Berg, University of Utah}
+}
+}
+\author{Alex Clemmer, u0458675}
+
+\begin{document}
+\maketitle
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{D-Separation}
+
+\paragraph{(a)} AV and SL are \textbf{not independent}.
+
+\paragraph{(b)} AA and FP are \textbf{independent}.
+
+\paragraph{(c)} U and BB are \textbf{independent}.
+
+\paragraph{(d)} SL and BB are \textbf{not independent}.
+
+
+\paragraph{1.} Assuming no evidence is given, nothing changes. \textbf{Not independent}.
+
+\paragraph{2.} SL is a sink that connects AA and FP. \textbf{Not independent}.
+
+\paragraph{3.} AA would actually ``block" the dependence. \textbf{Independent}.
+
+\paragraph{4.} FP actually ``blocks" the dependence. \textbf{Independent}.
+
+
+
+
+\section{Variable Elimination}
+
+The joint distribution is represented by $P(a,b,c,d,e,f) = P(A)P(B|A)P(C|A)P(D|B)P(E|B)P(F|C)$. One way to think of our factored representation is as
+
+\begin{equation}
+P(a,b,c,d,e,f) = P(A) \sum_{b \in B} P(B|A) \sum_{c \in C} P(C|A) \sum_{d \in D, e \in E} P(D|B)P(E|B) \sum_{f \in F} P(F|C)
+\end{equation}
+
+Note that because each of these sums adds to 1, we can chop off an arbitrary number of factors to eliminate them. Thus our variable elimination results in $P(C=c | F=f, D= \sim d) = 0.6943$.
+
+
+
+\section{Sampling}
+
+\paragraph{1.} Of the $N = 20$ samples generated, there are 10 for which is is true that $S = s$. Of these there are 3 for which it is true that $A = a$, and 7 for which it is true that $A = \sim a$.
+
+Having generated and rejected these samples, we must now normalize these counts. Normalizing them gives us $P(A=a|S=s) = \frac{3}{7+3} = 0.3$.
+
+\paragraph{2.} The number of rejected samples, straightforwardly, is the number of samples for which it is \textit{not} true that $S = s$. In other words, it is quite literally: $P(S= \sim s)$.
+
+
+
+
+\end{document}
