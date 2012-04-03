@@ -77,10 +77,16 @@ Instructor: Jur van den Berg, University of Utah}
 The joint distribution is represented by $P(a,b,c,d,e,f) = P(A)P(B|A)P(C|A)P(D|B)P(E|B)P(F|C)$. One way to think of our factored representation is as
 
 \begin{equation}
-P(a,b,c,d,e,f) = P(A) \sum_{b \in B} P(B|A) \sum_{c \in C} P(C|A) \sum_{d \in D, e \in E} P(D|B)P(E|B) \sum_{f \in F} P(F|C)
+P(a,b,c,d,e,f) = \alpha P(A) \sum_{b \in B} P(B|A) \sum_{c \in C} P(C|A) \sum_{d \in D, e \in E} P(D|B)P(E|B) \sum_{f \in F} P(F|C)
 \end{equation}
 
-Note that because each of these sums adds to 1, we can chop off an arbitrary number of factors to eliminate them. Thus our variable elimination results in $P(C=c | F=f, D= \sim d) = 0.6943$.
+Note that each of these factorized summations ends up being 1, \textit{i.e.}, $\sum_{f \in F} P(F|C) = 1$ if we know all of $f$. So summing out the variables that we don't care about trivially gives us:
+
+\begin{equation}
+P(C|D= \sim d, f = f) = \alpha P(C|A) P(\sim d|B) P(f|C)
+\end{equation}
+
+Substituting in the values with pointwise product and normalizing the result gives us the final term of our exact-inference variable elimination: $P(C | F=f, D= \sim d) = 0.6943$.
 
 
 
