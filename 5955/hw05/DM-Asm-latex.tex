@@ -33,7 +33,7 @@
 \newcommand{\E}{\textbf{\textsf{E}}}
 \renewcommand{\Pr}{\textbf{\textsf{Pr}}}
 
-\title{Assignment 5---Regression
+\title{Assignment 5 -- Regression
 \footnote{\s{CS 6955 Data Mining; \;\; Spring 2012 \hfill
 Instructor: Jeff M. Phillips, University of Utah}
 }
@@ -50,42 +50,315 @@ Instructor: Jeff M. Phillips, University of Utah}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Overview}
+\section{Singular Value Decomposition}
 
-This is a sample latex file to use for completing assignments.  This particular file is not required.  In fact, there are many cool ways to spruce up this plain look.  Feel free to use them.  
+\begin{tabular}{ | c | c | }
+  \hline
+  $k$ & $||M-Mk||_2$ \\
+  \hline
+  1 & 9.168090 \\
+  \hline
+  2 & 8.537161 \\
+  \hline
+  3 & 7.714555 \\
+  \hline
+  4 & 5.650823 \\
+  \hline
+  5 & 5.273193 \\
+  \hline
+  6 & 5.073055 \\
+  \hline
+  7 & 4.686644 \\
+  \hline
+  8 & 4.639646 \\
+  \hline
+  9 & 4.422348 \\
+  \hline
+  10 & 4.303812 \\
+  \hline
+\end{tabular}
 
-\section{Clarity}
-I recommend you number sections according to the homework questions and subquestions.  This will make grading very easy, and make it less likely that your answers will be misinterpreted.  There is no text required outside these areas.  
+Experimentally, the ``sweet spot" where $||M-Mk||_2 \approx 0.1 \cdot ||M||_2$ happens in the range of 68-71. As you can see they all occur reasonably close to the 10\% threshold:
 
-\section{Figures}
-Figures are very easy in Latex.  See the example below:
+\begin{tabular}{ | c | c | c | c | }
+  \hline
+  $k$ & $||M||_2$ & $||M-Mk||_2$ & $\cfrac{||M-Mk||_2}{||M||_2}$ \\
+  \hline
+  \hline
+  68 & 11.065524 & 1.210348 & 0.109380 \\
+  \hline
+  69 & 11.065524 & 1.162212 & 0.105030 \\
+  \hline
+  70 & 11.065524 & 1.132387 & 0.102335 \\
+  \hline
+  71 & 11.065524 & 1.072011 & 0.096878 \\
+  \hline
+\end{tabular}
 
-\begin{figure}[h]
-\centering{
-\includegraphics[width=.6\linewidth]{figurefilepath.pdf}
-}
-\caption{Add an optimal caption.}
-\label{fig:name}
-\end{figure}
 
-The text in the \s{label} command allows one to refer to the Figure number, in this case I am referring to Figure \ref{fig:name}.  
 
-\section{Macros}
-I have included a few simple macros at the top.  For instance use $\Pr[X]$ to indicate the probability of $X$ and use $\E[X]$ to refer to the expected value of $X$.  I usually use a script font $\c{X}$ to refer to a set, for instance $\c{X} = \{X_1, X_2, \ldots, X_n\}$ may indicate a set of $n$ random variables.  
 
-There are lots of other neat math macros built into Latex.  Use dollar signs (e.g. $X_i$) to offset some math text and use slash backets 
-\[
-M = \sum_{i=1}^n X_i
-\]
-to use an entire line to write a longer expression.  
+\section{Column Sampling}
 
-\section{More help}
-Latex has gotten quite popular, so much so that if you type ``latex'' into google, it lists nothing on the first page about gloves.  
+\paragraph{A:} We will see the distinctive downward trend, which is what we expect:
 
-There are some great free references already out there for instance:
-\begin{itemize}
-\item \url{http://en.wikibooks.org/wiki/LaTeX}
-\item \url{http://tex.stackexchange.com/}
-\end{itemize}
+\begin{tabular}{ | c | c | }
+  \hline
+  $t$ & Type 1 error \\
+  \hline
+  \hline
+  1 & 9.190782 \\ 
+  \hline
+  2 & 9.183018 \\ 
+  \hline
+  3 & 8.577500 \\ 
+  \hline
+  4 & 8.565876 \\ 
+  \hline
+  5 & 8.524149 \\ 
+  \hline
+  6 & 7.726940 \\ 
+  \hline
+  7 & 7.725883 \\ 
+  \hline
+  8 & 7.725882 \\ 
+  \hline
+  9 & 7.725854 \\ 
+  \hline
+  10 & 7.725518 \\ 
+  \hline
+  11 & 7.724697 \\ 
+  \hline
+  12 & 7.724691 \\ 
+  \hline
+  13 & 7.582239 \\ 
+  \hline
+  14 & 7.541526 \\ 
+  \hline
+  15 & 7.533645 \\ 
+  \hline
+  16 & 7.532958 \\ 
+  \hline
+  17 & 7.532932 \\ 
+  \hline
+  18 & 7.532928 \\ 
+  \hline
+  19 & 7.508738 \\ 
+  \hline
+  20 & 7.479237 \\ 
+  \hline
+  21 & 7.463557 \\ 
+  \hline
+  22 & 7.444950 \\ 
+  \hline
+  23 & 7.444944 \\ 
+  \hline
+  24 & 7.443253 \\ 
+  \hline
+  25 & 7.443088 \\ 
+  \hline
+  26 & 7.443010 \\ 
+  \hline
+  27 & 7.390979 \\ 
+  \hline
+  28 & 7.361148 \\ 
+  \hline
+  29 & 7.357355 \\ 
+  \hline
+  30 & 7.356612 \\ 
+  \hline
+\end{tabular}
+\begin{tabular}{ | c | c | }
+  \hline
+  $t$ & Type 2 error \\
+  \hline
+  \hline
+  1 & 9.190782 \\ 
+  \hline
+  2 & 9.186633 \\ 
+  \hline
+  3 & 9.186633 \\ 
+  \hline
+  4 & 9.186606 \\ 
+  \hline
+  5 & 9.186605 \\ 
+  \hline
+  6 & 9.186597 \\ 
+  \hline
+  7 & 7.725978 \\ 
+  \hline
+  8 & 7.053509 \\ 
+  \hline
+  9 & 7.053187 \\ 
+  \hline
+  10 & 7.045771 \\ 
+  \hline
+  11 & 7.038306 \\ 
+  \hline
+  12 & 7.029954 \\ 
+  \hline
+  13 & 6.709284 \\ 
+  \hline
+  14 & 6.505643 \\ 
+  \hline
+  15 & 5.655842 \\ 
+  \hline
+  16 & 5.637149 \\ 
+  \hline
+  17 & 5.636823 \\ 
+  \hline
+  18 & 5.634222 \\ 
+  \hline
+  19 & 5.632514 \\ 
+  \hline
+  20 & 5.013471 \\ 
+  \hline
+  21 & 5.012855 \\ 
+  \hline
+  22 & 5.011494 \\ 
+  \hline
+  23 & 5.011477 \\ 
+  \hline
+  24 & 5.009456 \\ 
+  \hline
+  25 & 5.003089 \\ 
+  \hline
+  26 & 5.002817 \\ 
+  \hline
+  27 & 5.002699 \\ 
+  \hline
+  28 & 5.002577 \\ 
+  \hline
+  29 & 4.880626 \\ 
+  \hline
+  30 & 4.774794 \\ 
+  \hline
+\end{tabular}
+
+\paragraph{B:} Empirically it is shown that for Type 1, the $t$ value equivalent to the SVD error at $k = 5$ occurs between 52 and 53: \\
+
+\begin{tabular}{ | c | c | }
+  \hline
+  $t$ & Type 1 error \\ 
+  \hline
+  \hline
+  52 & 7.211431 \\ 
+  \hline
+  53 & 4.025061 \\ 
+  \hline
+\end{tabular} \\
+
+For Type 2, we can see (in the table from part A) that the equivalent $t$ value occurs between 19 and 20.
+
+\paragraph{C:} This will depend slightly on which $t$ you pick; for Type 1 error, I picked $t = 53$ (since it's closer to SVD error for $k = 5$), and for Type 2 error I picked $t = 20$ (again, since it's closer). 
+
+To find the estimated number of 1's in for Type 1 error $t = 53$, we just sum up each of the top $t$ columns in $P*M$ -- we get 524. For reference, the actual number of non-zero entries in $M$ for these $t$ columns is (surprisingly) 524.
+
+To get the estimated number of 1's for Type 2 error $t = 20$, we do the same thing. This time we get 200.78. The actual number of 1's in these $t$ columns is 228, so this method is a little bit off.
+
+For the top $k = 5$ columns of $Uk$ (the so-called $U5$ matrix), the number of nonzero entries is 27. So, as we can see, the SVD requires dramatically less data than regression (no surprise there).
+
+
+
+
+\section{Linear Regression}
+
+\paragraph{A:} 
+
+First, the case of \textit{least squares regression}, the error is given by $||Y - XA||_2 = 2.646467$. The case of \textit{ridge regression} is slightly more complicated, since it depends on some coefficient $s$:
+
+\begin{tabular}{ | c | c | }
+  \hline
+  $s$ & $||Y-X A||_2$ \\
+  \hline
+  \hline
+  0.1 & 2.647344 \\ 
+  \hline
+  0.3 & 2.653911 \\ 
+  \hline
+  0.5 & 2.665972 \\ 
+  \hline
+  1.0 & 2.714202 \\ 
+  \hline
+  2.0 & 2.855114 \\ 
+  \hline
+\end{tabular}
+
+\paragraph{B:}
+
+First, the case of \textit{least squares}: \\
+
+\begin{tabular}{ | c | c | c | }
+  \hline
+   Subset of $X$ used & Subset of $Y$ used & cross-validated error \\
+  \hline
+  \hline
+  $X(1:8, :)$ & $Y(1:8)$ & 3.8681 \\ 
+  \hline
+  $X(3:10,:)$ & $Y(3:10)$ & 3.1435 \\ 
+  \hline
+  $[X(1:4,:); X(7:10,:)]$ & $[Y(1:4); Y(7:10)]$ & 5.3077 \\ 
+  \hline
+\end{tabular} \\
+
+Now the (more complicated) problem of \textit{ridge regression}. For the case where our subset of $X$ is given by $X1 = X(1:8, :)$, and our subset of $Y$ is given by $Y1 = Y(1:8)$: \\
+
+\begin{tabular}{ | c | c | c | }
+  \hline
+  $s$ & cross-validated error \\
+  \hline
+  \hline
+  0.100000 & 3.637044 \\ 
+  \hline
+  0.300000 & 3.246969 \\ 
+  \hline
+  0.500000 & 2.935846 \\ 
+  \hline
+  1.000000 & 2.408336 \\ 
+  \hline
+  2.000000 & 1.970086 \\ 
+  \hline
+\end{tabular} \\
+
+For the case where our subset of $X$ is given by $X2 = X(3:10,:)$, and our subset of $Y$ is given by $Y2 = Y(3:10)$: \\
+
+\begin{tabular}{ | c | c | c | }
+  \hline
+  $s$ & cross-validated error \\
+  \hline
+  \hline
+  0.100000 & 3.108616 \\ 
+  \hline
+  0.300000 & 3.041127 \\ 
+  \hline
+  0.500000 & 2.976517 \\ 
+  \hline
+  1.000000 & 2.826331 \\ 
+  \hline
+  2.000000 & 2.566478 \\ 
+  \hline
+\end{tabular} \\
+
+Finally, for the case where our subset of $X$ is given by $X3 = [X(1:4,:); X(7:10,:)]$, and our subset of $Y$ is given by $Y3 = [Y(1:4); Y(7:10)]$: \\
+
+\begin{tabular}{ | c | c | c | }
+  \hline
+  $s$ & cross-validated error \\
+  \hline
+  \hline
+  0.100000 & 5.422124 \\ 
+  \hline
+  0.300000 & 5.604590 \\ 
+  \hline
+  0.500000 & 5.745986 \\ 
+  \hline
+  1.000000 & 6.000867 \\ 
+  \hline
+  2.000000 & 6.325721 \\ 
+  \hline
+\end{tabular}
+
+
+
 
 \end{document}
